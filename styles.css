@@ -494,3 +494,225 @@ li.sick {
 #aiSuggestions p:last-child {
   margin-bottom: 0;
 }
+
+/* ========================================
+   MOBILE RESPONSIVENESS
+   ======================================== */
+
+/* Mobile-first approach for screens smaller than 768px */
+@media screen and (max-width: 768px) {
+  
+  /* Increase base font size for mobile */
+  body {
+    font-size: 1.1rem;
+    padding: 15px;
+    line-height: 1.7;
+  }
+  
+  /* Make headings larger on mobile */
+  h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  /* Improve form layout for mobile */
+  #entryForm {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+  
+  /* Make all inputs larger and more touch-friendly */
+  #entryForm > input[type="text"],
+  #entryForm > input[type="date"],
+  #entryForm > input[type="number"],
+  #entryForm > select:not(.bs-dropdown) {
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 0 15px;
+    margin: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Make buttons larger and more touch-friendly */
+  #entryForm button,
+  #entryForm .sick-label,
+  #entryForm .bs-label-wrapper {
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    margin: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Stack buttons vertically on mobile */
+  #entryForm {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Make BS dropdown more mobile-friendly */
+  .bs-dropdown {
+    font-size: 1rem;
+    height: 100%;
+    padding: 0 40px 0 15px;
+  }
+  
+  /* Improve filter buttons for mobile */
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  #filters button {
+    flex: 1;
+    min-width: 120px;
+    height: 45px;
+    font-size: 1rem;
+    padding: 10px;
+  }
+  
+  /* Make list items more mobile-friendly */
+  li {
+    padding: 20px 15px;
+    margin-bottom: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  li span {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  /* Stack entry buttons horizontally on mobile */
+  .entry-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .favorite-btn,
+  .delete-btn {
+    min-width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  /* Improve collapsible sections for mobile */
+  .collapsible {
+    font-size: 1.2rem;
+    padding: 15px;
+    margin-bottom: 8px;
+  }
+  
+  .content {
+    padding: 15px;
+  }
+  
+  /* Make charts responsive */
+  .graph-content {
+    position: relative;
+    overflow-x: auto;
+  }
+  
+  /* Improve popup for mobile */
+  .popup-content {
+    width: 95%;
+    max-width: 350px;
+    margin: 0 10px;
+  }
+  
+  .popup-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .popup-body {
+    padding: 25px 20px;
+  }
+  
+  .popup-body p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  
+  .popup-actions {
+    padding: 15px 20px 25px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .popup-btn {
+    width: 100%;
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 15px;
+  }
+  
+  /* Improve AI suggestions for mobile */
+  #aiSuggestions {
+    padding: 20px 15px;
+    font-size: 1rem;
+  }
+  
+  #aiSuggestions p {
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 12px 15px;
+    margin: 12px 0;
+  }
+  
+  /* Make meal dropdown wrapper more mobile-friendly */
+  #mealDropdownWrapper {
+    position: static !important;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  #mealDropdownWrapper select {
+    font-size: 1rem;
+    padding: 10px;
+    width: 200px;
+  }
+}
+
+/* Extra small screens (phones in portrait) */
+@media screen and (max-width: 480px) {
+  body {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.6rem;
+  }
+  
+  #entryForm {
+    padding: 15px 10px;
+  }
+  
+  .popup-content {
+    width: 98%;
+    margin: 0 5px;
+  }
+  
+  /* Ensure charts don't overflow */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
