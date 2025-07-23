@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Food Tracker App</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <h1>Food Tracker</h1>
+
+  <!-- Entry Form -->
+  <div id="entryForm">
+    <input type="text" id="foodInput" placeholder="What did you eat?" />
+    <input type="date" id="dateInput" />
+    <input type="text" id="bpsInput" placeholder="Blood Pressure (e.g. 120)" />
+    
+    <select id="mealTypeInput">
+      <option value="" disabled selected>Choose a Meal Type</option>
+      <option value="Breakfast">Breakfast</option>
+      <option value="Lunch">Lunch</option>
+      <option value="Dinner">Dinner</option>
+      <option value="Snacks">Snack</option>
+      <option value="Dessert">Dessert</option>
+    </select>
+
+    <input type="number" id="caloriesInput" placeholder="Calories (e.g. 300)" min="0" />
+
+    <button id="addLogButton">Add Entry</button>
+
+    <label class="sick-label">
+      <input type="checkbox" id="sickInput" class="sick-checkbox"/>
+      <span class="sick-label-text">Made me feel sick</span>
+    </label>
+
+    <button id="clearAllButton">Clear All Entries</button>
+
+    <div class="bs-label-wrapper">
+      <label class="bs-label">BS (1-7):</label>
+      <select id="bsInput" class="bs-dropdown">
+      <option value="">--</option>
+      <option value="1">1 (Very Low)</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4 (Neutral)</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7 (Very High)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Food Log -->
+  <ul id="foodLogList"></ul>
+
+  <!-- Filters -->
+  <div id="filters">
+    <button id="filterAllButton">Show All 👩🏻‍🍳</button>
+    <button id="filterSickButton">Only Sick 🤮</button>
+    <button id="filterOkayButton">Only Okay 🤩</button>
+  </div>
+
+  <!-- Favorite Foods Section -->
+  <h2>Save All of Your Favorite Foods</h2>
+  <button class="collapsible active">± Favorite Foods 🌟</button>
+  <div class="content" style="display: block;">
+    <ul id="favoritesList"></ul>
+  </div>
+
+  <!-- Graphs Section -->
+  <h2>Summary Graphs for Food and BP</h2>
+  
+  <!-- BP Line Chart Section -->
+  <button class="collapsible">± Blood Pressure Trend</button>
+  <div class="content graph-content">
+    <canvas id="bpLineChart" width="400" height="200"></canvas>
+  </div>
+
+  <!-- AI Suggestion Section -->
+  <h2>AI Health Insights</h2>
+  <button class="collapsible">± AI Suggestions 🤖</button>
+  <div class="content">
+    <div id="aiSuggestions"></div>
+  </div>
+  
+  <!-- Timeline Dot Chart Section -->
+  <button class="collapsible">± Timeline of Food & BP</button>
+  <div class="content graph-content" style="position: relative;">
+    <div id="mealDropdownWrapper" style="position: absolute; top: 10px; right: 20px; z-index: 10;">
+      <label for="mealDropdown" style="font-size: 0.8rem;">Filter by Meal</label><br>
+      <select id="mealDropdown">
+        <option value="all">All</option>
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Snacks">Snack</option>
+        <option value="Dessert">Dessert</option>
+      </select>
+    </div>
+    <canvas id="timelineDotChart" width="1228" height="300"></canvas>
+  </div>
+</body>
+
+<!-- Blood Pressure Reminder Popup -->
+<div id="bpReminderPopup" class="popup-overlay">
+  <div class="popup-content">
+    <div class="popup-header">
+      <h3>🩺 Blood Pressure Reminder</h3>
+      <button id="closeBpPopup" class="close-btn">&times;</button>
+    </div>
+    <div class="popup-body">
+      <p>You haven't recorded your blood pressure today yet!</p>
+      <p>Would you like to add it now to track your health trends?</p>
+    </div>
+    <div class="popup-actions">
+      <button id="addBpNow" class="popup-btn primary">Add BP Now</button>
+      <button id="remindLater" class="popup-btn secondary">Remind Later</button>
+      <button id="skipToday" class="popup-btn tertiary">Skip Today</button>
+    </div>
+  </div>
+</div>
+
+</html>
