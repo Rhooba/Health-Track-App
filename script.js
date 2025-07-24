@@ -10,16 +10,17 @@ let bpReminderShown = false;
 // =======================
 // DOM READY
 // =======================
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("dateInput").value = today;
+  
   loadFromStorage();
-  renderAllEntries();
-  renderFavorites(); // Render favorites separately on load
   setupEventListeners();
+  checkBPReminder();
+  renderAllEntries();
   updateCharts(foodEntries);
   generateAISuggestions(foodEntries);
-  
-  // Check for BP reminder after a short delay to let the page load
-  setTimeout(checkBPReminder, 2000);
 });
 
 // =======================

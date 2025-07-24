@@ -6,6 +6,7 @@
   --obsidian: #2C2C2C;
   --hibiscus: #E7B9B4;
   --primary-blue: #066873;
+  --sage-green: #8B9467;
 }
 /* Match font and color and style across all the controls */
 input,
@@ -556,6 +557,50 @@ li.sick {
   #entryForm {
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    max-width: 100%;
+  }
+  
+  /* Better input styling for mobile */
+  input[type="text"], 
+  input[type="date"], 
+  input[type="number"], 
+  select {
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 12px 15px;
+    border: 2px solid var(--sage-green);
+    border-radius: 8px;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  /* Fix date input on mobile */
+  input[type="date"] {
+    position: relative;
+    background-color: white;
+    color: var(--obsidian);
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: var(--tropic-blue);
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 4px;
+  }
+  
+  /* Ensure proper tab order */
+  input, select, button {
+    -webkit-tap-highlight-color: rgba(8, 126, 139, 0.3);
+    outline: none;
+  }
+  
+  input:focus, select:focus, button:focus {
+    border-color: var(--tropic-blue);
+    box-shadow: 0 0 0 3px rgba(8, 126, 139, 0.2);
   }
   
   /* Make BS dropdown more mobile-friendly */
