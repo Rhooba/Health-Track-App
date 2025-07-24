@@ -213,6 +213,9 @@ select:focus {
   border: none;
   color: white;
   font-weight: bold;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  min-width: 80px;
 }
 
 .bs-dropdown {
@@ -760,7 +763,7 @@ li.sick {
   
   .bs-label {
     font-weight: bold;
-    color: var(--obsidian);
+    color: white;
     font-size: 1.1rem;
     white-space: nowrap;
     min-width: 80px;
@@ -810,4 +813,24 @@ li.sick {
     max-width: 100% !important;
     height: auto !important;
   }
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+}
+
+#filterAllButton,
+#filterSickButton,
+#filterOkayButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 50px;
+  font-size: 1.1rem;
+  padding: 12px 20px;
 }
