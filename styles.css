@@ -733,6 +733,56 @@ li.sick {
     padding: 10px;
     width: 200px;
   }
+  
+  /* Chart container improvements for mobile */
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 30px;
+    overflow: visible;
+  }
+  
+  /* Ensure chart legends are fully visible */
+  canvas {
+    max-height: 250px !important;
+    margin-bottom: 20px;
+  }
+  
+  /* Fix BS dropdown styling on mobile */
+  .bs-label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .bs-label {
+    font-weight: bold;
+    color: var(--obsidian);
+    font-size: 1.1rem;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  
+  .bs-dropdown {
+    flex: 1;
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 12px 15px;
+    border: 2px solid var(--sage-green);
+    border-radius: 8px;
+    background-color: white;
+    color: var(--obsidian);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23087E8B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
 }
 
 /* Extra small screens (phones in portrait) */

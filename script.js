@@ -377,7 +377,12 @@ function updateCharts(logs) {
               generateLabels: () =>
                 Object.entries(mealColors).map(([type, color]) => ({
                   text: type, fillStyle: color, hidden: false
-                }))
+                })),
+              padding: 15,
+              usePointStyle: true,
+              font: {
+                size: 12
+              }
             }
           },
           title: { display: true, text: "Sick vs Okay Timeline" },
@@ -389,6 +394,13 @@ function updateCharts(logs) {
                 return `${e.x}: ${e.food} → ${e.sick ? "🤢 Sick" : "🥳 Okay"}`;
               }
             }
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            bottom: 40
           }
         }
       }
