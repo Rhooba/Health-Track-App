@@ -413,7 +413,12 @@ function checkBPReminder() {
   
   // Check if user has entered BP today
   const todayEntries = foodEntries.filter(entry => entry.date === today);
-  const hasBPToday = todayEntries.some(entry => entry.bps && entry.bps.trim() !== '');
+  const hasBPToday = todayEntries.some(entry => 
+    entry.bps !== null && 
+    entry.bps !== undefined && 
+    entry.bps !== '' && 
+    !isNaN(entry.bps)
+  );
   
   if (!hasBPToday && !bpReminderShown) {
     showBPPopup();
