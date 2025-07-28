@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
   
   loadFromStorage();
   setupEventListeners();
+  
+  // Force popup to show for testing
+  console.log("Forcing popup to show...");
+  showBPPopup();
+  
   checkBPReminder();
   renderAllEntries();
   updateCharts(foodEntries);
@@ -64,7 +69,6 @@ function setupEventListeners() {
   // BP Reminder Popup Event Listeners
   document.getElementById("closeBpPopup").addEventListener("click", closeBPPopup);
   document.getElementById("addBpNow").addEventListener("click", handleAddBPNow);
-  document.getElementById("remindLater").addEventListener("click", handleRemindLater);
   document.getElementById("skipToday").addEventListener("click", handleSkipToday);
 
   document.querySelectorAll(".collapsible").forEach(button => {
@@ -412,27 +416,14 @@ function updateCharts(logs) {
 }
 
 // =======================
-// BLOOD PRESSURE REMINDER FUNCTIONALITY
+// WELCOME POPUP FUNCTIONALITY
 // =======================
 function checkBPReminder() {
-  // Check if user has already been reminded today or skipped
-  const today = new Date().toISOString().split('T')[0];
-  const reminderStatus = localStorage.getItem(`bpReminder_${today}`);
+  // For testing - always show the welcome popup
+  // (You can add back the localStorage check later if you want daily limits)
   
-  if (reminderStatus === 'skipped' || reminderStatus === 'reminded') {
-    return; // Don't show popup if already handled today
-  }
-  
-  // Check if user has entered BP today
-  const todayEntries = foodEntries.filter(entry => entry.date === today);
-  const hasBPToday = todayEntries.some(entry => 
-    entry.bps !== null && 
-    entry.bps !== undefined && 
-    entry.bps !== '' && 
-    !isNaN(entry.bps)
-  );
-  
-  if (!hasBPToday && !bpReminderShown) {
+  // Show welcome popup for new users or daily greeting
+  if (!bpReminderShown) {
     showBPPopup();
     bpReminderShown = true;
   }
@@ -457,35 +448,25 @@ function closeBPPopup() {
 
 function handleAddBPNow() {
   closeBPPopup();
-  // Focus on the BP input field and scroll to form
-  const bpsInput = document.getElementById('bpsInput');
+  // Mark as shown for today
+  const today = new Date().toISOString().split('T')[0];
+  localStorage.setItem(`welcomeShown_${today}`, 'shown');
+  
+  // Focus on the food input field to get started
+  const foodInput = document.getElementById('foodInput');
   const entryForm = document.getElementById('entryForm');
   
-  if (bpsInput && entryForm) {
+  if (foodInput && entryForm) {
     entryForm.scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => {
-      bpsInput.focus();
-      bpsInput.style.border = '2px solid var(--tropic-blue)';
-      setTimeout(() => {
-        bpsInput.style.border = '';
-      }, 2000);
+      foodInput.focus();
     }, 500);
   }
-  
-  // Mark as reminded for today
-  const today = new Date().toISOString().split('T')[0];
-  localStorage.setItem(`bpReminder_${today}`, 'reminded');
-}
-
-function handleRemindLater() {
-  closeBPPopup();
-  // Show popup again in 2 hours
-  setTimeout(checkBPReminder, 2 * 60 * 60 * 1000);
 }
 
 function handleSkipToday() {
   closeBPPopup();
-  // Mark as skipped for today
+  // Mark as shown for today
   const today = new Date().toISOString().split('T')[0];
-  localStorage.setItem(`bpReminder_${today}`, 'skipped');
+  localStorage.setItem(`welcomeShown_${today}`, 'shown');
 }
