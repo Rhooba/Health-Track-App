@@ -68,7 +68,7 @@ function setupEventListeners() {
   document.getElementById("filterOkayButton").addEventListener("click", () => filterEntries('okay'));
 
   // BP Reminder Popup Event Listeners
-  document.getElementById("closeBpPopup").addEventListener("click", closeBPPopup);
+  document.getElementById("closeBpPopup").addEventListener("click", closeWelcomePopup);
   document.getElementById("addBpNow").addEventListener("click", handleAddBPNow);
   document.getElementById("skipToday").addEventListener("click", handleSkipToday);
 
@@ -447,20 +447,6 @@ function checkBPReminder() {
 }
 
 function showWelcomePopup() {
-  const popup = document.getElementById('welcomePopup');
-  if (popup) {
-    popup.style.display = 'block';
-  }
-}
-
-function closeWelcomePopup() {
-  const popup = document.getElementById('welcomePopup');
-  if (popup) {
-    popup.style.display = 'none';
-  }
-}
-
-function showBPPopup() {
   const popup = document.getElementById('bpReminderPopup');
   if (popup) {
     popup.style.display = 'block';
@@ -470,7 +456,7 @@ function showBPPopup() {
   }
 }
 
-function closeBPPopup() {
+function closeWelcomePopup() {
   const popup = document.getElementById('bpReminderPopup');
   if (popup) {
     popup.style.display = 'none';
@@ -478,7 +464,7 @@ function closeBPPopup() {
 }
 
 function handleAddBPNow() {
-  closeBPPopup();
+  closeWelcomePopup();
   // Mark as shown for today
   const today = new Date().toISOString().split('T')[0];
   localStorage.setItem(`welcomeShown_${today}`, 'shown');
@@ -496,7 +482,7 @@ function handleAddBPNow() {
 }
 
 function handleSkipToday() {
-  closeBPPopup();
+  closeWelcomePopup();
   // Mark as shown for today
   const today = new Date().toISOString().split('T')[0];
   localStorage.setItem(`welcomeShown_${today}`, 'shown');
