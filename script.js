@@ -465,9 +465,8 @@ function closeWelcomePopup() {
 
 function handleAddBPNow() {
   closeWelcomePopup();
-  // Mark as shown for today
-  const today = new Date().toISOString().split('T')[0];
-  localStorage.setItem(`welcomeShown_${today}`, 'shown');
+  // Mark welcome as shown permanently
+  localStorage.setItem("welcomeShown", "true");
   
   // Focus on the food input field to get started
   const foodInput = document.getElementById('foodInput');
@@ -483,7 +482,6 @@ function handleAddBPNow() {
 
 function handleSkipToday() {
   closeWelcomePopup();
-  // Mark as shown for today
-  const today = new Date().toISOString().split('T')[0];
-  localStorage.setItem(`welcomeShown_${today}`, 'shown');
+  // Mark welcome as shown permanently
+  localStorage.setItem("welcomeShown", "true");
 }
