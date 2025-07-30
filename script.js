@@ -421,10 +421,18 @@ function updateCharts(logs) {
 // =======================
 function checkWelcomePopup() {
   // Check if welcome popup has been shown before
-  welcomeShown = localStorage.getItem("welcomeShown") === "true";
+  const welcomeFlag = localStorage.getItem("welcomeShown");
+  console.log("Welcome flag from localStorage:", welcomeFlag);
+  
+  welcomeShown = welcomeFlag === "true";
+  console.log("Welcome shown status:", welcomeShown);
+  
   if (!welcomeShown) {
+    console.log("Showing welcome popup...");
     showWelcomePopup();
     localStorage.setItem("welcomeShown", "true");
+  } else {
+    console.log("Welcome popup already shown, skipping...");
   }
 }
 
