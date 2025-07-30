@@ -868,3 +868,22 @@ button {
   background-color: var(--primary-blue);
   transform: translateY(-1px);
 }
+
+/* BP Reminder Pulse Animation */
+.bp-reminder-pulse {
+  border-color: #ff4757 !important;
+  box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7);
+  animation: bp-pulse 2s infinite;
+}
+
+@keyframes bp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 71, 87, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
+  }
+}

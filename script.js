@@ -6,6 +6,7 @@ let favoriteFoods = [];
 let bpLineChartInstance = null;
 let timelineDotChartInstance = null;
 let bpReminderShown = false;
+let welcomeShown = false;
 
 // =======================
 // DOM READY
@@ -18,10 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
   loadFromStorage();
   setupEventListeners();
   
-  // Force popup to show for testing
-  console.log("Forcing popup to show...");
-  showBPPopup();
+  // Check if welcome popup should be shown (only once ever)
+  checkWelcomePopup();
   
+  // Check for daily BP reminder (subtle visual cue)
   checkBPReminder();
   renderAllEntries();
   updateCharts(foodEntries);
@@ -418,6 +419,15 @@ function updateCharts(logs) {
 // =======================
 // WELCOME POPUP FUNCTIONALITY
 // =======================
+function checkWelcomePopup() {
+  // Check if welcome popup has been shown before
+  welcomeShown = localStorage.getItem("welcomeShown") === "true";
+  if (!welcomeShown) {
+    showWelcomePopup();
+    localStorage.setItem("welcomeShown", "true");
+  }
+}
+
 function checkBPReminder() {
   // For testing - always show the welcome popup
   // (You can add back the localStorage check later if you want daily limits)
@@ -426,6 +436,20 @@ function checkBPReminder() {
   if (!bpReminderShown) {
     showBPPopup();
     bpReminderShown = true;
+  }
+}
+
+function showWelcomePopup() {
+  const popup = document.getElementById('welcomePopup');
+  if (popup) {
+    popup.style.display = 'block';
+  }
+}
+
+function closeWelcomePopup() {
+  const popup = document.getElementById('welcomePopup');
+  if (popup) {
+    popup.style.display = 'none';
   }
 }
 
