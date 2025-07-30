@@ -429,13 +429,20 @@ function checkWelcomePopup() {
 }
 
 function checkBPReminder() {
-  // For testing - always show the welcome popup
-  // (You can add back the localStorage check later if you want daily limits)
+  // Check if BP has been entered today
+  const today = new Date().toISOString().split('T')[0];
+  const todayEntries = foodEntries.filter(entry => entry.date === today && entry.bps);
   
-  // Show welcome popup for new users or daily greeting
-  if (!bpReminderShown) {
-    showBPPopup();
-    bpReminderShown = true;
+  // If no BP entry for today, add subtle pulsing reminder to BP input
+  if (todayEntries.length === 0) {
+    const bpInput = document.getElementById('bpsInput');
+    if (bpInput) {
+      bpInput.classList.add('bp-reminder-pulse');
+      // Remove the pulse effect when user starts typing
+      bpInput.addEventListener('input', function() {
+        this.classList.remove('bp-reminder-pulse');
+      }, { once: true });
+    }
   }
 }
 
