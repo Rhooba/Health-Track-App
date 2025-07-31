@@ -442,18 +442,27 @@ function checkWelcomePopup() {
 function checkBPReminder() {
   // Check if BP has been entered today
   const today = new Date().toISOString().split('T')[0];
+  console.log("Today's date:", today);
+  
   const todayEntries = foodEntries.filter(entry => entry.date === today);
   const todayBPEntries = todayEntries.filter(entry => entry.bps);
   
-  console.log("Today's food entries:", todayEntries.length);
-  console.log("Today's BP entries:", todayBPEntries.length);
+  console.log("All food entries:", foodEntries);
+  console.log("Today's food entries:", todayEntries);
+  console.log("Today's BP entries:", todayBPEntries);
+  console.log("Today's food entries count:", todayEntries.length);
+  console.log("Today's BP entries count:", todayBPEntries.length);
+  
+  // Check if already shown today
+  const bpReminderShownToday = localStorage.getItem(`bpReminderShown_${today}`);
+  console.log("BP reminder already shown today?", bpReminderShownToday);
   
   // Show BP popup reminder if user has made 2+ entries today AND no BP entered
   if (todayEntries.length >= 2 && todayBPEntries.length === 0) {
-    console.log("Showing BP reminder popup");
+    console.log("CONDITIONS MET: Showing BP reminder popup");
     showBPReminderPopup();
   } else {
-    console.log("Not showing BP reminder - need 2+ entries and 0 BP entries");
+    console.log("CONDITIONS NOT MET - entries:", todayEntries.length, "BP entries:", todayBPEntries.length);
   }
 }
 
