@@ -155,6 +155,9 @@ function handleAddLog() {
   updateCharts(foodEntries);
   generateAISuggestions(foodEntries);
 
+  // Check if BP reminder should be shown after adding entry
+  checkBPReminder();
+
   // Clear form inputs
   document.getElementById("foodInput").value = "";
   document.getElementById("dateInput").value = "";
