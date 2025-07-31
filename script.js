@@ -68,7 +68,7 @@ function setupEventListeners() {
   document.getElementById("filterOkayButton").addEventListener("click", () => filterEntries('okay'));
 
   // BP Reminder Popup Event Listeners
-  document.getElementById("closeBpPopup").addEventListener("click", closeWelcomePopup);
+  document.getElementById("closeBpPopup").addEventListener("click", closeBPReminderPopup);
   document.getElementById("addBpNow").addEventListener("click", handleAddBPNow);
   document.getElementById("skipToday").addEventListener("click", handleSkipToday);
 
@@ -439,18 +439,40 @@ function checkWelcomePopup() {
 function checkBPReminder() {
   // Check if BP has been entered today
   const today = new Date().toISOString().split('T')[0];
-  const todayEntries = foodEntries.filter(entry => entry.date === today && entry.bps);
+  const todayEntries = foodEntries.filter(entry => entry.date === today);
+  const todayBPEntries = todayEntries.filter(entry => entry.bps);
   
-  // If no BP entry for today, add subtle pulsing reminder to BP input
-  if (todayEntries.length === 0) {
-    const bpInput = document.getElementById('bpsInput');
-    if (bpInput) {
-      bpInput.classList.add('bp-reminder-pulse');
-      // Remove the pulse effect when user starts typing
-      bpInput.addEventListener('input', function() {
-        this.classList.remove('bp-reminder-pulse');
-      }, { once: true });
+  console.log("Today's food entries:", todayEntries.length);
+  console.log("Today's BP entries:", todayBPEntries.length);
+  
+  // Show BP popup reminder if user has made 2+ entries today AND no BP entered
+  if (todayEntries.length >= 2 && todayBPEntries.length === 0) {
+    console.log("Showing BP reminder popup");
+    showBPReminderPopup();
+  } else {
+    console.log("Not showing BP reminder - need 2+ entries and 0 BP entries");
+  }
+}
+
+function showBPReminderPopup() {
+  // Check if BP reminder was already shown today
+  const today = new Date().toISOString().split('T')[0];
+  const bpReminderShownToday = localStorage.getItem(`bpReminderShown_${today}`);
+  
+  if (!bpReminderShownToday) {
+    const popup = document.getElementById('bpReminderPopup');
+    if (popup) {
+      popup.style.display = 'block';
+      // Mark as shown for today
+      localStorage.setItem(`bpReminderShown_${today}`, 'true');
     }
+  }
+}
+
+function closeBPReminderPopup() {
+  const popup = document.getElementById('bpReminderPopup');
+  if (popup) {
+    popup.style.display = 'none';
   }
 }
 
@@ -464,15 +486,8 @@ function showWelcomePopup() {
   }
 }
 
-function closeWelcomePopup() {
-  const popup = document.getElementById('bpReminderPopup');
-  if (popup) {
-    popup.style.display = 'none';
-  }
-}
-
 function handleAddBPNow() {
-  closeWelcomePopup();
+  closeBPReminderPopup();
   // Mark welcome as shown permanently
   localStorage.setItem("welcomeShown", "true");
   
@@ -489,7 +504,7 @@ function handleAddBPNow() {
 }
 
 function handleSkipToday() {
-  closeWelcomePopup();
+  closeBPReminderPopup();
   // Mark welcome as shown permanently
   localStorage.setItem("welcomeShown", "true");
 }
