@@ -471,13 +471,22 @@ function showBPReminderPopup() {
   const today = new Date().toISOString().split('T')[0];
   const bpReminderShownToday = localStorage.getItem(`bpReminderShown_${today}`);
   
+  console.log("Checking if BP reminder popup should show...");
+  console.log("BP reminder already shown today?", bpReminderShownToday);
+  
   if (!bpReminderShownToday) {
-    const popup = document.getElementById('bpReminderPopup');
+    const popup = document.getElementById('bpReminderOnlyPopup');
+    console.log("BP reminder popup element found:", !!popup);
     if (popup) {
       popup.style.display = 'block';
+      console.log("BP reminder popup displayed!");
       // Mark as shown for today
       localStorage.setItem(`bpReminderShown_${today}`, 'true');
+    } else {
+      console.error("BP reminder popup element not found!");
     }
+  } else {
+    console.log("BP reminder already shown today, skipping...");
   }
 }
 
