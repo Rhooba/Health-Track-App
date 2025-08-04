@@ -384,6 +384,11 @@ li.sick {
   margin: 0;
   color: var(--tropic-blue);
   font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  padding-right: 10px;
 }
 
 .close-btn {
@@ -685,8 +690,21 @@ li.sick {
     margin: 0 10px;
   }
   
+  .popup-header {
+    padding: 15px 15px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  
   .popup-header h3 {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
   }
   
   .popup-body {
