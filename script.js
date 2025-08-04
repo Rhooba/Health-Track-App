@@ -72,6 +72,11 @@ function setupEventListeners() {
   document.getElementById("addBpNow").addEventListener("click", handleAddBPNow);
   document.getElementById("skipToday").addEventListener("click", handleSkipToday);
 
+  // BP Reminder Only Popup Event Listeners
+  document.getElementById("closeBpReminderOnly").addEventListener("click", closeBPReminderOnlyPopup);
+  document.getElementById("addBpNowReminder").addEventListener("click", handleBPReminderGotIt);
+  document.getElementById("skipBpToday").addEventListener("click", handleSkipBPToday);
+
   document.querySelectorAll(".collapsible").forEach(button => {
     button.addEventListener("click", () => {
       button.classList.toggle("active");
@@ -526,6 +531,25 @@ function handleAddBPNow() {
 
 function handleSkipToday() {
   closeBPReminderPopup();
+  // Mark welcome as shown permanently
+  localStorage.setItem("welcomeShown", "true");
+}
+
+function closeBPReminderOnlyPopup() {
+  const popup = document.getElementById('bpReminderOnlyPopup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+}
+
+function handleBPReminderGotIt() {
+  closeBPReminderOnlyPopup();
+  // Mark welcome as shown permanently
+  localStorage.setItem("welcomeShown", "true");
+}
+
+function handleSkipBPToday() {
+  closeBPReminderOnlyPopup();
   // Mark welcome as shown permanently
   localStorage.setItem("welcomeShown", "true");
 }
