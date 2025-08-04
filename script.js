@@ -445,53 +445,56 @@ function checkWelcomePopup() {
 }
 
 function checkBPReminder() {
-  // Check if BP has been entered today
-  const today = new Date().toISOString().split('T')[0];
-  console.log("Today's date:", today);
+  // Get the date from the most recent entry (the one just added)
+  if (foodEntries.length === 0) return;
   
-  const todayEntries = foodEntries.filter(entry => entry.date === today);
-  const todayBPEntries = todayEntries.filter(entry => entry.bps);
+  const lastEntry = foodEntries[foodEntries.length - 1];
+  const entryDate = lastEntry.date;
+  
+  console.log("Checking BP reminder for date:", entryDate);
+  
+  const entriesForDate = foodEntries.filter(entry => entry.date === entryDate);
+  const bpEntriesForDate = entriesForDate.filter(entry => entry.bps);
   
   console.log("All food entries:", foodEntries);
-  console.log("Today's food entries:", todayEntries);
-  console.log("Today's BP entries:", todayBPEntries);
-  console.log("Today's food entries count:", todayEntries.length);
-  console.log("Today's BP entries count:", todayBPEntries.length);
+  console.log(`Entries for ${entryDate}:`, entriesForDate);
+  console.log(`BP entries for ${entryDate}:`, bpEntriesForDate);
+  console.log(`Food entries count for ${entryDate}:`, entriesForDate.length);
+  console.log(`BP entries count for ${entryDate}:`, bpEntriesForDate.length);
   
-  // Check if already shown today
-  const bpReminderShownToday = localStorage.getItem(`bpReminderShown_${today}`);
-  console.log("BP reminder already shown today?", bpReminderShownToday);
+  // Check if already shown for this specific date
+  const bpReminderShownForDate = localStorage.getItem(`bpReminderShown_${entryDate}`);
+  console.log(`BP reminder already shown for ${entryDate}?`, bpReminderShownForDate);
   
-  // Show BP popup reminder if user has made 2+ entries today AND no BP entered
-  if (todayEntries.length >= 2 && todayBPEntries.length === 0) {
-    console.log("CONDITIONS MET: Showing BP reminder popup");
-    showBPReminderPopup();
+  // Show BP popup reminder if user has made 2+ entries for this date AND no BP entered
+  if (entriesForDate.length >= 2 && bpEntriesForDate.length === 0) {
+    console.log("CONDITIONS MET: Showing BP reminder popup for", entryDate);
+    showBPReminderPopup(entryDate);
   } else {
-    console.log("CONDITIONS NOT MET - entries:", todayEntries.length, "BP entries:", todayBPEntries.length);
+    console.log("CONDITIONS NOT MET - entries:", entriesForDate.length, "BP entries:", bpEntriesForDate.length);
   }
 }
 
-function showBPReminderPopup() {
+function showBPReminderPopup(date) {
   // Check if BP reminder was already shown today
-  const today = new Date().toISOString().split('T')[0];
-  const bpReminderShownToday = localStorage.getItem(`bpReminderShown_${today}`);
+  const bpReminderShownForDate = localStorage.getItem(`bpReminderShown_${date}`);
   
   console.log("Checking if BP reminder popup should show...");
-  console.log("BP reminder already shown today?", bpReminderShownToday);
+  console.log(`BP reminder already shown for ${date}?`, bpReminderShownForDate);
   
-  if (!bpReminderShownToday) {
+  if (!bpReminderShownForDate) {
     const popup = document.getElementById('bpReminderOnlyPopup');
     console.log("BP reminder popup element found:", !!popup);
     if (popup) {
       popup.style.display = 'block';
       console.log("BP reminder popup displayed!");
       // Mark as shown for today
-      localStorage.setItem(`bpReminderShown_${today}`, 'true');
+      localStorage.setItem(`bpReminderShown_${date}`, 'true');
     } else {
       console.error("BP reminder popup element not found!");
     }
   } else {
-    console.log("BP reminder already shown today, skipping...");
+    console.log("BP reminder already shown for this date, skipping...");
   }
 }
 
