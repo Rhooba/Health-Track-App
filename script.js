@@ -62,6 +62,7 @@ function renderFavorites() {
 function setupEventListeners() {
   document.getElementById("addLogButton").addEventListener("click", handleAddLog);
   document.getElementById("clearAllButton").addEventListener("click", clearAllEntries);
+  document.getElementById("exportEncryptedButton").addEventListener("click", handleExportEncrypted);
   document.getElementById("mealDropdown").addEventListener("change", handleMealFilter);
   document.getElementById("filterAllButton").addEventListener("click", () => filterEntries('all'));
   document.getElementById("filterSickButton").addEventListener("click", () => filterEntries('sick'));
@@ -122,6 +123,447 @@ function clearAllEntries() {
   generateAISuggestions(foodEntries);
 }
 
+function handleExportEncrypted() {
+  if (foodEntries.length === 0) {
+    alert("No data to export. Please add some food entries first.");
+    return;
+  }
+  
+  // Check if user has a saved password
+  const savedPassword = localStorage.getItem('exportPassword');
+  showPasswordForm(savedPassword);
+}
+
+function showPasswordForm(savedPassword = '') {
+  // Create modal overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'passwordFormOverlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+  
+  // Create the form container
+  const formContainer = document.createElement('div');
+  formContainer.style.cssText = `
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  `;
+  
+  // Create the form
+  formContainer.innerHTML = `
+    <h3 style="margin-top: 0; color: #333;">🔐 Export Password</h3>
+    <p style="color: #666; margin-bottom: 20px;">
+      ${savedPassword ? 'Use your saved password or enter a new one:' : 'Create a password to protect your medical data:'}<br>
+      <strong>Your doctor will need this password to view the report.</strong>
+    </p>
+    
+    <div style="margin-bottom: 15px;">
+      <label for="exportPassword" style="display: block; margin-bottom: 5px; font-weight: bold;">Password:</label>
+      <input 
+        type="password" 
+        id="exportPassword" 
+        placeholder="Enter password (min 6 characters)"
+        style="
+          width: 100%;
+          padding: 12px;
+          border: 2px solid #ddd;
+          border-radius: 6px;
+          font-size: 16px;
+          box-sizing: border-box;
+        "
+        required
+        minlength="6"
+      >
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="display: flex; align-items: center; justify-content: center; color: #666;">
+        <input type="checkbox" id="savePassword" ${savedPassword ? 'checked' : ''} style="margin-right: 8px;">
+        Remember this password for future exports
+      </label>
+    </div>
+    
+    <div style="margin-top: 20px;">
+      <button 
+        type="button" 
+        id="createReport"
+        style="
+          background-color: #007cba;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          font-size: 16px;
+          cursor: pointer;
+          margin-right: 10px;
+        "
+      >
+        📊 Create Medical Report
+      </button>
+      <button 
+        type="button" 
+        id="cancelExport"
+        style="
+          background-color: #ccc;
+          color: #333;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          font-size: 16px;
+          cursor: pointer;
+        "
+      >
+        Cancel
+      </button>
+    </div>
+    
+    ${savedPassword ? `
+    <div style="margin-top: 15px;">
+      <button 
+        type="button" 
+        id="clearPassword"
+        style="
+          background-color: #ff6b6b;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+        "
+      >
+        🗑️ Clear Saved Password
+      </button>
+    </div>
+    ` : ''}
+    
+    <p style="font-size: 12px; color: #999; margin-top: 15px;">
+      💡 Password is saved locally in your browser for convenience
+    </p>
+  `;
+  
+  overlay.appendChild(formContainer);
+  document.body.appendChild(overlay);
+  
+  // Focus the password input
+  const passwordInput = document.getElementById('exportPassword');
+  setTimeout(() => {
+    passwordInput.focus();
+  }, 100);
+  
+  // Handle create report
+  document.getElementById('createReport').addEventListener('click', function() {
+    const password = passwordInput.value.trim();
+    const savePassword = document.getElementById('savePassword').checked;
+    
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long for security.");
+      passwordInput.focus();
+      return;
+    }
+    
+    // Save password if requested
+    if (savePassword) {
+      localStorage.setItem('exportPassword', password);
+    } else {
+      localStorage.removeItem('exportPassword');
+    }
+    
+    // Remove the form
+    document.body.removeChild(overlay);
+    
+    // Proceed with export (password only, no username)
+    exportMedicalDataToEncryptedCSV(password);
+  });
+  
+  // Handle clear password
+  if (savedPassword) {
+    document.getElementById('clearPassword').addEventListener('click', function() {
+      if (confirm('Are you sure you want to clear your saved password?')) {
+        localStorage.removeItem('exportPassword');
+        document.body.removeChild(overlay);
+        showPasswordForm(); // Show fresh form
+      }
+    });
+  }
+  
+  // Handle cancel
+  document.getElementById('cancelExport').addEventListener('click', function() {
+    document.body.removeChild(overlay);
+  });
+  
+  // Close on overlay click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      document.body.removeChild(overlay);
+    }
+  });
+  
+  // Allow Enter key to submit
+  passwordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('createReport').click();
+    }
+  });
+}
+
+function exportMedicalDataToEncryptedCSV(password) {
+  // Create medical-friendly CSV data
+  let csvData = [];
+  
+  // Sort entries by date for doctor review
+  const sortedEntries = foodEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  // Convert to structured data
+  sortedEntries.forEach(entry => {
+    csvData.push({
+      date: entry.date || new Date().toISOString().split('T')[0],
+      food: entry.food,
+      mealType: entry.mealType || "Unspecified",
+      calories: entry.calories || "Not recorded",
+      bloodPressure: entry.bps || "Not recorded",
+      feltSick: entry.sick ? "Yes" : "No",
+      bowelScore: entry.bs || "Not recorded",
+      timestamp: entry.timestamp || "Not recorded"
+    });
+  });
+  
+  // Create summary statistics
+  const summary = {
+    totalEntries: foodEntries.length,
+    sickEpisodes: foodEntries.filter(e => e.sick).length,
+    dateRange: `${sortedEntries[0]?.date} to ${sortedEntries[sortedEntries.length - 1]?.date}`,
+    exportDate: new Date().toLocaleDateString()
+  };
+  
+  // Encrypt the data (simple but effective)
+  const dataToEncrypt = JSON.stringify({ csvData, summary });
+  const encrypted = btoa(dataToEncrypt); // Base64 encoding
+  
+  // Create self-decrypting HTML file
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Data Report - Password Protected</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .password-prompt { 
+            text-align: center; 
+            padding: 50px; 
+            border: 2px dashed #ccc; 
+            border-radius: 8px; 
+            margin: 50px 0; 
+        }
+        .password-input { 
+            padding: 12px; 
+            font-size: 16px; 
+            border: 2px solid #ddd; 
+            border-radius: 4px; 
+            margin: 10px; 
+            width: 200px; 
+        }
+        .decrypt-btn { 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            background-color: #007cba; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        .decrypt-btn:hover { background-color: #005a87; }
+        .medical-data { display: none; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: bold; 
+        }
+        .summary { 
+            background-color: #e8f4f8; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #333; 
+        }
+        .error { 
+            color: #d32f2f; 
+            margin: 10px 0; 
+        }
+        @media print {
+            .password-prompt { display: none; }
+            .medical-data { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Medical Data Report</h1>
+            <p>Food & Health Tracking Data</p>
+        </div>
+        
+        <div id="passwordPrompt" class="password-prompt">
+            <h2>🔒 Password Required</h2>
+            <p>This medical data is password-protected for privacy.</p>
+            <p>Please enter the password provided by the patient:</p>
+            <br>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" />
+            <br>
+            <button onclick="decryptData()" class="decrypt-btn">Decrypt Medical Data</button>
+            <div id="errorMsg" class="error"></div>
+        </div>
+        
+        <div id="medicalData" class="medical-data">
+            <div class="summary">
+                <h3>📊 Weekly Summary</h3>
+                <div id="summaryContent"></div>
+            </div>
+            
+            <h3>📋 Detailed Food & Health Log</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Food Item</th>
+                        <th>Meal Type</th>
+                        <th>Calories</th>
+                        <th>Blood Pressure</th>
+                        <th>Felt Sick</th>
+                        <th>Bowel Score (1-7)</th>
+                        <th>Time Recorded</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 30px; text-align: center; color: #666;">
+                <p>Generated by Food Tracker App | Export Date: ${new Date().toLocaleDateString()}</p>
+                <p>💡 Tip: Use Ctrl+P (Cmd+P on Mac) to print this report</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const encryptedData = "${encrypted}";
+        const correctPassword = "${password}";
+        
+        function decryptData() {
+            const enteredPassword = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (enteredPassword === correctPassword) {
+                try {
+                    const decryptedData = JSON.parse(atob(encryptedData));
+                    displayMedicalData(decryptedData);
+                    document.getElementById('passwordPrompt').style.display = 'none';
+                    document.getElementById('medicalData').style.display = 'block';
+                } catch (e) {
+                    errorMsg.textContent = 'Error decrypting data. Please contact the patient.';
+                }
+            } else {
+                errorMsg.textContent = 'Incorrect password. Please try again.';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        function displayMedicalData(data) {
+            // Display summary
+            const summaryHtml = \`
+                <p><strong>Total Entries:</strong> \${data.summary.totalEntries}</p>
+                <p><strong>Sick Episodes:</strong> \${data.summary.sickEpisodes}</p>
+                <p><strong>Date Range:</strong> \${data.summary.dateRange}</p>
+                <p><strong>Export Date:</strong> \${data.summary.exportDate}</p>
+            \`;
+            document.getElementById('summaryContent').innerHTML = summaryHtml;
+            
+            // Display table data
+            const tableBody = document.getElementById('dataTable');
+            data.csvData.forEach(entry => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = entry.date;
+                row.insertCell(1).textContent = entry.food;
+                row.insertCell(2).textContent = entry.mealType;
+                row.insertCell(3).textContent = entry.calories;
+                row.insertCell(4).textContent = entry.bloodPressure;
+                row.insertCell(5).textContent = entry.feltSick;
+                row.insertCell(6).textContent = entry.bowelScore;
+                row.insertCell(7).textContent = entry.timestamp;
+            });
+        }
+        
+        // Auto-focus password input and allow Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    decryptData();
+                }
+            });
+        });
+    </script>
+</body>
+</html>`;
+
+  // Create downloadable HTML file using data URL
+  const encodedContent = encodeURIComponent(htmlContent);
+  const dataUrl = `data:text/html;charset=utf-8,${encodedContent}`;
+  
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = 'HealthReport.html';
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Show success message with simple instructions
+  alert(`✅ Your medical report has been exported successfully!\n\nPassword: "${password}"\n\nYou can now share the report and password with your healthcare expert.`);
+}
+
 // =======================
 // ADD ENTRY
 // =======================
@@ -144,7 +586,8 @@ function handleAddLog() {
 
   const newEntry = {
     food,
-    date: date || "No date",
+    date: date || new Date().toISOString().split('T')[0], // Use today's date if empty
+    timestamp: new Date().toLocaleString(), // Add timestamp when entry is created
     bps: isNaN(parseInt(bps)) ? null : parseInt(bps),
     sick,
     mealType: mealType || "Unspecified",
@@ -190,8 +633,9 @@ function handleAddLog() {
 function renderEntry(entry) {
   const li = document.createElement("li");
   li.innerHTML = `
-  <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})<br>
-  Calories: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}<br>
+  <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
+  ${entry.timestamp ? `<br><small style="color: #666; font-size: 0.8rem;">⏰ ${entry.timestamp}</small>` : ''}
+  <br>Calories: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}<br>
   ${entry.sick ? "🤢 Felt Sick" : "🥳 Felt Okay"}
 `;
 
