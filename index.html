@@ -83,28 +83,21 @@
     <canvas id="bpLineChart" width="400" height="200"></canvas>
   </div>
 
-  <!-- Timeline Dot Chart Section -->
-  <button class="collapsible">± Timeline of Food & BP</button>
-  <div class="content graph-content" style="position: relative;">
-    <div id="mealDropdownWrapper" style="position: absolute; top: 10px; right: 20px; z-index: 10;">
-      <label for="mealDropdown" style="font-size: 0.8rem;">Filter by Meal</label><br>
-      <select id="mealDropdown">
-        <option value="all">All</option>
-        <option value="Breakfast">Breakfast</option>
-        <option value="Lunch">Lunch</option>
-        <option value="Dinner">Dinner</option>
-        <option value="Snacks">Snack</option>
-        <option value="Dessert">Dessert</option>
-      </select>
+  <!-- Daily Food Combination Chart -->
+  <div class="chart-section">
+    <button class="collapsible">📊 Daily Food Combinations</button>
+    <div class="content">
+      <p>Track your W/S/P food combinations throughout the day. Red bars indicate unsafe S+P combinations.</p>
+      <canvas id="dailyCombinationChart" width="400" height="200"></canvas>
     </div>
-    <canvas id="timelineDotChart" width="1228" height="300"></canvas>
   </div>
 
-  <!-- AI Suggestion Section - Moved to end for better flow -->
-  <h2>AI Health Insights</h2>
-  <button class="collapsible">± AI Suggestions 🤖</button>
-  <div class="content">
-    <div id="aiSuggestions"></div>
+  <!-- AI Health Insights -->
+  <div class="chart-section">
+    <button class="collapsible">🤖 AI Health Insights</button>
+    <div class="content">
+      <div id="aiSuggestions"></div>
+    </div>
   </div>
 </div>
 </body>

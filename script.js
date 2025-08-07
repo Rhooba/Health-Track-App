@@ -4,16 +4,143 @@
 let foodEntries = [];
 let favoriteFoods = [];
 let bpLineChartInstance = null;
-let timelineDotChartInstance = null;
+let dailyCombinationChartInstance = null;
 let bpReminderShown = false;
 let welcomeShown = false;
+
+// =======================
+// FOOD CATEGORIZATION SYSTEM
+// Based on "The Eat Out Guide" from Rachelstea.com
+// W + S = OK, W + P = OK, S + P = NO WAY
+// =======================
+
+// W Foods (Neutral/Safe with both S and P)
+const W_FOODS = [
+  'artichoke', 'asparagus', 'brussels sprouts', 'cabbage', 'cauliflower',
+  'celery', 'cilantro', 'eggplant', 'green beans', 'leafy greens', 'lettuce',
+  'mayonnaise', 'mushroom', 'green peppers', 'okra', 'olive oil', 'onions',
+  'seasonings', 'tomato', 'vegetable oil', 'vinegar', 'wheat grass',
+  'yellow mustard', 'zucchini', 'broccoli', 'cucumber', 'herbs', 'spices',
+  'bell peppers', 'radish', 'spinach', 'kale', 'arugula', 'watercress',
+  'parsley', 'basil', 'oregano', 'thyme', 'rosemary', 'sage', 'dill',
+  'chives', 'scallions', 'leeks', 'garlic', 'ginger', 'turmeric'
+];
+
+// S Foods (Starches/Carbohydrates)
+const S_FOODS = [
+  'acorn squash', 'banana', 'beets', 'cornbread', 'lemon', 'lima beans',
+  'oatmeal', 'tortillas', 'bread', 'coconut milk', 'fruits', 'lime',
+  'orange peppers', 'turnips', 'butternut squash', 'dates', 'grapes',
+  'pasta', 'rice', 'vegetable broth', 'avocado', 'dried fruit', 'honey',
+  'pickle relish', 'rice milk', 'water chestnuts', 'carrots', 'potato chips',
+  'sauerkraut', 'wine', 'chia', 'chocolate', 'legumes', 'pretzels', 'sugar',
+  'yams', 'potatoes', 'sweet potatoes', 'corn', 'quinoa', 'oats', 'barley',
+  'wheat', 'rye', 'millet', 'buckwheat', 'amaranth', 'crackers', 'cereal',
+  'muffins', 'bagels', 'pancakes', 'waffles', 'toast', 'noodles', 'couscous',
+  'bulgur', 'polenta', 'risotto', 'pilaf', 'beans', 'lentils', 'chickpeas',
+  'black beans', 'kidney beans', 'pinto beans', 'navy beans', 'split peas',
+  'apple', 'orange', 'pear', 'peach', 'plum', 'cherry', 'strawberry',
+  'blueberry', 'raspberry', 'blackberry', 'cranberry', 'pineapple', 'mango',
+  'papaya', 'kiwi', 'cantaloupe', 'watermelon', 'honeydew', 'grapefruit'
+];
+
+// P Foods (Proteins)
+const P_FOODS = [
+  'eggs', 'fish', 'pork', 'beef', 'cheese', 'meat broth', 'chicken',
+  'milk products', 'venison', 'turkey', 'lamb', 'duck', 'goose', 'salmon',
+  'tuna', 'cod', 'halibut', 'trout', 'sardines', 'anchovies', 'shrimp',
+  'crab', 'lobster', 'scallops', 'mussels', 'clams', 'oysters', 'squid',
+  'milk', 'yogurt', 'cream', 'butter', 'cottage cheese', 'ricotta',
+  'mozzarella', 'cheddar', 'swiss', 'parmesan', 'feta', 'goat cheese',
+  'cream cheese', 'sour cream', 'whey protein', 'casein', 'protein powder',
+  'tofu', 'tempeh', 'seitan', 'nuts', 'almonds', 'walnuts', 'pecans',
+  'cashews', 'pistachios', 'brazil nuts', 'hazelnuts', 'macadamia nuts',
+  'peanuts', 'peanut butter', 'almond butter', 'tahini', 'seeds',
+  'sunflower seeds', 'pumpkin seeds', 'sesame seeds', 'flax seeds'
+];
+
+// T Foods (Trigger Foods)
+const T_FOODS = [
+'yogurt', 'milk(all)', 'nut butter', 'seed butter', 'cottage cheese', 'sour cream',
+'boost shake', 'ensure shake', 'quinoa', 'carbonated drinks(discouraged)'
+];
+
+// Function to categorize a food item
+function categorizeFoodItem(foodName) {
+  const food = foodName.toLowerCase().trim();
+  
+  // Check each category
+  if (W_FOODS.some(wFood => food.includes(wFood) || wFood.includes(food))) {
+    return 'W';
+  }
+  if (S_FOODS.some(sFood => food.includes(sFood) || sFood.includes(food))) {
+    return 'S';
+  }
+  if (P_FOODS.some(pFood => food.includes(pFood) || pFood.includes(food))) {
+    return 'P';
+  }
+  
+  // Default to W (neutral) if not found
+  return 'W';
+}
+
+// Function to check if food combinations are safe
+function checkFoodCombination(categories) {
+  const hasS = categories.includes('S');
+  const hasP = categories.includes('P');
+  
+  // S + P = NO WAY (unsafe combination)
+  if (hasS && hasP) {
+    return { safe: false, warning: 'S + P combination detected!' };
+  }
+  
+  // W + S = OK, W + P = OK, W only = OK
+  return { safe: true, warning: null };
+}
+// =======================
+// HELPER FUNCTIONS
+// =======================
+
+// Helper function for time of day on category bar chart
+function getTimeOfDay(dateStr) {
+  // Accepts the timestamps and returns string "morning", "afternoon", "evening", "night"
+  const hour = new Date(dateStr).getHours();
+  if (hour < 12) return "Morning";
+  if (hour < 17) return "Afternoon";
+  return "Evening";
+}
+
+// Group entries by period and the category
+function groupEntriesByPeriod(entries) {
+  const periods = { Morning: {}, Afternoon: {}, Evening: {} };
+  for (let entry of entries) {
+    const when = getTimeOfDay(entry.timestamp) || entry.date;
+    const cat = categorizeFoodItem(entry.food);
+    if (!periods[when][cat]) periods[when][cat] = [];
+    periods[when][cat].push(entry);
+  }
+  return periods;
+}
+
+const periods = ["Morning", "Afternoon", "Evening"];
+const byPeriod = groupEntriesByPeriod(foodEntries);
+
+const datasets = ["W", "S", "P"].map(cat => ({
+  label: `${cat} Foods`, 
+  backgroundColor: cat === "W" ? "#FFD700" : cat === "S" ? "#FFB6C1" : "#FF69B4",
+  data: periods.map(period => {
+    const entries = byPeriod[period][cat] || [];
+    // dont count but store the whole array
+    return { count: entries.length, entries };
+    })
+}));
 
 // =======================
 // DOM READY
 // =======================
 document.addEventListener("DOMContentLoaded", () => {
   // Set today's date as default
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString();
   document.getElementById("dateInput").value = today;
   
   loadFromStorage();
@@ -63,7 +190,6 @@ function setupEventListeners() {
   document.getElementById("addLogButton").addEventListener("click", handleAddLog);
   document.getElementById("clearAllButton").addEventListener("click", clearAllEntries);
   document.getElementById("exportEncryptedButton").addEventListener("click", handleExportEncrypted);
-  document.getElementById("mealDropdown").addEventListener("change", handleMealFilter);
   document.getElementById("filterAllButton").addEventListener("click", () => filterEntries('all'));
   document.getElementById("filterSickButton").addEventListener("click", () => filterEntries('sick'));
   document.getElementById("filterOkayButton").addEventListener("click", () => filterEntries('okay'));
@@ -85,16 +211,9 @@ function setupEventListeners() {
       if (content) {
         const isExpanded = content.style.display === "none";
         content.style.display = isExpanded ? "block" : "none";
-        if (isExpanded && foodEntries.length > 0) updateCharts(foodEntries);
       }
     });
   });
-}
-
-function handleMealFilter() {
-  const selected = this.value;
-  const filtered = selected === "all" ? foodEntries : foodEntries.filter(e => e.mealType === selected);
-  updateCharts(filtered);
 }
 
 function filterEntries(filter) {
@@ -331,7 +450,7 @@ function exportMedicalDataToEncryptedCSV(password) {
   // Convert to structured data
   sortedEntries.forEach(entry => {
     csvData.push({
-      date: entry.date || new Date().toISOString().split('T')[0],
+      date: entry.date || new Date().toLocaleDateString(), // Use locale format to match chart filtering
       food: entry.food,
       mealType: entry.mealType || "Unspecified",
       calories: entry.calories || "Not recorded",
@@ -586,7 +705,7 @@ function handleAddLog() {
 
   const newEntry = {
     food,
-    date: date || new Date().toISOString().split('T')[0], // Use today's date if empty
+    date: date ? new Date(date + 'T00:00:00').toLocaleDateString() : new Date().toLocaleDateString(), // Fix timezone offset
     timestamp: new Date().toLocaleString(), // Add timestamp when entry is created
     bps: isNaN(parseInt(bps)) ? null : parseInt(bps),
     sick,
@@ -594,6 +713,16 @@ function handleAddLog() {
     calories: calories || "N/A",
     bs: bsValue
   };
+
+  // Check food combination safety
+  const categories = [categorizeFoodItem(newEntry.food)];
+  if (newEntry.mealType) {
+    categories.push(categorizeFoodItem(newEntry.mealType));
+  }
+  const safetyCheck = checkFoodCombination(categories);
+  if (!safetyCheck.safe) {
+    alert(`Warning: ${safetyCheck.warning}`);
+  }
 
   foodEntries.push(newEntry);
   localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
@@ -736,14 +865,16 @@ function generateAISuggestions(entries) {
 // UPDATE CHARTS
 // =======================
 function updateCharts(logs) {
+  console.log("🔍 updateCharts called with logs:", logs);
+  
   if (!logs || logs.length === 0) {
+    console.log("❌ No logs provided, destroying charts");
     if (bpLineChartInstance) bpLineChartInstance.destroy();
-    if (timelineDotChartInstance) timelineDotChartInstance.destroy();
+    if (dailyCombinationChartInstance) dailyCombinationChartInstance.destroy();
     return;
   }
 
   const bpCtx = document.getElementById("bpLineChart")?.getContext("2d");
-  const dotCtx = document.getElementById("timelineDotChart")?.getContext("2d");
 
   const bpData = logs
   .filter(e => e.bps !== null && !isNaN(e.bps))
@@ -773,99 +904,181 @@ function updateCharts(logs) {
           x: { type: "time", time: { unit: "day" }, title: { display: true, text: "Date" }},
           y: { title: { display: true, text: "Systolic BP" }}
         },
-        plugins: { title: { display: true, text: "Blood Pressure Trend" }}
+        plugins: { title: { display: true, text: "Blood Pressure Trend" }},
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2
       }
     });
   }
 
-  const mealColors = {
-    Breakfast: '#729885',
-    Lunch: '#087E8B',
-    Dinner: '#2C2C2C',
-    Snacks: '#E5DED2',
-    Dessert: '#E7B9B4'
-  };
+  // Create Daily Food Combination Chart
+  const combinationCtx = document.getElementById("dailyCombinationChart")?.getContext("2d");
 
-  const dotData = logs.map(entry => ({
-    x: entry.date,
-    y: entry.sick ? 1 + (Math.random() - 0.5) * 0.8 : 2 + (Math.random() - 0.5) * 0.8, // Strong jitter
-    food: entry.food,
-    sick: entry.sick,
-    mealType: entry.mealType || "Unspecified"
-  }));
-
-  if (timelineDotChartInstance) timelineDotChartInstance.destroy();
-  if (dotCtx) {
-    timelineDotChartInstance = new Chart(dotCtx, {
-      type: "scatter",
+  if (combinationCtx) {
+    if (dailyCombinationChartInstance) dailyCombinationChartInstance.destroy();
+    
+    // Get today's entries only
+    const today = new Date().toLocaleDateString();
+    const todaysEntries = logs.filter(entry => entry.date === today);
+    
+    // Debug logging
+    console.log("Today's date:", today);
+    console.log("All logs:", logs);
+    console.log("Today's entries:", todaysEntries);
+    
+    // Debug each entry's date format
+    logs.forEach((entry, index) => {
+      console.log(`Entry ${index}: "${entry.food}" - Date: "${entry.date}" (Type: ${typeof entry.date})`);
+      console.log(`  Does "${entry.date}" === "${today}"?`, entry.date === today);
+    });
+    
+    // Group entries by time period and track individual foods
+    const timeData = {
+      morning: { W: [], S: [], P: [], conflicts: [] },
+      afternoon: { W: [], S: [], P: [], conflicts: [] },
+      evening: { W: [], S: [], P: [], conflicts: [] }
+    };
+    
+    // Map meal types to time periods
+    const mealToTime = {
+      'Breakfast': 'morning',
+      'Lunch': 'afternoon', 
+      'Dinner': 'evening',
+      'Snacks': 'afternoon',
+      'Dessert': 'evening'
+    };
+    
+    // Process today's entries
+    todaysEntries.forEach(entry => {
+      const category = categorizeFoodItem(entry.food);
+      const timePeriod = mealToTime[entry.mealType] || 'afternoon';
+      
+      // Store food details for tooltips
+      const foodData = {
+        name: entry.food,
+        timestamp: entry.timestamp || 'No time recorded',
+        sick: entry.sick,
+        mealType: entry.mealType
+      };
+      
+      timeData[timePeriod][category].push(foodData);
+    });
+    
+    // Check for S+P conflicts in each time period
+    Object.keys(timeData).forEach(period => {
+      if (timeData[period].S.length > 0 && timeData[period].P.length > 0) {
+        timeData[period].conflicts = [...timeData[period].S, ...timeData[period].P];
+      }
+    });
+    
+    // Create datasets for each food category
+    const datasets = [
+      {
+        label: "W Foods (Neutral)",
+        data: [timeData.morning.W.length, timeData.afternoon.W.length, timeData.evening.W.length],
+        backgroundColor: "#729885",
+        borderColor: "#729885",
+        borderWidth: 1,
+        foodDetails: [timeData.morning.W, timeData.afternoon.W, timeData.evening.W]
+      },
+      {
+        label: "S Foods (Starches)",
+        data: [timeData.morning.S.length, timeData.afternoon.S.length, timeData.evening.S.length],
+        backgroundColor: "#087E8B", 
+        borderColor: "#087E8B",
+        borderWidth: 1,
+        foodDetails: [timeData.morning.S, timeData.afternoon.S, timeData.evening.S]
+      },
+      {
+        label: "P Foods (Proteins)",
+        data: [timeData.morning.P.length, timeData.afternoon.P.length, timeData.evening.P.length],
+        backgroundColor: "#2C2C2C",
+        borderColor: "#2C2C2C", 
+        borderWidth: 1,
+        foodDetails: [timeData.morning.P, timeData.afternoon.P, timeData.evening.P]
+      }
+    ];
+    
+    // Add conflict overlay if needed
+    const conflictData = [timeData.morning.conflicts.length, timeData.afternoon.conflicts.length, timeData.evening.conflicts.length];
+    
+    if (conflictData.some(count => count > 0)) {
+      datasets.push({
+        label: "⚠️ S+P Conflicts",
+        data: conflictData,
+        backgroundColor: "rgba(255, 0, 0, 0.3)",
+        borderColor: "#FF0000",
+        borderWidth: 2,
+        type: 'bar',
+        foodDetails: [timeData.morning.conflicts, timeData.afternoon.conflicts, timeData.evening.conflicts]
+      });
+    }
+    
+    dailyCombinationChartInstance = new Chart(combinationCtx, {
+      type: "bar",
       data: {
-        datasets: [{
-          label: "Food Reactions",
-          data: dotData,
-          pointRadius: 8,
-          backgroundColor: dotData.map(d => mealColors[d.mealType] || "#808080"),
-          borderColor: dotData.map(d => d.sick ? '#FF1493' : 'rgba(0, 0, 0, 0.1)'),
-          borderWidth: dotData.map(d => d.sick ? 3 : 1)
-        }]
+        labels: ["Morning", "Afternoon", "Evening"],
+        datasets: datasets
       },
       options: {
-        parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-        animation: { duration: 1000, easing: "easeOutQuart" },
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
         scales: {
-          x: { type: "time", time: { unit: "day" }, title: { display: true, text: "Date" }},
-          y: {
-            min: 0.5, max: 2.5,
-            ticks: {
-              stepSize: 1,
-              callback: val => {
-                if (val >= 0.8 && val < 1.2) return "🤢 Sick";
-                if (val >= 1.8 && val < 2.2) return "🥳 Okay";
-                return "";
-              }
-            },
-            title: { display: true, text: "Reaction" }
-          }
+          x: { title: { display: true, text: "Time of Day" }},
+          y: { beginAtZero: true, title: { display: true, text: "Number of Foods" }, max: 10 }
         },
         plugins: {
-          legend: {
-            display: true,
-            position: "bottom",
-            labels: {
-              generateLabels: () =>
-                Object.entries(mealColors).map(([type, color]) => ({
-                  text: type, fillStyle: color, hidden: false
-                })),
-              padding: 15,
-              usePointStyle: true,
-              font: {
-                size: 12
-              }
-            }
-          },
-          title: { display: true, text: "Sick vs Okay Timeline" },
+          legend: { display: true, position: "top", labels: { padding: 20, usePointStyle: true }},
+          title: { display: true, text: `Daily Food Combinations - ${today}`, font: { size: 16 }},
           tooltip: {
             callbacks: {
-              label: ctx => {
-                const e = ctx.raw;
-                if (!e || !e.x || !e.food) return "Unknown";
-                return `${e.x}: ${e.food} → ${e.sick ? "🤢 Sick" : "🥳 Okay"}`;
+              title: (context) => {
+                const timePeriod = context[0].label;
+                return `${timePeriod} - ${today}`;
+              },
+              label: (context) => {
+                const datasetIndex = context.datasetIndex;
+                const pointIndex = context.dataIndex;
+                const dataset = context.chart.data.datasets[datasetIndex];
+                const foodDetails = dataset.foodDetails[pointIndex];
+                
+                if (!foodDetails || foodDetails.length === 0) {
+                  return `${dataset.label}: No foods logged`;
+                }
+                
+                return `${dataset.label}: ${foodDetails.length} food${foodDetails.length === 1 ? '' : 's'}`;
+              },
+              afterLabel: (context) => {
+                const datasetIndex = context.datasetIndex;
+                const pointIndex = context.dataIndex;
+                const dataset = context.chart.data.datasets[datasetIndex];
+                const foodDetails = dataset.foodDetails[pointIndex];
+                
+                if (!foodDetails || foodDetails.length === 0) return null;
+                
+                const foodList = foodDetails.map(food => {
+                  let timeStr = '';
+                  if (food.timestamp && food.timestamp !== 'No time recorded') {
+                    try {
+                      timeStr = new Date(food.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                    } catch (e) {
+                      timeStr = food.timestamp;
+                    }
+                  }
+                  return `• ${food.name} ${timeStr ? `(${timeStr})` : ''} ${food.sick ? '🤢' : '🥳'}`;
+                }).join('\n');
+                
+                return foodList;
               }
             }
           }
         },
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            bottom: 40
-          }
-        }
+        layout: { padding: { bottom: 20 }}
       }
     });
   }
-
-  // Ensure AI suggestions are always updated after charts
-  generateAISuggestions(logs);
 }
 
 // =======================
@@ -876,13 +1089,15 @@ function checkWelcomePopup() {
   const welcomeFlag = localStorage.getItem("welcomeShown");
   console.log("Welcome flag from localStorage:", welcomeFlag);
   
-  welcomeShown = welcomeFlag === "true";
-  console.log("Welcome shown status:", welcomeShown);
+  // TEMPORARILY FORCE POPUP TO SHOW FOR DEBUGGING
+  welcomeShown = false; // Force to false to always show popup
+  console.log("Welcome shown status (forced):", welcomeShown);
   
   if (!welcomeShown) {
     console.log("Showing welcome popup...");
     showWelcomePopup();
-    localStorage.setItem("welcomeShown", "true");
+    // Don't set localStorage yet so we can test multiple times
+    // localStorage.setItem("welcomeShown", "true");
   } else {
     console.log("Welcome popup already shown, skipping...");
   }
@@ -954,7 +1169,7 @@ function showWelcomePopup() {
   if (popup) {
     popup.style.display = 'block';
     // Set today's date in the date input
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString();
     document.getElementById('dateInput').value = today;
   }
 }
