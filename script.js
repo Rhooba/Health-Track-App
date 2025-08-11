@@ -1,3 +1,6 @@
+// Debug: Check if script is loading
+console.log(" Food Tracker script loading...");
+
 // =======================
 // GLOBAL VARIABLES
 // =======================
@@ -14,55 +17,19 @@ let welcomeShown = false;
 // W + S = OK, W + P = OK, S + P = NO WAY
 // =======================
 
-// W Foods (Neutral/Safe with both S and P)
+// W Foods (Vegetables, healthy fats, seasonings)
 const W_FOODS = [
-  'artichoke', 'asparagus', 'brussels sprouts', 'cabbage', 'cauliflower',
-  'celery', 'cilantro', 'eggplant', 'green beans', 'leafy greens', 'lettuce',
-  'mayonnaise', 'mushroom', 'green peppers', 'okra', 'olive oil', 'onions',
-  'seasonings', 'tomato', 'vegetable oil', 'vinegar', 'wheat grass',
-  'yellow mustard', 'zucchini', 'broccoli', 'cucumber', 'herbs', 'spices',
-  'bell peppers', 'radish', 'spinach', 'kale', 'arugula', 'watercress',
-  'parsley', 'basil', 'oregano', 'thyme', 'rosemary', 'sage', 'dill',
-  'chives', 'scallions', 'leeks', 'garlic', 'ginger', 'turmeric'
+  'artichoke', 'asparagus', 'broccoli', 'brussels sprouts', 'butter', 'cabbage', 'cauliflower', 'celery', 'cilantro', 'cucumber', 'eggplant', 'fats', 'oils', 'garlic', 'green beans', 'green peppers', 'herbs', 'leafy greens', 'lettuce', 'mayonnaise', 'mushroom', 'okra', 'olives', 'olive oil', 'onions', 'seasonings', 'sprouts', 'greens', 'tomato', 'vegetables oil', 'vinegar', 'wheat grass', 'yellow mustard', 'zucchini'
 ];
 
-// S Foods (Starches/Carbohydrates)
+// S Foods (Starches, sugars, fruits)
 const S_FOODS = [
-  'acorn squash', 'banana', 'beets', 'cornbread', 'lemon', 'lima beans',
-  'oatmeal', 'tortillas', 'bread', 'coconut milk', 'fruits', 'lime',
-  'orange peppers', 'turnips', 'butternut squash', 'dates', 'grapes',
-  'pasta', 'rice', 'vegetable broth', 'avocado', 'dried fruit', 'honey',
-  'pickle relish', 'rice milk', 'water chestnuts', 'carrots', 'potato chips',
-  'sauerkraut', 'wine', 'chia', 'chocolate', 'legumes', 'pretzels', 'sugar',
-  'yams', 'potatoes', 'sweet potatoes', 'corn', 'quinoa', 'oats', 'barley',
-  'wheat', 'rye', 'millet', 'buckwheat', 'amaranth', 'crackers', 'cereal',
-  'muffins', 'bagels', 'pancakes', 'waffles', 'toast', 'noodles', 'couscous',
-  'bulgur', 'polenta', 'risotto', 'pilaf', 'beans', 'lentils', 'chickpeas',
-  'black beans', 'kidney beans', 'pinto beans', 'navy beans', 'split peas',
-  'apple', 'orange', 'pear', 'peach', 'plum', 'cherry', 'strawberry',
-  'blueberry', 'raspberry', 'blackberry', 'cranberry', 'pineapple', 'mango',
-  'papaya', 'kiwi', 'cantaloupe', 'watermelon', 'honeydew', 'grapefruit'
+  'acorn squash', 'agave', 'all bread', 'bread', 'almond flour', 'avocado', 'beans', 'beets', 'butternut squash', 'cake', 'candy', 'coconut', 'coconut milk', 'crackers', 'dried fruit', 'ice cream', 'carrots', 'chickpeas', 'chocolate', 'corn', 'cornbread', 'lentils', 'lime', 'fruits', 'fruit juice', 'grains', 'honey', 'honey mustard', 'ketchup', 'legumes', 'lemon', 'lima beans', 'nutella', 'orange peppers', 'parsnips', 'pasta', 'peas', 'pickle relish', 'potatoes', 'potato chips', 'pretzels', 'rice', 'rice milk', 'rutabaga', 'sauerkraut', 'sugar', 'tortillas', 'tortilla chips', 'turnips', 'vegetable broth', 'water chestnuts', 'wheat', 'wine', 'winter squash', 'yams'
 ];
 
 // P Foods (Proteins)
 const P_FOODS = [
-  'eggs', 'fish', 'pork', 'beef', 'cheese', 'meat broth', 'chicken',
-  'milk products', 'venison', 'turkey', 'lamb', 'duck', 'goose', 'salmon',
-  'tuna', 'cod', 'halibut', 'trout', 'sardines', 'anchovies', 'shrimp',
-  'crab', 'lobster', 'scallops', 'mussels', 'clams', 'oysters', 'squid',
-  'milk', 'yogurt', 'cream', 'butter', 'cottage cheese', 'ricotta',
-  'mozzarella', 'cheddar', 'swiss', 'parmesan', 'feta', 'goat cheese',
-  'cream cheese', 'sour cream', 'whey protein', 'casein', 'protein powder',
-  'tofu', 'tempeh', 'seitan', 'nuts', 'almonds', 'walnuts', 'pecans',
-  'cashews', 'pistachios', 'brazil nuts', 'hazelnuts', 'macadamia nuts',
-  'peanuts', 'peanut butter', 'almond butter', 'tahini', 'seeds',
-  'sunflower seeds', 'pumpkin seeds', 'sesame seeds', 'flax seeds'
-];
-
-// T Foods (Trigger Foods)
-const T_FOODS = [
-'yogurt', 'milk(all)', 'nut butter', 'seed butter', 'cottage cheese', 'sour cream',
-'boost shake', 'ensure shake', 'quinoa', 'carbonated drinks(discouraged)'
+  'cheese', 'eggs', 'fish', 'pork', 'beef', 'lamb', 'seafood', 'meat broth', 'seeds', 'vegan cheese', 'cheese spread', 'nacho cheese', 'nuts', 'venison', 'processed slices', 'poultry', 'chicken', 'turkey', 'salmon', 'tuna', 'shrimp', 'crab', 'milk', 'yogurt', 'tofu', 'tempeh', 'protein powder'
 ];
 
 // Function to categorize a food item
@@ -97,928 +64,874 @@ function checkFoodCombination(categories) {
   // W + S = OK, W + P = OK, W only = OK
   return { safe: true, warning: null };
 }
+
 // =======================
-// HELPER FUNCTIONS
+// COMPOUND FOOD DETECTION SYSTEM (DISH SOLVER)
 // =======================
 
-// Helper function for time of day on category bar chart
-function getTimeOfDay(dateStr) {
-  // Accepts the timestamps and returns string "morning", "afternoon", "evening", "night"
-  const hour = new Date(dateStr).getHours();
-  if (hour < 12) return "Morning";
-  if (hour < 17) return "Afternoon";
-  return "Evening";
+// Synonyms mapping - maps alternative names to standard ingredients
+const SYNONYMS = {
+  'roll': 'bread',
+  'bun': 'bread', 
+  'wrap': 'tortilla',
+  'tortilla': 'bread',
+  'crust': 'bread',
+  'dough': 'bread',
+  'noodle': 'pasta',
+  'noodles': 'pasta',
+  'spaghetti': 'pasta',
+  'macaroni': 'pasta',
+  'penne': 'pasta',
+  'linguine': 'pasta',
+  'burger': 'beef',
+  'patty': 'beef',
+  'steak': 'beef',
+  'chicken': 'poultry',
+  'turkey': 'poultry',
+  'ham': 'pork',
+  'bacon': 'pork',
+  'sausage': 'pork',
+  'pepperoni': 'pork',
+  'tuna': 'fish',
+  'salmon': 'fish',
+  'shrimp': 'seafood',
+  'crab': 'seafood'
+};
+
+// Common dish templates - maps dish names to their components
+const DISH_TEMPLATES = {
+  'grilled cheese': ['bread', 'cheese'],
+  'grilled cheese sandwich': ['bread', 'cheese'],
+  'cheeseburger': ['bread', 'beef', 'cheese'],
+  'hamburger': ['bread', 'beef'],
+  'turkey sandwich': ['bread', 'turkey'],
+  'ham sandwich': ['bread', 'ham'],
+  'tuna sandwich': ['bread', 'tuna'],
+  'chicken sandwich': ['bread', 'chicken'],
+  'blt': ['bread', 'bacon', 'lettuce', 'tomato'],
+  'pizza': ['crust', 'cheese'],
+  'pepperoni pizza': ['crust', 'cheese', 'pepperoni'],
+  'mac and cheese': ['pasta', 'cheese'],
+  'macaroni and cheese': ['pasta', 'cheese'],
+  'spaghetti and meatballs': ['pasta', 'beef'],
+  'chicken and rice': ['rice', 'chicken'],
+  'fish and chips': ['fish', 'potato'],
+  'burrito': ['tortilla', 'beans', 'cheese'],
+  'quesadilla': ['tortilla', 'cheese'],
+  'taco': ['tortilla', 'beef', 'cheese'],
+  'pbj': ['bread', 'peanut butter'],
+  'peanut butter and jelly': ['bread', 'peanut butter'],
+  'club sandwich': ['bread', 'turkey', 'bacon', 'cheese'],
+  'reuben': ['bread', 'beef', 'cheese'],
+  'philly cheesesteak': ['bread', 'beef', 'cheese'],
+  'chicken parmesan': ['chicken', 'cheese', 'pasta'],
+  'lasagna': ['pasta', 'cheese', 'beef'],
+  'enchiladas': ['tortilla', 'cheese', 'chicken'],
+  'nachos': ['chips', 'cheese'],
+  'loaded baked potato': ['potato', 'cheese', 'bacon'],
+  'shepherd\'s pie': ['potato', 'beef'],
+  'fish tacos': ['tortilla', 'fish'],
+  'chicken quesadilla': ['tortilla', 'chicken', 'cheese']
+};
+
+// Keywords that imply starch presence
+const IMPLIED_STARCH = ['sandwich', 'burger', 'sub', 'hoagie', 'wrap', 'burrito', 'taco', 'quesadilla', 'pizza', 'pasta', 'noodle'];
+
+// Keywords that imply protein presence  
+const IMPLIED_PROTEIN = ['burger', 'chicken', 'turkey', 'beef', 'pork', 'fish', 'seafood', 'meat', 'protein'];
+
+// Normalize text for analysis
+function normalize(text) {
+  return text.toLowerCase().trim().replace(/[^\w\s]/g, '');
 }
 
-// Group entries by period and the category
-function groupEntriesByPeriod(entries) {
-  const periods = { Morning: {}, Afternoon: {}, Evening: {} };
-  for (let entry of entries) {
-    const when = getTimeOfDay(entry.timestamp) || entry.date;
-    const cat = categorizeFoodItem(entry.food);
-    if (!periods[when][cat]) periods[when][cat] = [];
-    periods[when][cat].push(entry);
+// Expand synonyms in a word
+function expandSynonyms(word) {
+  return SYNONYMS[word] || word;
+}
+
+// Convert dish name to component foods
+function dishToComponents(foodText) {
+  const normalized = normalize(foodText);
+  const components = [];
+  
+  // Check exact dish template matches first
+  if (DISH_TEMPLATES[normalized]) {
+    return DISH_TEMPLATES[normalized].map(expandSynonyms);
   }
-  return periods;
+  
+  // Check partial matches for dish templates (with word boundaries to avoid false matches)
+  for (const [dish, ingredients] of Object.entries(DISH_TEMPLATES)) {
+    // Only match if it's a complete word or phrase, not a substring
+    const dishWords = dish.split(' ');
+    const normalizedWords = normalized.split(' ');
+    
+    // For multi-word dishes, check if all words are present
+    if (dishWords.length > 1 && dishWords.every(word => normalizedWords.includes(word))) {
+      return ingredients.map(expandSynonyms);
+    }
+    // For single-word dishes, only match if the input has multiple words
+    else if (dishWords.length === 1 && normalizedWords.length > 1 && normalizedWords.includes(dish)) {
+      return ingredients.map(expandSynonyms);
+    }
+  }
+  
+  // Parse individual words and expand synonyms
+  const words = normalized.split(' ');
+  words.forEach(word => {
+    const expanded = expandSynonyms(word);
+    if (expanded !== word || 
+        W_FOODS.includes(word) || 
+        S_FOODS.includes(word) || 
+        P_FOODS.includes(word)) {
+      components.push(expanded);
+    }
+  });
+  
+  // Check for implied ingredients based on keywords
+  IMPLIED_STARCH.forEach(keyword => {
+    if (normalized.includes(keyword) && !components.some(c => S_FOODS.includes(c))) {
+      components.push('bread'); // Default starch
+    }
+  });
+  
+  IMPLIED_PROTEIN.forEach(keyword => {
+    if (normalized.includes(keyword) && !components.some(c => P_FOODS.includes(c))) {
+      if (keyword === 'chicken') components.push('chicken');
+      else if (keyword === 'turkey') components.push('turkey');  
+      else if (keyword === 'beef' || keyword === 'burger') components.push('beef');
+      else if (keyword === 'fish') components.push('fish');
+      else components.push('meat'); // Generic protein
+    }
+  });
+  
+  // If no components found, return the original food as a single component
+  if (components.length === 0) {
+    components.push(foodText.toLowerCase());
+  }
+  
+  return [...new Set(components)]; // Remove duplicates
 }
 
-const periods = ["Morning", "Afternoon", "Evening"];
-const byPeriod = groupEntriesByPeriod(foodEntries);
+// Convert components to W/S/P categories
+function componentsToCategories(components) {
+  return components.map(component => {
+    if (W_FOODS.some(wFood => component.includes(wFood) || wFood.includes(component))) {
+      return 'W';
+    }
+    if (S_FOODS.some(sFood => component.includes(sFood) || sFood.includes(component))) {
+      return 'S';
+    }
+    if (P_FOODS.some(pFood => component.includes(pFood) || pFood.includes(component))) {
+      return 'P';
+    }
+    return 'W'; // Default to neutral if unknown
+  });
+}
 
-const datasets = ["W", "S", "P"].map(cat => ({
-  label: `${cat} Foods`, 
-  backgroundColor: cat === "W" ? "#FFD700" : cat === "S" ? "#FFB6C1" : "#FF69B4",
-  data: periods.map(period => {
-    const entries = byPeriod[period][cat] || [];
-    // dont count but store the whole array
-    return { count: entries.length, entries };
-    })
-}));
+// Main analysis function
+function analyzeFoodText(foodText) {
+  const components = dishToComponents(foodText);
+  const categories = componentsToCategories(components);
+  const combo = checkFoodCombination(categories);
+  
+  console.log(`🔍 Analyzing "${foodText}":`, {
+    components,
+    categories,
+    hasS: categories.includes('S'),
+    hasP: categories.includes('P'),
+    safe: combo.safe,
+    warning: combo.warning
+  });
+  
+  return { components, categories, combo };
+}
 
 // =======================
-// DOM READY
+// DOM READY EVENT LISTENER
 // =======================
-document.addEventListener("DOMContentLoaded", () => {
-  // Set today's date as default
-  const today = new Date().toLocaleDateString();
-  document.getElementById("dateInput").value = today;
+document.addEventListener('DOMContentLoaded', function() {
+  console.log(" DOM Content Loaded - Setting up app...");
   
-  loadFromStorage();
-  setupEventListeners();
-  
-  // Check if welcome popup should be shown (only once ever)
-  checkWelcomePopup();
-  
-  // Check for daily BP reminder (subtle visual cue)
-  checkBPReminder();
-  renderAllEntries();
-  updateCharts(foodEntries);
-  generateAISuggestions(foodEntries);
+  try {
+    // Set today's date as default
+    const today = new Date().toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit', 
+      year: 'numeric'
+    });
+    const dateInput = document.getElementById("dateInput");
+    if (dateInput) {
+      dateInput.value = today;
+      console.log(` Set default date to: ${today}`);
+    }
+    
+    // Load existing data
+    loadFromStorage();
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Set up health chips
+    setupHealthChips();
+    
+    // Check for welcome popup (only show once)
+    checkWelcomePopup();
+    
+    // Check BP reminder
+    checkBPReminder();
+    
+    // Update charts with existing data
+    updateCharts(foodEntries);
+    
+    // Generate AI suggestions
+    generateAISuggestions(foodEntries);
+    
+    console.log(" App initialized successfully!");
+    
+  } catch (error) {
+    console.error(" Error during app initialization:", error);
+  }
 });
+
+// =======================
+// EVENT LISTENERS SETUP
+// =======================
+function setupEventListeners() {
+  try {
+    console.log(" Setting up event listeners...");
+    
+    // Food form submission
+    const foodForm = document.getElementById('foodForm');
+    if (foodForm) {
+      foodForm.addEventListener('submit', handleAddLog);
+    }
+    
+    // Add log button (since form might not have submit event)
+    const addLogBtn = document.getElementById('addLogButton');
+    if (addLogBtn) {
+      addLogBtn.addEventListener('click', handleAddLog);
+    }
+    
+    // Filter buttons
+    const allBtn = document.getElementById('allBtn');
+    const sickBtn = document.getElementById('sickBtn');
+    const okayBtn = document.getElementById('okayBtn');
+    
+    if (allBtn) allBtn.addEventListener('click', () => filterEntries('all'));
+    if (sickBtn) sickBtn.addEventListener('click', () => filterEntries('sick'));
+    if (okayBtn) okayBtn.addEventListener('click', () => filterEntries('okay'));
+    
+    // Export button
+    const exportBtn = document.getElementById('exportEncryptedButton');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', handleExportEncrypted);
+    }
+    
+    // Clear button
+    const clearBtn = document.getElementById('clearAllButton');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', clearAllEntries);
+    }
+    
+    // Welcome popup close button
+    const closePopupBtn = document.getElementById('closePopupBtn');
+    if (closePopupBtn) {
+      closePopupBtn.addEventListener('click', closeBPReminderPopup);
+    }
+    
+    // BP reminder popup close button
+    const closeBPBtn = document.getElementById('closeBPBtn');
+    if (closeBPBtn) {
+      closeBPBtn.addEventListener('click', closeBPReminderPopup);
+    }
+    
+    // Welcome popup buttons (actual IDs from HTML)
+    const getStartedBtn = document.getElementById('addBpNow');
+    if (getStartedBtn) {
+      getStartedBtn.addEventListener('click', closeBPReminderPopup);
+    }
+    
+    const skipTodayBtn = document.getElementById('skipToday');
+    if (skipTodayBtn) {
+      skipTodayBtn.addEventListener('click', closeBPReminderPopup);
+    }
+    
+    const closeBpPopupBtn = document.getElementById('closeBpPopup');
+    if (closeBpPopupBtn) {
+      closeBpPopupBtn.addEventListener('click', closeBPReminderPopup);
+    }
+    
+    // Collapsible sections for graphs and other content
+    const collapsibles = document.querySelectorAll('.collapsible');
+    console.log(` Found ${collapsibles.length} collapsible sections`);
+    
+    collapsibles.forEach((collapsible, index) => {
+      console.log(` Setting up collapsible ${index}: ${collapsible.textContent.trim()}`);
+      
+      collapsible.addEventListener('click', function() {
+        console.log(` Clicked collapsible: ${this.textContent.trim()}`);
+        
+        this.classList.toggle('active');
+        const content = this.nextElementSibling;
+        
+        if (content) {
+          console.log(` Found content element:`, content);
+          
+          // Special handling for health content (uses CSS classes)
+          if (content.classList.contains('health-content')) {
+            content.classList.toggle('active');
+            if (content.classList.contains('active')) {
+              console.log(` Expanded health section: ${this.textContent.trim()}`);
+              // Set up health chips when health section opens
+              setTimeout(() => {
+                setupHealthChips();
+              }, 100);
+            } else {
+              console.log(` Collapsed health section: ${this.textContent.trim()}`);
+            }
+          } else {
+            // Regular collapsible sections (use display toggle)
+            if (content.style.display === 'block') {
+              content.style.display = 'none';
+              console.log(` Collapsed section: ${this.textContent.trim()}`);
+            } else {
+              content.style.display = 'block';
+              console.log(` Expanded section: ${this.textContent.trim()}`);
+              
+              // If this is a chart section that just opened, update charts
+              const canvas = content.querySelector('canvas');
+              if (canvas) {
+                console.log(` Found canvas in section, updating charts...`);
+                // Small delay to ensure the canvas is visible before drawing
+                setTimeout(() => {
+                  updateCharts(foodEntries);
+                }, 100);
+              }
+            }
+          }
+        } else {
+          console.warn(` No content element found for: ${this.textContent.trim()}`);
+        }
+      });
+    });
+    
+    console.log(" Event listeners set up successfully!");
+    
+  } catch (error) {
+    console.error(" Error setting up event listeners:", error);
+  }
+}
 
 // =======================
 // INITIAL LOAD FUNCTIONS
 // =======================
 function loadFromStorage() {
-  const savedFavorites = localStorage.getItem("favoriteFoods");
-  const savedEntries = localStorage.getItem("foodEntries");
-  favoriteFoods = savedFavorites ? JSON.parse(savedFavorites) : [];
-  foodEntries = savedEntries ? JSON.parse(savedEntries) : [];
+  try {
+    console.log(" Loading data from storage...");
+    
+    const storedEntries = localStorage.getItem("foodEntries");
+    if (storedEntries) {
+      foodEntries = JSON.parse(storedEntries);
+      
+      // Re-analyze existing entries with compound food detection
+      foodEntries.forEach(entry => {
+        if (!entry.analysis) {
+          entry.analysis = analyzeFoodText(entry.food);
+        }
+      });
+      
+      console.log(` Loaded ${foodEntries.length} food entries`);
+    }
+    
+    const storedFavorites = localStorage.getItem("favoriteFoods");
+    if (storedFavorites) {
+      favoriteFoods = JSON.parse(storedFavorites);
+      renderFavorites(); // Display the favorites
+      console.log(` Loaded ${favoriteFoods.length} favorite foods`);
+    }
+    
+    // Render all entries after loading
+    renderAllEntries();
+    
+  } catch (error) {
+    console.error(" Error loading from storage:", error);
+  }
+}
+
+// =======================
+// EVENT HANDLERS
+// =======================
+function handleAddLog(event) {
+  try {
+    console.log(' handleAddLog start');
+    event.preventDefault();
+    const food = document.getElementById("foodInput").value.trim();
+    if (!food) return alert("Please enter a food item.");
+    
+    // Capture health details from chips and radio buttons
+    const selectedExercise = [];
+    const selectedStressRelief = [];
+    const selectedSymptoms = [];
+    
+    // Get radio button states
+    const exercisedRadio = document.querySelector('input[name="exercised"]:checked');
+    const stressReliefRadio = document.querySelector('input[name="stressRelief"]:checked');
+    const symptomsRadio = document.querySelector('input[name="symptoms"]:checked');
+    
+    // Get selected exercise chips
+    const exerciseChips = document.querySelectorAll('#exerciseChips .chip.selected');
+    exerciseChips.forEach(chip => {
+      selectedExercise.push(chip.dataset.value);
+    });
+    
+    // Get selected stress relief chips
+    const stressChips = document.querySelectorAll('#stressChips .chip.selected');
+    stressChips.forEach(chip => {
+      selectedStressRelief.push(chip.dataset.value);
+    });
+    
+    // Get selected symptom chips
+    const symptomChips = document.querySelectorAll('#symptomsChips .chip.selected');
+    symptomChips.forEach(chip => {
+      selectedSymptoms.push(chip.dataset.value);
+    });
+    
+    // Derive final radio values: if chips are selected, force 'yes'
+    const exercisedValue = selectedExercise.length > 0 ? 'yes' : (exercisedRadio?.value || 'no');
+    const stressReliefValue = selectedStressRelief.length > 0 ? 'yes' : (stressReliefRadio?.value || 'no');
+    const symptomsValue = selectedSymptoms.length > 0 ? 'yes' : (symptomsRadio?.value || 'no');
+    
+    // If a radio is yes but array empty, add placeholder to preserve intent
+    if (exercisedValue === 'yes' && selectedExercise.length === 0) selectedExercise.push('Yes (unspecified)');
+    if (stressReliefValue === 'yes' && selectedStressRelief.length === 0) selectedStressRelief.push('Yes (unspecified)');
+    if (symptomsValue === 'yes' && selectedSymptoms.length === 0) selectedSymptoms.push('Yes (unspecified)');
+    
+    console.log('Health data captured (finalized):', {
+      exercised: exercisedValue,
+      exercise: selectedExercise,
+      stressRelief: stressReliefValue,
+      stressReliefActivities: selectedStressRelief,
+      symptoms: symptomsValue,
+      symptomsList: selectedSymptoms
+    });
+    
+    const newEntry = {
+      food,
+      date: new Date().toLocaleDateString(),
+      timestamp: new Date().toLocaleString(),
+      sick: document.getElementById("sickInput").checked,
+      mealType: document.getElementById("mealTypeInput").value || "Unspecified",
+      calories: document.getElementById("caloriesInput").value || "N/A",
+      bps: document.getElementById("bpsInput").value || null,
+      bs: document.getElementById("bsInput").value || null,
+      healthDetails: {
+        exercised: exercisedValue,
+        exercise: selectedExercise,
+        stressRelief: stressReliefValue,
+        stressReliefActivities: selectedStressRelief,
+        symptoms: symptomsValue,
+        symptomsList: selectedSymptoms
+      }
+    };
+
+    // Use compound food analysis
+    const analysis = analyzeFoodText(newEntry.food);
+    newEntry.analysis = analysis;
+    
+    if (!analysis.combo.safe) {
+      showWarningModal(analysis.combo.warning, analysis.components);
+    }
+
+    foodEntries.push(newEntry);
+    localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
+    
+    // Clear form and health chips
+    document.getElementById("foodInput").value = "";
+    document.getElementById("sickInput").checked = false;
+    
+    // Clear selected health chips
+    document.querySelectorAll('.chip.selected').forEach(chip => {
+      chip.classList.remove('selected');
+    });
+    
+    renderAllEntries();
+    updateCharts(foodEntries);
+    
+    console.log(" Entry added successfully with health details!");
+    
+  } catch (error) {
+    console.error(" Error adding entry:", error);
+  }
 }
 
 function renderAllEntries() {
-  // 1. Sort all entries by date, descending
-  foodEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+  try {
+    const list = document.getElementById("foodLogList");
+    if (!list) return;
+    
+    list.innerHTML = "";
+    
+    // Sort entries by date (newest first)
+    const sortedEntries = [...foodEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    sortedEntries.forEach(renderEntry);
+    
+    console.log(` Rendered ${sortedEntries.length} entries`);
+    
+  } catch (error) {
+    console.error(" Error rendering entries:", error);
+  }
+}
 
-  // 2. Clear the current list and render the sorted entries
-  const list = document.getElementById("foodLogList");
-  list.innerHTML = "";
-  foodEntries.forEach(renderEntry);
+function renderEntry(entry) {
+  try {
+    const li = document.createElement("li");
+    li.className = "food-entry";
+    
+    // Add meal type emoji
+    let mealEmoji = '';
+    switch(entry.mealType.toLowerCase()) {
+      case 'breakfast': mealEmoji = '🍳'; break;
+      case 'lunch': mealEmoji = '🥪'; break;
+      case 'dinner': mealEmoji = '🍽️'; break;
+      case 'snack': mealEmoji = '🍿'; break;
+      default: mealEmoji = '🍴'; break;
+    }
+    
+    const detected = entry.analysis && entry.analysis.components && entry.analysis.components.length
+      ? `<br><small style="color:#666;font-size:.8rem;"> Detected: ${entry.analysis.components.join(', ')}</small>`
+      : '';
+
+    li.innerHTML = `
+      <div class="entry-content">
+        <strong>${entry.date}</strong> - ${entry.food} (${mealEmoji} ${entry.mealType})
+        ${entry.timestamp ? `<br><small style="color:#666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
+        ${detected}
+        <br>Calories: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}<br>
+        ${entry.sick ? " Felt Sick" : " Felt Okay"}
+      </div>
+      <div class="entry-actions">
+        <button class="favorite-btn" onclick="toggleFavorite('${entry.food}')" title="Add to favorites">⭐</button>
+        <button class="delete-btn" onclick="deleteEntry(${foodEntries.indexOf(entry)})" title="Delete entry">✕</button>
+      </div>
+    `;
+    
+    document.getElementById("foodLogList").appendChild(li);
+  } catch (error) {
+    console.error(" Error rendering entry:", error);
+  }
+}
+
+function deleteEntry(index) {
+  try {
+    if (confirm("Are you sure you want to delete this entry?")) {
+      foodEntries.splice(index, 1);
+      localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
+      renderAllEntries();
+      updateCharts(foodEntries);
+    }
+  } catch (error) {
+    console.error(" Error deleting entry:", error);
+  }
+}
+
+function toggleFavorite(foodName) {
+  try {
+    // Create a favorite object with food name and current date
+    const today = new Date().toLocaleDateString();
+    const favoriteItem = {
+      food: foodName,
+      date: today
+    };
+    
+    // Check if this food is already favorited
+    const existingFavorite = favoriteFoods.find(fav => 
+      (typeof fav === 'string' ? fav : fav.food) === foodName
+    );
+    
+    if (!existingFavorite) {
+      favoriteFoods.push(favoriteItem);
+      localStorage.setItem("favoriteFoods", JSON.stringify(favoriteFoods));
+      renderFavorites(); // Update the favorites display
+      alert(`"${foodName}" added to favorites! ⭐`);
+    } else {
+      alert(`"${foodName}" is already in your favorites!`);
+    }
+  } catch (error) {
+    console.error(" Error adding to favorites:", error);
+  }
 }
 
 function renderFavorites() {
-  // Render the favorites list separately
-  const favList = document.getElementById("favoritesList");
-  favList.innerHTML = "";
-  favoriteFoods.forEach(entry => addToFavorites(entry, false));
-}
-
-// =======================
-// EVENT LISTENERS
-// =======================
-function setupEventListeners() {
-  document.getElementById("addLogButton").addEventListener("click", handleAddLog);
-  document.getElementById("clearAllButton").addEventListener("click", clearAllEntries);
-  document.getElementById("exportEncryptedButton").addEventListener("click", handleExportEncrypted);
-  document.getElementById("filterAllButton").addEventListener("click", () => filterEntries('all'));
-  document.getElementById("filterSickButton").addEventListener("click", () => filterEntries('sick'));
-  document.getElementById("filterOkayButton").addEventListener("click", () => filterEntries('okay'));
-
-  // BP Reminder Popup Event Listeners
-  document.getElementById("closeBpPopup").addEventListener("click", closeBPReminderPopup);
-  document.getElementById("addBpNow").addEventListener("click", handleAddBPNow);
-  document.getElementById("skipToday").addEventListener("click", handleSkipToday);
-
-  // BP Reminder Only Popup Event Listeners
-  document.getElementById("closeBpReminderOnly").addEventListener("click", closeBPReminderOnlyPopup);
-  document.getElementById("addBpNowReminder").addEventListener("click", handleBPReminderGotIt);
-  document.getElementById("skipBpToday").addEventListener("click", handleSkipBPToday);
-
-  document.querySelectorAll(".collapsible").forEach(button => {
-    button.addEventListener("click", () => {
-      button.classList.toggle("active");
-      const content = button.nextElementSibling;
-      if (content) {
-        const isExpanded = content.style.display === "none";
-        content.style.display = isExpanded ? "block" : "none";
-      }
-    });
-  });
-}
-
-function filterEntries(filter) {
-  const list = document.getElementById("foodLogList");
-  list.innerHTML = ""; // Clear the list
-
-  let filteredEntries = foodEntries;
-
-  if (filter === 'sick') {
-    filteredEntries = foodEntries.filter(entry => entry.sick);
-  } else if (filter === 'okay') {
-    filteredEntries = foodEntries.filter(entry => !entry.sick);
-  }
-
-  // Sort the filtered entries by date before rendering
-  filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  filteredEntries.forEach(renderEntry);
-}
-
-function clearAllEntries() {
-  foodEntries = [];
-  localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
-  renderAllEntries(); // This will now correctly re-render the empty list
-  updateCharts(foodEntries);
-  generateAISuggestions(foodEntries);
-}
-
-function handleExportEncrypted() {
-  if (foodEntries.length === 0) {
-    alert("No data to export. Please add some food entries first.");
-    return;
-  }
-  
-  // Check if user has a saved password
-  const savedPassword = localStorage.getItem('exportPassword');
-  showPasswordForm(savedPassword);
-}
-
-function showPasswordForm(savedPassword = '') {
-  // Create modal overlay
-  const overlay = document.createElement('div');
-  overlay.id = 'passwordFormOverlay';
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-  
-  // Create the form container
-  const formContainer = document.createElement('div');
-  formContainer.style.cssText = `
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-  `;
-  
-  // Create the form
-  formContainer.innerHTML = `
-    <h3 style="margin-top: 0; color: #333;">🔐 Export Password</h3>
-    <p style="color: #666; margin-bottom: 20px;">
-      ${savedPassword ? 'Use your saved password or enter a new one:' : 'Create a password to protect your medical data:'}<br>
-      <strong>Your doctor will need this password to view the report.</strong>
-    </p>
+  try {
+    const favoritesList = document.getElementById("favoritesList");
+    if (!favoritesList) return;
     
-    <div style="margin-bottom: 15px;">
-      <label for="exportPassword" style="display: block; margin-bottom: 5px; font-weight: bold;">Password:</label>
-      <input 
-        type="password" 
-        id="exportPassword" 
-        placeholder="Enter password (min 6 characters)"
-        style="
-          width: 100%;
-          padding: 12px;
-          border: 2px solid #ddd;
-          border-radius: 6px;
-          font-size: 16px;
-          box-sizing: border-box;
-        "
-        required
-        minlength="6"
-      >
-    </div>
+    favoritesList.innerHTML = "";
     
-    <div style="margin-bottom: 20px;">
-      <label style="display: flex; align-items: center; justify-content: center; color: #666;">
-        <input type="checkbox" id="savePassword" ${savedPassword ? 'checked' : ''} style="margin-right: 8px;">
-        Remember this password for future exports
-      </label>
-    </div>
-    
-    <div style="margin-top: 20px;">
-      <button 
-        type="button" 
-        id="createReport"
-        style="
-          background-color: #007cba;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 6px;
-          font-size: 16px;
-          cursor: pointer;
-          margin-right: 10px;
-        "
-      >
-        📊 Create Medical Report
-      </button>
-      <button 
-        type="button" 
-        id="cancelExport"
-        style="
-          background-color: #ccc;
-          color: #333;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 6px;
-          font-size: 16px;
-          cursor: pointer;
-        "
-      >
-        Cancel
-      </button>
-    </div>
-    
-    ${savedPassword ? `
-    <div style="margin-top: 15px;">
-      <button 
-        type="button" 
-        id="clearPassword"
-        style="
-          background-color: #ff6b6b;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          font-size: 14px;
-          cursor: pointer;
-        "
-      >
-        🗑️ Clear Saved Password
-      </button>
-    </div>
-    ` : ''}
-    
-    <p style="font-size: 12px; color: #999; margin-top: 15px;">
-      💡 Password is saved locally in your browser for convenience
-    </p>
-  `;
-  
-  overlay.appendChild(formContainer);
-  document.body.appendChild(overlay);
-  
-  // Focus the password input
-  const passwordInput = document.getElementById('exportPassword');
-  setTimeout(() => {
-    passwordInput.focus();
-  }, 100);
-  
-  // Handle create report
-  document.getElementById('createReport').addEventListener('click', function() {
-    const password = passwordInput.value.trim();
-    const savePassword = document.getElementById('savePassword').checked;
-    
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters long for security.");
-      passwordInput.focus();
+    if (favoriteFoods.length === 0) {
+      favoritesList.innerHTML = "<li>No favorite foods yet. Click ⭐ on any food entry to add it!</li>";
       return;
     }
     
-    // Save password if requested
-    if (savePassword) {
-      localStorage.setItem('exportPassword', password);
-    } else {
-      localStorage.removeItem('exportPassword');
+    favoriteFoods.forEach((favorite, index) => {
+      const li = document.createElement("li");
+      li.className = "favorite-item";
+      
+      // Handle both old string format and new object format
+      const foodName = typeof favorite === 'string' ? favorite : favorite.food;
+      const favoriteDate = typeof favorite === 'string' ? 'Added previously' : favorite.date;
+      
+      li.innerHTML = `
+        <div class="favorite-content">
+          <span class="favorite-food">${foodName}</span>
+          <small class="favorite-date">Added: ${favoriteDate}</small>
+        </div>
+        <button class="remove-favorite-btn" onclick="removeFavorite(${index})" title="Remove from favorites">✕</button>
+      `;
+      favoritesList.appendChild(li);
+    });
+    
+    console.log(` Rendered ${favoriteFoods.length} favorite foods`);
+    
+  } catch (error) {
+    console.error(" Error rendering favorites:", error);
+  }
+}
+
+function removeFavorite(index) {
+  try {
+    favoriteFoods.splice(index, 1);
+    localStorage.setItem("favoriteFoods", JSON.stringify(favoriteFoods));
+    renderFavorites();
+  } catch (error) {
+    console.error(" Error removing favorite:", error);
+  }
+}
+
+function clearAllEntries() {
+  try {
+    if (confirm("Are you sure you want to clear all entries?")) {
+      foodEntries = [];
+      localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
+      renderAllEntries();
+      updateCharts(foodEntries);
+    }
+  } catch (error) {
+    console.error(" Error clearing entries:", error);
+  }
+}
+
+function filterEntries(filter) {
+  try {
+    const list = document.getElementById("foodLogList");
+    list.innerHTML = "";
+
+    let filteredEntries = foodEntries;
+    if (filter === 'sick') {
+      filteredEntries = foodEntries.filter(entry => entry.sick);
+    } else if (filter === 'okay') {
+      filteredEntries = foodEntries.filter(entry => !entry.sick);
+    }
+
+    filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    filteredEntries.forEach(renderEntry);
+  } catch (error) {
+    console.error(" Error filtering entries:", error);
+  }
+}
+
+function updateCharts(logs) {
+  try {
+    console.log(" Updating charts...");
+    if (!logs || logs.length === 0) {
+      console.log("No data to display in charts");
+      return;
     }
     
-    // Remove the form
-    document.body.removeChild(overlay);
+    // Update BP Line Chart
+    updateBPLineChart(logs);
     
-    // Proceed with export (password only, no username)
-    exportMedicalDataToEncryptedCSV(password);
-  });
-  
-  // Handle clear password
-  if (savedPassword) {
-    document.getElementById('clearPassword').addEventListener('click', function() {
-      if (confirm('Are you sure you want to clear your saved password?')) {
-        localStorage.removeItem('exportPassword');
-        document.body.removeChild(overlay);
-        showPasswordForm(); // Show fresh form
+    // Update Daily Combination Bar Chart
+    updateDailyCombinationChart(logs);
+    
+    console.log(" Charts updated!");
+  } catch (error) {
+    console.error(" Error updating charts:", error);
+  }
+}
+
+function updateBPLineChart(logs) {
+  try {
+    const bpCtx = document.getElementById('bpLineChart');
+    if (!bpCtx) return;
+    
+    // Destroy existing chart
+    if (bpLineChartInstance) {
+      bpLineChartInstance.destroy();
+    }
+    
+    // Filter entries with BP data (using correct field name 'bps')
+    const bpEntries = logs.filter(entry => entry.bps && entry.bps !== 'null' && entry.bps !== null && entry.bps.trim() !== '');
+    
+    console.log(` Found ${bpEntries.length} entries with BP data:`, bpEntries.map(e => ({food: e.food, bps: e.bps})));
+    
+    if (bpEntries.length === 0) {
+      console.log("No BP data to display");
+      return;
+    }
+    
+    const labels = bpEntries.map(entry => entry.date);
+    const bpData = bpEntries.map(entry => {
+      // Handle both "120/80" format and single number "120"
+      const bpValue = entry.bps.toString();
+      if (bpValue.includes('/')) {
+        const bp = bpValue.split('/');
+        return parseInt(bp[0]); // Systolic
+      } else {
+        return parseInt(bpValue); // Single number
       }
     });
-  }
-  
-  // Handle cancel
-  document.getElementById('cancelExport').addEventListener('click', function() {
-    document.body.removeChild(overlay);
-  });
-  
-  // Close on overlay click
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) {
-      document.body.removeChild(overlay);
-    }
-  });
-  
-  // Allow Enter key to submit
-  passwordInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      document.getElementById('createReport').click();
-    }
-  });
-}
-
-function exportMedicalDataToEncryptedCSV(password) {
-  // Create medical-friendly CSV data
-  let csvData = [];
-  
-  // Sort entries by date for doctor review
-  const sortedEntries = foodEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
-  // Convert to structured data
-  sortedEntries.forEach(entry => {
-    csvData.push({
-      date: entry.date || new Date().toLocaleDateString(), // Use locale format to match chart filtering
-      food: entry.food,
-      mealType: entry.mealType || "Unspecified",
-      calories: entry.calories || "Not recorded",
-      bloodPressure: entry.bps || "Not recorded",
-      feltSick: entry.sick ? "Yes" : "No",
-      bowelScore: entry.bs || "Not recorded",
-      timestamp: entry.timestamp || "Not recorded"
-    });
-  });
-  
-  // Create summary statistics
-  const summary = {
-    totalEntries: foodEntries.length,
-    sickEpisodes: foodEntries.filter(e => e.sick).length,
-    dateRange: `${sortedEntries[0]?.date} to ${sortedEntries[sortedEntries.length - 1]?.date}`,
-    exportDate: new Date().toLocaleDateString()
-  };
-  
-  // Encrypt the data (simple but effective)
-  const dataToEncrypt = JSON.stringify({ csvData, summary });
-  const encrypted = btoa(dataToEncrypt); // Base64 encoding
-  
-  // Create self-decrypting HTML file
-  const htmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Data Report - Password Protected</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: #f5f5f5; 
-        }
-        .container { 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        .password-prompt { 
-            text-align: center; 
-            padding: 50px; 
-            border: 2px dashed #ccc; 
-            border-radius: 8px; 
-            margin: 50px 0; 
-        }
-        .password-input { 
-            padding: 12px; 
-            font-size: 16px; 
-            border: 2px solid #ddd; 
-            border-radius: 4px; 
-            margin: 10px; 
-            width: 200px; 
-        }
-        .decrypt-btn { 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            background-color: #007cba; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-        }
-        .decrypt-btn:hover { background-color: #005a87; }
-        .medical-data { display: none; }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 20px 0; 
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            text-align: left; 
-        }
-        th { 
-            background-color: #f8f9fa; 
-            font-weight: bold; 
-        }
-        .summary { 
-            background-color: #e8f4f8; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin: 20px 0; 
-        }
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            color: #333; 
-        }
-        .error { 
-            color: #d32f2f; 
-            margin: 10px 0; 
-        }
-        @media print {
-            .password-prompt { display: none; }
-            .medical-data { display: block !important; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🏥 Medical Data Report</h1>
-            <p>Food & Health Tracking Data</p>
-        </div>
-        
-        <div id="passwordPrompt" class="password-prompt">
-            <h2>🔒 Password Required</h2>
-            <p>This medical data is password-protected for privacy.</p>
-            <p>Please enter the password provided by the patient:</p>
-            <br>
-            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" />
-            <br>
-            <button onclick="decryptData()" class="decrypt-btn">Decrypt Medical Data</button>
-            <div id="errorMsg" class="error"></div>
-        </div>
-        
-        <div id="medicalData" class="medical-data">
-            <div class="summary">
-                <h3>📊 Weekly Summary</h3>
-                <div id="summaryContent"></div>
-            </div>
-            
-            <h3>📋 Detailed Food & Health Log</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Food Item</th>
-                        <th>Meal Type</th>
-                        <th>Calories</th>
-                        <th>Blood Pressure</th>
-                        <th>Felt Sick</th>
-                        <th>Bowel Score (1-7)</th>
-                        <th>Time Recorded</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable">
-                </tbody>
-            </table>
-            
-            <div style="margin-top: 30px; text-align: center; color: #666;">
-                <p>Generated by Food Tracker App | Export Date: ${new Date().toLocaleDateString()}</p>
-                <p>💡 Tip: Use Ctrl+P (Cmd+P on Mac) to print this report</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const encryptedData = "${encrypted}";
-        const correctPassword = "${password}";
-        
-        function decryptData() {
-            const enteredPassword = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('errorMsg');
-            
-            if (enteredPassword === correctPassword) {
-                try {
-                    const decryptedData = JSON.parse(atob(encryptedData));
-                    displayMedicalData(decryptedData);
-                    document.getElementById('passwordPrompt').style.display = 'none';
-                    document.getElementById('medicalData').style.display = 'block';
-                } catch (e) {
-                    errorMsg.textContent = 'Error decrypting data. Please contact the patient.';
-                }
-            } else {
-                errorMsg.textContent = 'Incorrect password. Please try again.';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
-        }
-        
-        function displayMedicalData(data) {
-            // Display summary
-            const summaryHtml = \`
-                <p><strong>Total Entries:</strong> \${data.summary.totalEntries}</p>
-                <p><strong>Sick Episodes:</strong> \${data.summary.sickEpisodes}</p>
-                <p><strong>Date Range:</strong> \${data.summary.dateRange}</p>
-                <p><strong>Export Date:</strong> \${data.summary.exportDate}</p>
-            \`;
-            document.getElementById('summaryContent').innerHTML = summaryHtml;
-            
-            // Display table data
-            const tableBody = document.getElementById('dataTable');
-            data.csvData.forEach(entry => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = entry.date;
-                row.insertCell(1).textContent = entry.food;
-                row.insertCell(2).textContent = entry.mealType;
-                row.insertCell(3).textContent = entry.calories;
-                row.insertCell(4).textContent = entry.bloodPressure;
-                row.insertCell(5).textContent = entry.feltSick;
-                row.insertCell(6).textContent = entry.bowelScore;
-                row.insertCell(7).textContent = entry.timestamp;
-            });
-        }
-        
-        // Auto-focus password input and allow Enter key
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('passwordInput');
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    decryptData();
-                }
-            });
-        });
-    </script>
-</body>
-</html>`;
-
-  // Create downloadable HTML file using data URL
-  const encodedContent = encodeURIComponent(htmlContent);
-  const dataUrl = `data:text/html;charset=utf-8,${encodedContent}`;
-  
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = 'HealthReport.html';
-  link.style.display = 'none';
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Show success message with simple instructions
-  alert(`✅ Your medical report has been exported successfully!\n\nPassword: "${password}"\n\nYou can now share the report and password with your healthcare expert.`);
-}
-
-// =======================
-// ADD ENTRY
-// =======================
-function handleAddLog() {
-  const food = document.getElementById("foodInput").value.trim();
-  const date = document.getElementById("dateInput").value;
-  const bps = document.getElementById("bpsInput").value.trim();
-  const sick = document.getElementById("sickInput").checked;
-  const mealType = document.getElementById("mealTypeInput").value;
-  const calories = document.getElementById("caloriesInput").value.trim();
-  const bsValue = document.getElementById("bsInput").value;
-
-  if (!food) return alert("Please enter a food item.");
-
-  // Store current scroll position
-  const currentScrollY = window.scrollY;
-  const entryForm = document.getElementById("entryForm");
-  const formRect = entryForm.getBoundingClientRect();
-  const formTop = formRect.top + currentScrollY;
-
-  const newEntry = {
-    food,
-    date: date ? new Date(date + 'T00:00:00').toLocaleDateString() : new Date().toLocaleDateString(), // Fix timezone offset
-    timestamp: new Date().toLocaleString(), // Add timestamp when entry is created
-    bps: isNaN(parseInt(bps)) ? null : parseInt(bps),
-    sick,
-    mealType: mealType || "Unspecified",
-    calories: calories || "N/A",
-    bs: bsValue
-  };
-
-  // Check food combination safety
-  const categories = [categorizeFoodItem(newEntry.food)];
-  if (newEntry.mealType) {
-    categories.push(categorizeFoodItem(newEntry.mealType));
-  }
-  const safetyCheck = checkFoodCombination(categories);
-  if (!safetyCheck.safe) {
-    alert(`Warning: ${safetyCheck.warning}`);
-  }
-
-  foodEntries.push(newEntry);
-  localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
-  
-  // Render updates without jumping
-  renderAllEntries();
-  updateCharts(foodEntries);
-  generateAISuggestions(foodEntries);
-
-  // Check if BP reminder should be shown after adding entry
-  checkBPReminder();
-
-  // Clear form inputs
-  document.getElementById("foodInput").value = "";
-  document.getElementById("dateInput").value = "";
-  document.getElementById("bpsInput").value = "";
-  document.getElementById("sickInput").checked = false;
-  document.getElementById("mealTypeInput").selectedIndex = 0;
-  document.getElementById("caloriesInput").value = "";
-  document.getElementById("bsInput").selectedIndex = 0;
-
-  // Restore scroll position to keep form visible
-  setTimeout(() => {
-    window.scrollTo({
-      top: formTop - 20, // Small offset for better visibility
-      behavior: 'smooth'
-    });
     
-    // Focus back on food input for easy consecutive entries
-    document.getElementById("foodInput").focus();
-  }, 100);
-}
-
-// =======================
-// RENDER ENTRY
-// =======================
-function renderEntry(entry) {
-  const li = document.createElement("li");
-  li.innerHTML = `
-  <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
-  ${entry.timestamp ? `<br><small style="color: #666; font-size: 0.8rem;">⏰ ${entry.timestamp}</small>` : ''}
-  <br>Calories: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}<br>
-  ${entry.sick ? "🤢 Felt Sick" : "🥳 Felt Okay"}
-`;
-
-  const favBtn = document.createElement("button");
-  favBtn.textContent = "⭐️";
-  favBtn.className = "favorite-btn";
-  favBtn.disabled = entry.sick;
-  favBtn.title = entry.sick ? "🚫 Can't favorite sick foods!" : "Save as favorite";
-  favBtn.style.opacity = entry.sick ? "0.5" : "1";
-  favBtn.addEventListener("click", () => addToFavorites(entry, true));
-
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "✖️";
-  delBtn.className = "delete-btn";
-  delBtn.addEventListener("click", () => {
-    li.remove();
-    foodEntries = foodEntries.filter(e => e !== entry);
-    localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
-    updateCharts(foodEntries);
-    generateAISuggestions(foodEntries);
-  });
-
-  const wrapper = document.createElement("div");
-  wrapper.style.display = "flex";
-  wrapper.style.gap = "0.5rem";
-  wrapper.appendChild(favBtn);
-  wrapper.appendChild(delBtn);
-
-  li.appendChild(wrapper);
-  document.getElementById("foodLogList").appendChild(li);
-}
-
-// =======================
-// FAVORITES
-// =======================
-function addToFavorites(entry, save = true) {
-  const list = document.getElementById("favoritesList");
-  const exists = Array.from(list.children).some(li =>
-    li.dataset.food === entry.food.toLowerCase() && li.dataset.date === entry.date
-  );
-  if (exists) return;
-
-  const li = document.createElement("li");
-  li.dataset.food = entry.food.toLowerCase();
-  li.dataset.date = entry.date;
-
-  const span = document.createElement("span");
-  span.textContent = `${entry.date}  ${entry.food} (${entry.mealType}) | Cal: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}`;
-  span.style.flexGrow = "1";
-
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "✖️";
-  delBtn.className = "delete-btn";
-  delBtn.addEventListener("click", () => {
-    li.remove();
-    favoriteFoods = favoriteFoods.filter(e => e !== entry);
-    localStorage.setItem("favoriteFoods", JSON.stringify(favoriteFoods));
-  });
-
-  li.style.display = "flex";
-  li.style.justifyContent = "space-between";
-  li.appendChild(span);
-  li.appendChild(delBtn);
-  list.appendChild(li);
-
-  if (save) {
-    favoriteFoods.push(entry);
-    localStorage.setItem("favoriteFoods", JSON.stringify(favoriteFoods));
-  }
-}
-
-// =======================
-// AI SUGGESTIONS
-// =======================
-function generateAISuggestions(entries) {
-  const container = document.getElementById("aiSuggestions");
-  if (!container) return;
-
-  const sickCount = {}, safeCount = {};
-  entries.forEach(entry => {
-    const name = entry.food.toLowerCase();
-    if (entry.sick) sickCount[name] = (sickCount[name] || 0) + 1;
-    else safeCount[name] = (safeCount[name] || 0) + 1;
-  });
-
-  const suggestions = [];
-  for (let food in sickCount) {
-    if (sickCount[food] >= 2) suggestions.push(`⚠️ You've felt sick after eating *${food}* ${sickCount[food]} times. Maybe avoid it?`);
-  }
-  for (let food in safeCount) {
-    if (safeCount[food] >= 2 && !sickCount[food]) suggestions.push(`✅ You've eaten *${food}* ${safeCount[food]} times and felt fine.`);
-  }
-
-  container.innerHTML = suggestions.map(s => `<p>${s}</p>`).join("");
-}
-
-// =======================
-// UPDATE CHARTS
-// =======================
-function updateCharts(logs) {
-  console.log("🔍 updateCharts called with logs:", logs);
-  
-  if (!logs || logs.length === 0) {
-    console.log("❌ No logs provided, destroying charts");
-    if (bpLineChartInstance) bpLineChartInstance.destroy();
-    if (dailyCombinationChartInstance) dailyCombinationChartInstance.destroy();
-    return;
-  }
-
-  const bpCtx = document.getElementById("bpLineChart")?.getContext("2d");
-
-  const bpData = logs
-  .filter(e => e.bps !== null && !isNaN(e.bps))
-  .map(e => ({x: e.date, y: parseInt(e.bps)}))
-  .sort((a, b) => new Date(a.x) - new Date(b.x));
-
-  if (bpLineChartInstance) bpLineChartInstance.destroy();
-  
-  if (bpCtx) {
+    console.log('BP Chart Data:', { labels, bpData });
+    
     bpLineChartInstance = new Chart(bpCtx, {
-      type: "line",
+      type: 'line',
       data: {
+        labels: labels,
         datasets: [{
-          label: "Blood Pressure (Systolic)",
+          label: 'Systolic BP',
           data: bpData,
-          borderColor: "#087E8B",
-          backgroundColor: "rgba(8,126,139,0.08)", // Lighter, more transparent fill
-          fill: true,
-          tension: 0.2,
-          pointRadius: 4,
-          pointBackgroundColor: "#087E8B"
+          borderColor: 'var(--primary-color)',
+          backgroundColor: 'rgba(52, 152, 219, 0.1)',
+          tension: 0.4
         }]
       },
       options: {
-        parsing: { xAxisKey: "x", yAxisKey: "y" },
-        scales: {
-          x: { type: "time", time: { unit: "day" }, title: { display: true, text: "Date" }},
-          y: { title: { display: true, text: "Systolic BP" }}
-        },
-        plugins: { title: { display: true, text: "Blood Pressure Trend" }},
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 2
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 80,
+            max: 180
+          }
+        }
       }
     });
+    
+    console.log(" BP Line Chart created successfully!");
+    
+  } catch (error) {
+    console.error(" Error updating BP chart:", error);
   }
+}
 
-  // Create Daily Food Combination Chart
-  const combinationCtx = document.getElementById("dailyCombinationChart")?.getContext("2d");
-
-  if (combinationCtx) {
-    if (dailyCombinationChartInstance) dailyCombinationChartInstance.destroy();
+function updateDailyCombinationChart(logs) {
+  try {
+    const combinationCtx = document.getElementById('dailyCombinationChart');
+    if (!combinationCtx) return;
     
-    // Get today's entries only
+    // Destroy existing chart
+    if (dailyCombinationChartInstance) {
+      dailyCombinationChartInstance.destroy();
+    }
+    
+    // Get today's entries
     const today = new Date().toLocaleDateString();
-    const todaysEntries = logs.filter(entry => entry.date === today);
-    
-    // Debug logging
-    console.log("Today's date:", today);
-    console.log("All logs:", logs);
-    console.log("Today's entries:", todaysEntries);
-    
-    // Debug each entry's date format
-    logs.forEach((entry, index) => {
-      console.log(`Entry ${index}: "${entry.food}" - Date: "${entry.date}" (Type: ${typeof entry.date})`);
-      console.log(`  Does "${entry.date}" === "${today}"?`, entry.date === today);
+    const todayEntries = logs.filter(entry => {
+      const entryDate = new Date(entry.date);
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return entryDate >= weekAgo;
     });
+
+    if (todayEntries.length === 0) {
+      console.log("No food entries for today");
+      return;
+    }
     
-    // Group entries by time period and track individual foods
-    const timeData = {
-      morning: { W: [], S: [], P: [], conflicts: [] },
-      afternoon: { W: [], S: [], P: [], conflicts: [] },
-      evening: { W: [], S: [], P: [], conflicts: [] }
+    // Categorize by time periods
+    const timePeriods = {
+      'Morning': [],
+      'Afternoon': [],
+      'Evening': []
     };
     
-    // Map meal types to time periods
-    const mealToTime = {
-      'Breakfast': 'morning',
-      'Lunch': 'afternoon', 
-      'Dinner': 'evening',
-      'Snacks': 'afternoon',
-      'Dessert': 'evening'
-    };
-    
-    // Process today's entries
-    todaysEntries.forEach(entry => {
-      const category = categorizeFoodItem(entry.food);
-      const timePeriod = mealToTime[entry.mealType] || 'afternoon';
+    todayEntries.forEach(entry => {
+      const analysis = analyzeFoodText(entry.food);
+      const mealType = entry.mealType || 'breakfast';
       
-      // Store food details for tooltips
-      const foodData = {
-        name: entry.food,
-        timestamp: entry.timestamp || 'No time recorded',
-        sick: entry.sick,
-        mealType: entry.mealType
-      };
-      
-      timeData[timePeriod][category].push(foodData);
-    });
-    
-    // Check for S+P conflicts in each time period
-    Object.keys(timeData).forEach(period => {
-      if (timeData[period].S.length > 0 && timeData[period].P.length > 0) {
-        timeData[period].conflicts = [...timeData[period].S, ...timeData[period].P];
+      let timePeriod = 'Morning';
+      if (mealType === 'lunch' || mealType === 'snack') {
+        timePeriod = 'Afternoon';
+      } else if (mealType === 'dinner') {
+        timePeriod = 'Evening';
       }
+      
+      timePeriods[timePeriod].push({
+        name: entry.food,
+        categories: analysis.categories,
+        hasConflict: analysis.categories.includes('S') && analysis.categories.includes('P'),
+        timestamp: entry.timestamp || 'No time recorded',
+        sick: entry.sick
+      });
     });
     
-    // Create datasets for each food category
+    // Create datasets
     const datasets = [
       {
-        label: "W Foods (Neutral)",
-        data: [timeData.morning.W.length, timeData.afternoon.W.length, timeData.evening.W.length],
-        backgroundColor: "#729885",
-        borderColor: "#729885",
-        borderWidth: 1,
-        foodDetails: [timeData.morning.W, timeData.afternoon.W, timeData.evening.W]
+        label: 'W (Neutral)',
+        data: [0, 0, 0],
+        backgroundColor: 'rgba(46, 204, 113, 0.8)',
+        foodDetails: [[], [], []]
       },
       {
-        label: "S Foods (Starches)",
-        data: [timeData.morning.S.length, timeData.afternoon.S.length, timeData.evening.S.length],
-        backgroundColor: "#087E8B", 
-        borderColor: "#087E8B",
-        borderWidth: 1,
-        foodDetails: [timeData.morning.S, timeData.afternoon.S, timeData.evening.S]
+        label: 'S (Starch)',
+        data: [0, 0, 0],
+        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+        foodDetails: [[], [], []]
       },
       {
-        label: "P Foods (Proteins)",
-        data: [timeData.morning.P.length, timeData.afternoon.P.length, timeData.evening.P.length],
-        backgroundColor: "#2C2C2C",
-        borderColor: "#2C2C2C", 
-        borderWidth: 1,
-        foodDetails: [timeData.morning.P, timeData.afternoon.P, timeData.evening.P]
+        label: 'P (Protein)',
+        data: [0, 0, 0],
+        backgroundColor: 'rgba(155, 89, 182, 0.8)',
+        foodDetails: [[], [], []]
+      },
+      {
+        label: 'S+P Conflict',
+        data: [0, 0, 0],
+        backgroundColor: 'rgba(231, 76, 60, 0.9)',
+        foodDetails: [[], [], []]
       }
     ];
     
-    // Add conflict overlay if needed
-    const conflictData = [timeData.morning.conflicts.length, timeData.afternoon.conflicts.length, timeData.evening.conflicts.length];
-    
-    if (conflictData.some(count => count > 0)) {
-      datasets.push({
-        label: "⚠️ S+P Conflicts",
-        data: conflictData,
-        backgroundColor: "rgba(255, 0, 0, 0.3)",
-        borderColor: "#FF0000",
-        borderWidth: 2,
-        type: 'bar',
-        foodDetails: [timeData.morning.conflicts, timeData.afternoon.conflicts, timeData.evening.conflicts]
+    // Populate data
+    Object.keys(timePeriods).forEach((period, periodIndex) => {
+      const foods = timePeriods[period];
+      
+      foods.forEach(food => {
+        if (food.hasConflict) {
+          datasets[3].data[periodIndex]++;
+          datasets[3].foodDetails[periodIndex].push(food);
+        } else if (food.categories.includes('S')) {
+          datasets[1].data[periodIndex]++;
+          datasets[1].foodDetails[periodIndex].push(food);
+        } else if (food.categories.includes('P')) {
+          datasets[2].data[periodIndex]++;
+          datasets[2].foodDetails[periodIndex].push(food);
+        } else {
+          datasets[0].data[periodIndex]++;
+          datasets[0].foodDetails[periodIndex].push(food);
+        }
       });
-    }
+    });
     
     dailyCombinationChartInstance = new Chart(combinationCtx, {
-      type: "bar",
+      type: 'bar',
       data: {
-        labels: ["Morning", "Afternoon", "Evening"],
+        labels: ['Morning', 'Afternoon', 'Evening'],
         datasets: datasets
       },
       options: {
@@ -1026,12 +939,29 @@ function updateCharts(logs) {
         maintainAspectRatio: true,
         aspectRatio: 2,
         scales: {
-          x: { title: { display: true, text: "Time of Day" }},
-          y: { beginAtZero: true, title: { display: true, text: "Number of Foods" }, max: 10 }
+          x: { 
+            title: { display: true, text: 'Time of Day' }
+          },
+          y: { 
+            beginAtZero: true, 
+            title: { display: true, text: 'Number of Foods' },
+            max: 10 
+          }
         },
         plugins: {
-          legend: { display: true, position: "top", labels: { padding: 20, usePointStyle: true }},
-          title: { display: true, text: `Daily Food Combinations - ${today}`, font: { size: 16 }},
+          legend: { 
+            display: true, 
+            position: 'top',
+            labels: { 
+              padding: 20, 
+              usePointStyle: true 
+            }
+          },
+          title: { 
+            display: true, 
+            text: `Daily Food Combinations - ${today}`,
+            font: { size: 16 }
+          },
           tooltip: {
             callbacks: {
               title: (context) => {
@@ -1067,7 +997,7 @@ function updateCharts(logs) {
                       timeStr = food.timestamp;
                     }
                   }
-                  return `• ${food.name} ${timeStr ? `(${timeStr})` : ''} ${food.sick ? '🤢' : '🥳'}`;
+                  return `• ${food.name} ${timeStr ? `(${timeStr})` : ''} ${food.sick ? ' ' : ' '}`;
                 }).join('\n');
                 
                 return foodList;
@@ -1075,143 +1005,1085 @@ function updateCharts(logs) {
             }
           }
         },
-        layout: { padding: { bottom: 20 }}
+        layout: { 
+          padding: { bottom: 20 }
+        }
       }
     });
+    
+  } catch (error) {
+    console.error(" Error updating combination chart:", error);
   }
 }
 
-// =======================
-// WELCOME POPUP FUNCTIONALITY
-// =======================
-function checkWelcomePopup() {
-  // Check if welcome popup has been shown before
-  const welcomeFlag = localStorage.getItem("welcomeShown");
-  console.log("Welcome flag from localStorage:", welcomeFlag);
-  
-  // TEMPORARILY FORCE POPUP TO SHOW FOR DEBUGGING
-  welcomeShown = false; // Force to false to always show popup
-  console.log("Welcome shown status (forced):", welcomeShown);
-  
-  if (!welcomeShown) {
-    console.log("Showing welcome popup...");
-    showWelcomePopup();
-    // Don't set localStorage yet so we can test multiple times
-    // localStorage.setItem("welcomeShown", "true");
-  } else {
-    console.log("Welcome popup already shown, skipping...");
-  }
-}
-
-function checkBPReminder() {
-  // Get the date from the most recent entry (the one just added)
-  if (foodEntries.length === 0) return;
-  
-  const lastEntry = foodEntries[foodEntries.length - 1];
-  const entryDate = lastEntry.date;
-  
-  console.log("Checking BP reminder for date:", entryDate);
-  
-  const entriesForDate = foodEntries.filter(entry => entry.date === entryDate);
-  const bpEntriesForDate = entriesForDate.filter(entry => entry.bps);
-  
-  console.log("All food entries:", foodEntries);
-  console.log(`Entries for ${entryDate}:`, entriesForDate);
-  console.log(`BP entries for ${entryDate}:`, bpEntriesForDate);
-  console.log(`Food entries count for ${entryDate}:`, entriesForDate.length);
-  console.log(`BP entries count for ${entryDate}:`, bpEntriesForDate.length);
-  
-  // Check if already shown for this specific date
-  const bpReminderShownForDate = localStorage.getItem(`bpReminderShown_${entryDate}`);
-  console.log(`BP reminder already shown for ${entryDate}?`, bpReminderShownForDate);
-  
-  // Show BP popup reminder if user has made 2+ entries for this date AND no BP entered
-  if (entriesForDate.length >= 2 && bpEntriesForDate.length === 0) {
-    console.log("CONDITIONS MET: Showing BP reminder popup for", entryDate);
-    showBPReminderPopup(entryDate);
-  } else {
-    console.log("CONDITIONS NOT MET - entries:", entriesForDate.length, "BP entries:", bpEntriesForDate.length);
-  }
-}
-
-function showBPReminderPopup(date) {
-  // Check if BP reminder was already shown today
-  const bpReminderShownForDate = localStorage.getItem(`bpReminderShown_${date}`);
-  
-  console.log("Checking if BP reminder popup should show...");
-  console.log(`BP reminder already shown for ${date}?`, bpReminderShownForDate);
-  
-  if (!bpReminderShownForDate) {
-    const popup = document.getElementById('bpReminderOnlyPopup');
-    console.log("BP reminder popup element found:", !!popup);
-    if (popup) {
-      popup.style.display = 'block';
-      console.log("BP reminder popup displayed!");
-      // Mark as shown for today
-      localStorage.setItem(`bpReminderShown_${date}`, 'true');
-    } else {
-      console.error("BP reminder popup element not found!");
+function generateAISuggestions(entries) {
+  try {
+    console.log(" Generating AI suggestions...");
+    
+    const aiSuggestionsDiv = document.getElementById('aiSuggestions');
+    if (!aiSuggestionsDiv) return;
+    
+    if (!entries || entries.length === 0) {
+      aiSuggestionsDiv.innerHTML = '<p>Add some food entries to get personalized health insights!</p>';
+      return;
     }
-  } else {
-    console.log("BP reminder already shown for this date, skipping...");
+    
+    // Analyze recent entries (last 7 days)
+    const recentEntries = entries.filter(entry => {
+      const entryDate = new Date(entry.date);
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return entryDate >= weekAgo;
+    });
+
+    const sickEntries = recentEntries.filter(entry => entry.sick);
+    const conflictEntries = recentEntries.filter(entry => {
+      const analysis = analyzeFoodText(entry.food);
+      return analysis.categories.includes('S') && analysis.categories.includes('P');
+    });
+    
+    let suggestions = [];
+    
+    // Generate suggestions based on patterns
+    if (sickEntries.length > 0) {
+      const commonSickFoods = sickEntries.map(entry => entry.food);
+      suggestions.push(` You've felt sick after eating: ${commonSickFoods.slice(0, 3).join(', ')}. Consider avoiding these foods.`);
+    }
+    
+    if (conflictEntries.length > 0) {
+      suggestions.push(` You've had ${conflictEntries.length} S+P combinations recently. Try separating starches and proteins by 3+ hours.`);
+    }
+    
+    if (recentEntries.length > 0) {
+      const wFoods = recentEntries.filter(entry => {
+        const analysis = analyzeFoodText(entry.food);
+        return analysis.categories.includes('W') && !entry.sick;
+      });
+      
+      if (wFoods.length > 0) {
+        suggestions.push(` Great choices: ${wFoods.slice(0, 2).map(e => e.food).join(', ')} - these neutral foods work well with everything!`);
+      }
+    }
+    
+    // Default suggestions if no patterns found
+    if (suggestions.length === 0) {
+      suggestions = [
+        " Try adding more neutral (W) foods like leafy greens and vegetables",
+        " Remember to separate starches and proteins by 3+ hours",
+        " Keep tracking to identify your personal food patterns"
+      ];
+    }
+    
+    // Display suggestions in a styled container
+    aiSuggestionsDiv.innerHTML = `
+      <div class="ai-suggestions-container">
+        <h3> AI Health Insights</h3>
+        <div class="suggestions-list">
+          ${suggestions.map(suggestion => `<div class="suggestion-item">${suggestion}</div>`).join('')}
+        </div>
+      </div>
+    `;
+    
+    console.log(" AI suggestions generated!");
+    
+  } catch (error) {
+    console.error(" Error generating AI suggestions:", error);
   }
 }
 
-function closeBPReminderPopup() {
-  const popup = document.getElementById('bpReminderPopup');
-  if (popup) {
-    popup.style.display = 'none';
+function generateHealthReport() {
+  const today = new Date().toLocaleDateString();
+  
+  // Analyze food patterns
+  const totalEntries = foodEntries.length;
+  const sickEntries = foodEntries.filter(entry => entry.sick).length;
+  const conflictEntries = foodEntries.filter(entry => {
+    const analysis = analyzeFoodText(entry.food);
+    return analysis.categories.includes('S') && analysis.categories.includes('P');
+  }).length;
+  
+  // Get recent entries (last 7 days)
+  const recentEntries = foodEntries.filter(entry => {
+    const entryDate = new Date(entry.date);
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return entryDate >= weekAgo;
+  });
+
+  // BP data
+  const bpEntries = foodEntries.filter(entry => entry.bps && entry.bps !== 'null' && entry.bps !== null);
+  
+  // Collect health details from entries
+  const healthDetails = {
+    exercise: [],                 // [{date, activity, timestamp}]
+    stressRelief: [],             // [{date, activity, timestamp}]
+    symptoms: [],                 // [{date, symptom, timestamp}]
+    totalHealthEntries: 0
+  };
+  
+  foodEntries.forEach(entry => {
+    if (entry.healthDetails) {
+      const hd = entry.healthDetails;
+      let addedAny = false;
+      
+      // Normalize arrays
+      const exerciseList = Array.isArray(hd.exercise) ? hd.exercise : (Array.isArray(hd.exerciseActivities) ? hd.exerciseActivities : []);
+      const stressList = Array.isArray(hd.stressReliefActivities) ? hd.stressReliefActivities : [];
+      const symList = Array.isArray(hd.symptomsList) ? hd.symptomsList : (Array.isArray(hd.symptoms) ? hd.symptoms : []);
+      
+      const exercisedYes = (hd.exercised || '').toLowerCase() === 'yes';
+      const stressYes = (hd.stressRelief || '').toLowerCase() === 'yes';
+      const symptomsYes = (hd.symptoms || '').toLowerCase() === 'yes';
+      
+      // Collect exercise activities (or placeholder)
+      if (exerciseList.length > 0) {
+        exerciseList.forEach(activity => {
+          healthDetails.exercise.push({ date: entry.date, activity, timestamp: entry.timestamp });
+        });
+        console.log('Agg: exercise push -> len =', healthDetails.exercise.length);
+        addedAny = true;
+      } else if (exercisedYes) {
+        healthDetails.exercise.push({ date: entry.date, activity: 'Yes (unspecified)', timestamp: entry.timestamp });
+        console.log('Agg: exercise YES placeholder -> len =', healthDetails.exercise.length);
+        addedAny = true;
+      }
+      
+      // Collect stress relief activities (or placeholder)
+      if (stressList.length > 0) {
+        stressList.forEach(activity => {
+          healthDetails.stressRelief.push({ date: entry.date, activity, timestamp: entry.timestamp });
+        });
+        console.log('Agg: stress push -> len =', healthDetails.stressRelief.length);
+        addedAny = true;
+      } else if (stressYes) {
+        healthDetails.stressRelief.push({ date: entry.date, activity: 'Yes (unspecified)', timestamp: entry.timestamp });
+        console.log('Agg: stress YES placeholder -> len =', healthDetails.stressRelief.length);
+        addedAny = true;
+      }
+      
+      // Collect symptoms (or placeholder)
+      if (symList.length > 0) {
+        symList.forEach(symptom => {
+          healthDetails.symptoms.push({ date: entry.date, symptom, timestamp: entry.timestamp });
+        });
+        console.log('Agg: symptoms push -> len =', healthDetails.symptoms.length);
+        addedAny = true;
+      } else if (symptomsYes) {
+        healthDetails.symptoms.push({ date: entry.date, symptom: 'Yes (unspecified)', timestamp: entry.timestamp });
+        console.log('Agg: symptoms YES placeholder -> len =', healthDetails.symptoms.length);
+        addedAny = true;
+      }
+      
+      if (addedAny) healthDetails.totalHealthEntries++;
+    }
+  });
+  // Post-aggregation final lengths
+  console.log('HealthDetails final:', {
+    exercise: healthDetails.exercise.length,
+    stressRelief: healthDetails.stressRelief.length,
+    symptoms: healthDetails.symptoms.length,
+    totalHealthEntries: healthDetails.totalHealthEntries
+  });
+  
+  return {
+    generatedDate: today,
+    totalEntries,
+    sickEntries,
+    conflictEntries,
+    recentEntries: recentEntries.length,
+    bpEntries: bpEntries.length,
+    entries: foodEntries,
+    favorites: favoriteFoods,
+    healthDetails
+  };
+}
+
+function createHTMLReport(data) {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <header style="text-align: center; border-bottom: 2px solid #087E8B; padding-bottom: 20px; margin-bottom: 30px;">
+            <h1 style="color: #087E8B; margin: 0;"> Personal Health Report</h1>
+            <p style="color: #666; margin: 5px 0;">Generated: ${data.generatedDate}</p>
+            <p style="color: #666; margin: 5px 0;">Total Entries: ${data.totalEntries}</p>
+        </header>
+
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Health Summary</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #28a745;"> Felt Good</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.totalEntries - data.sickEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #dc3545;"> Felt Sick</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.sickEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #fd7e14;"> S+P Conflicts</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.conflictEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #6f42c1;"> BP Readings</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.bpEntries}</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Food Entries</h2>
+            ${data.entries.map(entry => `
+                <div style="background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 8px; border-left: 4px solid ${entry.sick ? '#dc3545' : '#28a745'};">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <strong style="color: #087E8B;">${entry.date}</strong> - ${entry.food} (${entry.mealType})
+                            ${entry.timestamp ? `<br><small style="color: #666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
+                            ${entry.analysis && entry.analysis.components ? `<br><small style="color: #666;"> Detected: ${entry.analysis.components.join(', ')}</small>` : ''}
+                            <br>Calories: ${entry.calories} | BP: ${entry.bps || 'N/A'} | BS: ${entry.bs || 'N/A'}
+                        </div>
+                        <div style="text-align: right;">
+                            ${entry.sick ? ' Felt Sick' : ' Felt Okay'}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </section>
+
+        ${(data.healthDetails.exercise.length + data.healthDetails.stressRelief.length + data.healthDetails.symptoms.length) > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Health Details</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <h3 style="margin: 0; color: #28a745;"> Exercise</h3>
+                ${data.healthDetails.exercise.map(ex => `
+                    <div style="margin: 5px 0;">
+                        <strong>${ex.date}</strong> - ${ex.activity}
+                        ${ex.timestamp ? `<br><small style="color: #666;"> ${ex.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+                
+                <h3 style="margin-top: 15px; color: #17a2b8;"> Stress Relief</h3>
+                ${data.healthDetails.stressRelief.map(sr => `
+                    <div style="margin: 5px 0;">
+                        <strong>${sr.date}</strong> - ${sr.activity}
+                        ${sr.timestamp ? `<br><small style="color: #666;"> ${sr.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+                
+                <h3 style="margin-top: 15px; color: #dc3545;"> Symptoms</h3>
+                ${data.healthDetails.symptoms.map(sym => `
+                    <div style="margin: 5px 0;">
+                        <strong>${sym.date}</strong> - ${sym.symptom}
+                        ${sym.timestamp ? `<br><small style="color: #666;"> ${sym.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        ${data.favorites.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Favorite Foods</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${data.favorites.map(fav => {
+                    const foodName = typeof fav === 'string' ? fav : fav.food;
+                    const favoriteDate = typeof fav === 'string' ? 'Added previously' : fav.date;
+                    return `<div style="margin: 5px 0;"> ${foodName} <small style="color: #666;">(Added: ${favoriteDate})</small></div>`;
+                }).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        <footer style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666;">
+            <p>This report was generated by your Personal Food Tracker app.</p>
+            <p><strong>Keep this information confidential and share only with trusted healthcare providers.</strong></p>
+        </footer>
+    </div>
+  `;
+}
+
+function handleExportEncrypted() {
+  try {
+    if (foodEntries.length === 0) {
+      alert("No food entries to export. Add some entries first!");
+      return;
+    }
+
+    // Show the export modal instead of using prompt
+    showExportModal();
+
+  } catch (error) {
+    console.error(" Error in export:", error);
+    alert("Error creating export. Please try again.");
+  }
+}
+
+function showExportModal() {
+  // Create modal HTML
+  const modalHTML = `
+    <div id="exportModal" class="export-modal-overlay">
+      <div class="export-modal-content">
+        <div class="export-modal-header">
+          <h2> Export Password</h2>
+        </div>
+        
+        <div class="export-modal-body">
+          <p class="export-description">Create a password to protect your medical data:</p>
+          <p class="export-subdescription"><strong>Your doctor will need this password to view the report.</strong></p>
+          
+          <div class="password-section">
+            <label for="exportPassword" class="password-label">Password:</label>
+            <div class="password-input-container">
+              <input type="password" id="exportPassword" class="export-password-input" placeholder="Enter password (6+ characters)" />
+              <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">
+                <span id="passwordToggleIcon">&#128274;</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="remember-checkbox">
+            <input type="checkbox" id="rememberPassword" class="remember-checkbox-input" />
+            <label for="rememberPassword" class="remember-label">Remember this password for future exports</label>
+          </div>
+        </div>
+        
+        <div class="export-modal-actions">
+          <button id="createReportBtn" class="create-report-btn">&#128275; Create Medical Report</button>
+          <button id="cancelExportBtn" class="cancel-export-btn">Cancel</button>
+        </div>
+        
+        <div class="export-modal-footer">
+          <p class="password-note">&#128274; Password is saved locally in your browser for convenience</p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add modal to page
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Load saved password if available
+  const savedPassword = localStorage.getItem('exportPassword');
+  if (savedPassword) {
+    document.getElementById('exportPassword').value = savedPassword;
+    document.getElementById('rememberPassword').checked = true;
+  }
+  
+  // Add event listeners
+  document.getElementById('createReportBtn').addEventListener('click', processExport);
+  document.getElementById('cancelExportBtn').addEventListener('click', closeExportModal);
+  document.getElementById('exportPassword').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      processExport();
+    }
+  });
+  
+  // Focus on password input
+  document.getElementById('exportPassword').focus();
+}
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('exportPassword');
+  const toggleIcon = document.getElementById('passwordToggleIcon');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    toggleIcon.innerHTML = '&#128275;';
+  } else {
+    passwordInput.type = 'password';
+    toggleIcon.innerHTML = '&#128274;';
+  }
+}
+
+function processExport() {
+  const password = document.getElementById('exportPassword').value;
+  const rememberPassword = document.getElementById('rememberPassword').checked;
+  
+  if (!password || password.length < 6) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+  
+  // Save password if requested
+  if (rememberPassword) {
+    localStorage.setItem('exportPassword', password);
+  } else {
+    localStorage.removeItem('exportPassword');
+  }
+  
+  // Close modal
+  closeExportModal();
+  
+  // Continue with export process
+  try {
+    // Generate comprehensive health report
+    const reportData = generateHealthReport();
+    
+    // One-time export diagnostic to verify health data included
+    if (!window.__exportDiagnosticLogged) {
+      const hd = reportData.healthDetails || {};
+      // Detect entries where radios are YES but no chips selected
+      const radioYesNoChips = foodEntries.reduce((acc, e) => {
+        const h = e.healthDetails || {};
+        if (h.exercised === 'yes' && (!Array.isArray(h.exercise) || h.exercise.length === 0)) acc.exercise++;
+        if (h.stressRelief === 'yes' && (!Array.isArray(h.stressReliefActivities) || h.stressReliefActivities.length === 0)) acc.stressRelief++;
+        if (h.symptoms === 'yes' && (!Array.isArray(h.symptomsList) || h.symptomsList.length === 0)) acc.symptoms++;
+        return acc;
+      }, { exercise: 0, stressRelief: 0, symptoms: 0 });
+      
+      console.group('%c Export Diagnostic','color:#087E8B;font-weight:600;');
+      console.log('Total entries:', foodEntries.length);
+      console.log('HealthDetails counts:', {
+        totalHealthEntries: hd.totalHealthEntries,
+        exerciseItems: Array.isArray(hd.exercise) ? hd.exercise.length : 0,
+        stressReliefItems: Array.isArray(hd.stressRelief) ? hd.stressRelief.length : 0,
+        symptomItems: Array.isArray(hd.symptoms) ? hd.symptoms.length : 0
+      });
+      console.log('Radios YES with no chips selected:', radioYesNoChips);
+      if ((radioYesNoChips.exercise + radioYesNoChips.stressRelief + radioYesNoChips.symptoms) > 0) {
+        console.warn('Some entries have radios = YES but no chips selected; these will not appear unless chips are chosen.');
+      }
+      console.groupEnd();
+      window.__exportDiagnosticLogged = true;
+    }
+     
+    // Create HTML report
+    const htmlReport = createHTMLReport(reportData);
+    
+    // Encrypt the report
+    const encryptedData = CryptoJS.AES.encrypt(htmlReport, password).toString();
+    
+    // Create download
+    const today = new Date().toISOString().split('T')[0];
+    const filename = `Health_Report_${today}.html`;
+    
+    const exportHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Encrypted Health Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .decrypt-container {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .decrypt-header {
+            text-align: center;
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .decrypt-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .decrypt-body {
+            padding: 30px;
+        }
+        
+        .decrypt-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+        
+        .decrypt-subdescription {
+            font-size: 1.1rem;
+            color: #666;
+            margin: 0 0 30px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .password-section {
+            margin-bottom: 25px;
+        }
+        
+        .password-label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .decrypt-password-input {
+            width: 100%;
+            padding: 15px 50px 15px 15px;
+            font-size: 1.1rem;
+            border: 3px solid #ff69b4;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+            background: white;
+        }
+        
+        .decrypt-password-input:focus {
+            border-color: #ff1493;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .decrypt-actions {
+            padding: 0 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .decrypt-btn {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .decrypt-btn:hover {
+            background: #1565c0;
+        }
+        
+        .decrypt-footer {
+            padding: 0 30px 30px;
+            text-align: center;
+        }
+        
+        .decrypt-note {
+            font-size: 0.9rem;
+            color: #999;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .error { 
+            color: #dc3545; 
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .hidden { display: none; }
+        
+        .report-content {
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        /* Mobile responsiveness */
+        @media screen and (max-width: 768px) {
+            .decrypt-container {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .decrypt-header,
+            .decrypt-body,
+            .decrypt-actions,
+            .decrypt-footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .decrypt-description,
+            .decrypt-subdescription {
+                font-size: 1rem;
+            }
+            
+            .password-label {
+                font-size: 1.1rem;
+            }
+            
+            .decrypt-password-input {
+                font-size: 1rem;
+                padding: 12px 45px 12px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="decrypt-section">
+        <div class="decrypt-container">
+            <div class="decrypt-header">
+                <h2> Encrypted Health Report</h2>
+            </div>
+            
+            <div class="decrypt-body">
+                <p class="decrypt-description">This report contains sensitive health information and is password protected.</p>
+                <p class="decrypt-subdescription"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                
+                <div class="password-section">
+                    <label for="decryptPassword" class="password-label">Enter Password:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="decryptPassword" class="decrypt-password-input" placeholder="Enter your password" />
+                        <button type="button" class="password-toggle" onclick="toggleDecryptPassword()">
+                            <span id="decryptToggleIcon">&#128274;</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="decrypt-error" class="error hidden"></div>
+            </div>
+            
+            <div class="decrypt-actions">
+                <button id="decryptBtn" class="decrypt-btn" onclick="decryptReport()">&#128275; Decrypt Report</button>
+            </div>
+            
+            <div class="decrypt-footer">
+                <p class="decrypt-note">&#128274; Keep this password safe and confidential</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="report-content" class="report-content hidden"></div>
+    
+    <script>
+        const encryptedData = '${encryptedData}';
+        
+        function toggleDecryptPassword() {
+            const passwordInput = document.getElementById('decryptPassword');
+            const toggleIcon = document.getElementById('decryptToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.innerHTML = '&#128275;';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.innerHTML = '&#128274;';
+            }
+        }
+        
+        function decryptReport() {
+            const password = document.getElementById('decryptPassword').value;
+            const errorDiv = document.getElementById('decrypt-error');
+            
+            if (!password) {
+                errorDiv.textContent = 'Please enter the password.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                const decrypted = CryptoJS.AES.decrypt(encryptedData, password);
+                const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                
+                if (!decryptedText) {
+                    throw new Error('Invalid password');
+                }
+                
+                document.getElementById('decrypt-section').classList.add('hidden');
+                document.getElementById('report-content').innerHTML = decryptedText;
+                document.getElementById('report-content').classList.remove('hidden');
+                document.body.style.background = 'white';
+                
+            } catch (error) {
+                errorDiv.textContent = 'Incorrect password. Please try again.';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+        
+        document.getElementById('decryptPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decryptReport();
+            }
+        });
+        
+        // Focus on password input when page loads
+        document.getElementById('decryptPassword').focus();
+    </script>
+</body>
+</html>`;
+
+    // Download the file
+    const blob = new Blob([exportHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Show success message
+    alert(` Health report exported successfully!\n\nFile: ${filename}\nPassword: ${password}\n\nKeep your password safe - you'll need it to view the report.`);
+    
+  } catch (error) {
+    console.error(" Error creating export:", error);
+    alert("Error creating export. Please try again.");
+  }
+}
+
+function closeExportModal() {
+  const modal = document.getElementById('exportModal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function checkWelcomePopup() {
+  try {
+    const welcomeShown = localStorage.getItem("welcomeShown");
+    if (!welcomeShown) {
+      showWelcomePopup();
+    }
+  } catch (error) {
+    console.error(" Error checking welcome popup:", error);
   }
 }
 
 function showWelcomePopup() {
-  const popup = document.getElementById('bpReminderPopup');
-  if (popup) {
-    popup.style.display = 'block';
-    // Set today's date in the date input
-    const today = new Date().toLocaleDateString();
-    document.getElementById('dateInput').value = today;
+  try {
+    const popup = document.getElementById('bpReminderPopup');
+    if (popup) {
+      popup.style.display = 'block';
+    }
+  } catch (error) {
+    console.error(" Error showing welcome popup:", error);
   }
 }
 
-function handleAddBPNow() {
-  closeBPReminderPopup();
-  // Mark welcome as shown permanently
-  localStorage.setItem("welcomeShown", "true");
-  
-  // Focus on the food input field to get started
-  const foodInput = document.getElementById('foodInput');
-  const entryForm = document.getElementById('entryForm');
-  
-  if (foodInput && entryForm) {
-    entryForm.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => {
-      foodInput.focus();
-    }, 500);
+function closeBPReminderPopup() {
+  try {
+    const popup = document.getElementById('bpReminderPopup');
+    if (popup) {
+      popup.style.display = 'none';
+      localStorage.setItem("welcomeShown", "true");
+    }
+  } catch (error) {
+    console.error(" Error closing popup:", error);
   }
 }
 
-function handleSkipToday() {
-  closeBPReminderPopup();
-  // Mark welcome as shown permanently
-  localStorage.setItem("welcomeShown", "true");
+function checkBPReminder() {
+  // Simplified for now
 }
 
-function closeBPReminderOnlyPopup() {
-  const popup = document.getElementById('bpReminderOnlyPopup');
-  if (popup) {
-    popup.style.display = 'none';
+function setupHealthChips() {
+  try {
+    console.log(" Setting up health details...");
+    
+    // Also set up direct event listeners as backup
+    const allChips = document.querySelectorAll('.chip');
+    console.log(`Found ${allChips.length} health chips for direct listeners`);
+    
+    let duplicateAttachCount = 0;
+    let preAttachedCount = 0; // chips already marked as attached before this run
+    allChips.forEach((chip, index) => {
+      console.log(`Setting up direct listener for chip ${index}: ${chip.dataset.value}`);
+      
+      // Do NOT remove listeners here; function identity changes between runs and removal won't match.
+      // Instead, only attach if not previously marked.
+      if (chip.__chipListenerAttached === true) {
+        preAttachedCount++;
+        // Listener already attached in a prior setup; skip adding to avoid duplicates
+        duplicateAttachCount++;
+      } else {
+        chip.addEventListener('click', function chipClickHandler(event) {
+          // Prevent any other click listeners from also toggling
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          const el = this;
+          console.log(`Direct handler - Chip clicked: ${el.dataset.value}`);
+          console.log(`Direct handler - Before toggle:`, el.classList.contains('selected'));
+          el.classList.toggle('selected');
+          console.log(`Direct handler - After toggle:`, el.classList.contains('selected'));
+          console.log(`Direct handler - Current classes:`, el.className);
+          // Force style recalculation
+          void el.offsetHeight;
+          
+          // Auto-update last entry with new health details
+          setTimeout(() => updateLastEntryHealthDetails(), 100);
+        });
+        Object.defineProperty(chip, '__chipListenerAttached', {
+          value: true,
+          writable: false,
+          enumerable: false
+        });
+      }
+    });
+
+    // One-time assertion/summary of listener counts
+    console.info(`Chip listener setup: ${preAttachedCount} chips already attached before this run.`);
+    console.assert(
+      duplicateAttachCount === preAttachedCount,
+      `Expected to skip re-attaching for exactly the pre-attached chips (${preAttachedCount}), but skip count was ${duplicateAttachCount}`
+    );
+    if (preAttachedCount > 0) {
+      console.info(' Re-initialization detected. Skipped attaching listeners to already-initialized chips.');
+    } else {
+      console.info(' Chip listener setup complete: exactly one direct listener per chip attached this run.');
+    }
+    
+    // Set up exercise radio buttons (now with conditional visibility like others)
+    const exerciseRadios = document.querySelectorAll('input[name="exercised"]');
+    const exerciseChips = document.getElementById('exerciseChips');
+    
+    console.log(`Found ${exerciseRadios.length} exercise radio buttons`);
+    console.log('Exercise chips element:', exerciseChips);
+    
+    exerciseRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        console.log(`Exercise radio changed to: ${this.value}`);
+        if (this.value === 'yes') {
+          if (exerciseChips) {
+            exerciseChips.style.display = 'flex';
+            console.log('Showing exercise chips');
+          }
+        } else {
+          if (exerciseChips) {
+            exerciseChips.style.display = 'none';
+            // Clear selected exercise chips when hiding
+            exerciseChips.querySelectorAll('.chip.selected').forEach(chip => {
+              chip.classList.remove('selected');
+            });
+            console.log('Hiding exercise chips and clearing selections');
+          }
+        }
+        // Auto-update last entry with new health details
+        setTimeout(() => updateLastEntryHealthDetails(), 100);
+      });
+    });
+    
+    // Set up stress relief radio buttons
+    const stressRadios = document.querySelectorAll('input[name="stressRelief"]');
+    const stressChips = document.getElementById('stressChips');
+    
+    console.log(`Found ${stressRadios.length} stress radio buttons`);
+    console.log('Stress chips element:', stressChips);
+    
+    stressRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        console.log(`Stress relief radio changed to: ${this.value}`);
+        if (this.value === 'yes') {
+          if (stressChips) {
+            stressChips.style.display = 'flex';
+            console.log('Showing stress chips');
+          }
+        } else {
+          if (stressChips) {
+            stressChips.style.display = 'none';
+            // Clear selected stress chips when hiding
+            stressChips.querySelectorAll('.chip.selected').forEach(chip => {
+              chip.classList.remove('selected');
+            });
+            console.log('Hiding stress chips and clearing selections');
+          }
+        }
+        // Auto-update last entry with new health details
+        setTimeout(() => updateLastEntryHealthDetails(), 100);
+      });
+    });
+    
+    // Set up symptoms radio buttons
+    const symptomRadios = document.querySelectorAll('input[name="symptoms"]');
+    const symptomChips = document.getElementById('symptomsChips');
+    
+    console.log(`Found ${symptomRadios.length} symptom radio buttons`);
+    console.log('Symptom chips element:', symptomChips);
+    
+    symptomRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        console.log(`Symptoms radio changed to: ${this.value}`);
+        if (this.value === 'yes') {
+          if (symptomChips) {
+            symptomChips.style.display = 'flex';
+            console.log('Showing symptom chips');
+          }
+        } else {
+          if (symptomChips) {
+            symptomChips.style.display = 'none';
+            // Clear selected symptom chips when hiding
+            symptomChips.querySelectorAll('.chip.selected').forEach(chip => {
+              chip.classList.remove('selected');
+            });
+            console.log('Hiding symptom chips and clearing selections');
+          }
+        }
+        // Auto-update last entry with new health details
+        setTimeout(() => updateLastEntryHealthDetails(), 100);
+      });
+    });
+    
+    console.log(" Health chips set up successfully!");
+  } catch (error) {
+    console.error(" Error setting up health chips:", error);
   }
 }
 
-function handleBPReminderGotIt() {
-  closeBPReminderOnlyPopup();
-  // Mark welcome as shown permanently
-  localStorage.setItem("welcomeShown", "true");
+// Auto-update the last entry's health details when selections change
+function updateLastEntryHealthDetails() {
+  try {
+    if (foodEntries.length === 0) return; // No entries to update
+    
+    // Get current health selections (same logic as handleAddLog)
+    const selectedExercise = [];
+    const selectedStressRelief = [];
+    const selectedSymptoms = [];
+    
+    // Get radio button states
+    const exercisedRadio = document.querySelector('input[name="exercised"]:checked');
+    const stressReliefRadio = document.querySelector('input[name="stressRelief"]:checked');
+    const symptomsRadio = document.querySelector('input[name="symptoms"]:checked');
+    
+    // Get selected chips
+    document.querySelectorAll('#exerciseChips .chip.selected').forEach(chip => {
+      selectedExercise.push(chip.dataset.value);
+    });
+    document.querySelectorAll('#stressChips .chip.selected').forEach(chip => {
+      selectedStressRelief.push(chip.dataset.value);
+    });
+    document.querySelectorAll('#symptomsChips .chip.selected').forEach(chip => {
+      selectedSymptoms.push(chip.dataset.value);
+    });
+    
+    // Derive final values
+    const exercisedValue = selectedExercise.length > 0 ? 'yes' : (exercisedRadio?.value || 'no');
+    const stressReliefValue = selectedStressRelief.length > 0 ? 'yes' : (stressReliefRadio?.value || 'no');
+    const symptomsValue = selectedSymptoms.length > 0 ? 'yes' : (symptomsRadio?.value || 'no');
+    
+    // Add placeholders if needed
+    if (exercisedValue === 'yes' && selectedExercise.length === 0) selectedExercise.push('Yes (unspecified)');
+    if (stressReliefValue === 'yes' && selectedStressRelief.length === 0) selectedStressRelief.push('Yes (unspecified)');
+    if (symptomsValue === 'yes' && selectedSymptoms.length === 0) selectedSymptoms.push('Yes (unspecified)');
+    
+    // Update the last entry
+    const lastEntry = foodEntries[foodEntries.length - 1];
+    lastEntry.healthDetails = {
+      exercised: exercisedValue,
+      exercise: selectedExercise,
+      stressRelief: stressReliefValue,
+      stressReliefActivities: selectedStressRelief,
+      symptoms: symptomsValue,
+      symptomsList: selectedSymptoms
+    };
+    
+    // Save to localStorage
+    localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
+    
+    console.log(' Auto-updated last entry health details:', lastEntry.healthDetails);
+    
+  } catch (error) {
+    console.error(" Error auto-updating health details:", error);
+  }
 }
 
-function handleSkipBPToday() {
-  closeBPReminderOnlyPopup();
-  // Mark welcome as shown permanently
-  localStorage.setItem("welcomeShown", "true");
+// Show beautiful warning modal instead of ugly alert
+function showWarningModal(warningMessage, detectedItems) {
+  try {
+    console.log('🚨 Showing warning modal:', warningMessage, detectedItems);
+    let modal = document.getElementById('warningModal');
+    if (!modal) {
+      console.log('Creating modal dynamically...');
+      modal = document.createElement('div');
+      modal.id = 'warningModal';
+      modal.className = 'modal-overlay';
+      modal.style.display = 'none';
+      modal.innerHTML = `
+        <div class="warning-modal">
+          <div class="warning-header">
+            <div class="warning-icon">⚠️</div>
+            <h3>Food Combination Alert</h3>
+          </div>
+          <div class="warning-content">
+            <p class="warning-message">
+              <strong>S + P Combination Detected!</strong><br>
+              This combination may cause digestive discomfort.
+            </p>
+            <div class="detected-items">
+              <span class="detected-label">Items detected:</span>
+              <span id="detectedItems" class="detected-list"></span>
+            </div>
+          </div>
+          <div class="warning-actions">
+            <button id="warningOkBtn" class="warning-btn primary">Got it! 👍</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+    
+    const detectedItemsSpan = modal.querySelector('#detectedItems');
+    console.log('Modal element:', modal);
+    console.log('DetectedItems span:', detectedItemsSpan);
+    
+    if (modal && detectedItemsSpan) {
+      // Set the detected items
+      detectedItemsSpan.textContent = detectedItems.join(', ');
+      
+      // Show the modal
+      modal.style.display = 'flex';
+      console.log('✅ Modal should now be visible');
+      
+      // Set up close button
+      const okBtn = modal.querySelector('#warningOkBtn');
+      if (okBtn) {
+        okBtn.onclick = () => {
+          modal.style.display = 'none';
+        };
+      }
+      
+      // Close on overlay click
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      };
+    } else {
+      console.error('❌ Modal elements not found!');
+      // Fallback to alert
+      alert(`Warning: ${warningMessage}\nItems detected: ${detectedItems.join(', ')}`);
+    }
+  } catch (error) {
+    console.error("Error showing warning modal:", error);
+    // Fallback to alert if modal fails
+    alert(`Warning: ${warningMessage}\nItems detected: ${detectedItems.join(', ')}`);
+  }
 }
+
+console.log(" Food Tracker script loaded successfully!");

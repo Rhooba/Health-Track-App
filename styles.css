@@ -8,6 +8,7 @@
   --primary-blue: #066873;
   --sage-green: #8B9467;
 }
+
 /* Match font and color and style across all the controls */
 input,
 select,
@@ -927,4 +928,535 @@ button {
   100% {
     box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
   }
+}
+
+/* Health Details Section */
+.health-details-section {
+  background-color: var(--crane);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.health-collapsible {
+  background-color: var(--tropic-blue);
+  color: white;
+  cursor: pointer;
+  padding: 12px 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.health-collapsible:hover {
+  background-color: var(--primary-blue);
+}
+
+.health-content {
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  background-color: var(--crane);
+}
+
+.health-content.active {
+  display: block;
+  max-height: 500px;
+  padding: 15px 20px;
+}
+
+.health-category {
+  margin-bottom: 20px;
+}
+
+.health-label {
+  display: block;
+  font-weight: 500;
+  color: var(--obsidian);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+/* Radio Button Styling */
+.radio-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.health-radio {
+  margin-right: 6px;
+  accent-color: var(--tropic-blue);
+}
+
+input[type="radio"].health-radio,
+input[name="exercised"],
+input[name="stressRelief"], 
+input[name="symptoms"] {
+  accent-color: var(--tropic-blue) !important;
+}
+
+.radio-text {
+  color: var(--obsidian);
+}
+
+/* Chip Styling */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chip {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: var(--seafoam);
+  color: var(--obsidian);
+  border: 2px solid var(--tropic-blue);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.chip:hover {
+  background-color: var(--tropic-blue);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.chip.selected {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+  box-shadow: 0 3px 6px rgba(8, 126, 139, 0.4) !important;
+  border-color: var(--primary-blue) !important;
+  transform: translateY(-1px) !important;
+  font-weight: 600 !important;
+}
+
+.chip.selected:hover {
+  background-color: var(--primary-blue) !important;
+}
+
+.chips-container .chip.selected {
+  background-color: var(--primary-blue) !important;
+  color: white !important;
+  box-shadow: 0 3px 6px rgba(8, 126, 139, 0.4) !important;
+  border-color: var(--primary-blue) !important;
+  transform: translateY(-1px) !important;
+  font-weight: 600 !important;
+}
+
+/* Mobile Responsiveness for Health Details */
+@media screen and (max-width: 768px) {
+  .chips-container {
+    gap: 6px;
+  }
+  
+  .chip {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .radio-group {
+    gap: 20px;
+  }
+  
+  .health-label {
+    font-size: 1rem;
+  }
+}
+
+/* Food Entry Styling */
+.food-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: var(--crane);
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border-left: 4px solid var(--tropic-blue);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.entry-content {
+  flex: 1;
+  margin-right: 15px;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.favorite-btn, .delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.favorite-btn {
+  color: #f39c12;
+}
+
+.favorite-btn:hover {
+  background-color: rgba(243, 156, 18, 0.1);
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  color: #e74c3c;
+}
+
+.delete-btn:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+  transform: scale(1.1);
+}
+
+/* Export Modal Styling */
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.export-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.export-modal-header {
+  text-align: center;
+  padding: 30px 30px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.export-modal-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.export-modal-body {
+  padding: 30px;
+}
+
+.export-description {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.export-subdescription {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 30px 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.password-section {
+  margin-bottom: 25px;
+}
+
+.password-label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.password-input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.export-password-input {
+  width: 100%;
+  padding: 15px 50px 15px 15px;
+  font-size: 1.1rem;
+  border: 3px solid #ff69b4;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  background: white;
+}
+
+.export-password-input:focus {
+  border-color: #ff1493;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+}
+
+.remember-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.remember-checkbox-input {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.remember-label {
+  font-size: 1rem;
+  color: #666;
+  cursor: pointer;
+}
+
+.export-modal-actions {
+  padding: 0 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.create-report-btn {
+  background: #1e88e5;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.create-report-btn:hover {
+  background: #1565c0;
+}
+
+.cancel-export-btn {
+  background: #e0e0e0;
+  color: #666;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-export-btn:hover {
+  background: #d0d0d0;
+}
+
+.export-modal-footer {
+  padding: 0 30px 30px;
+  text-align: center;
+}
+
+.password-note {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* Mobile responsiveness for export modal */
+@media screen and (max-width: 768px) {
+  .export-modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .export-modal-header,
+  .export-modal-body,
+  .export-modal-actions,
+  .export-modal-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .export-description,
+  .export-subdescription {
+    font-size: 1rem;
+  }
+  
+  .password-label {
+    font-size: 1.1rem;
+  }
+  
+  .export-password-input {
+    font-size: 1rem;
+    padding: 12px 45px 12px 12px;
+  }
+}
+
+/* Warning Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.warning-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 420px;
+  width: 90%;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 3px solid #ff6b6b;
+  animation: warningSlideIn 0.3s ease-out;
+}
+
+@keyframes warningSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.warning-header {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.warning-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  animation: warningPulse 2s infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.warning-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.warning-content {
+  padding: 24px;
+  background: #fafafa;
+}
+
+.warning-message {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--obsidian);
+  text-align: center;
+}
+
+.detected-items {
+  background: white;
+  border: 2px solid var(--seafoam);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.detected-label {
+  font-weight: 600;
+  color: var(--tropic-blue);
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.detected-list {
+  color: var(--obsidian);
+  font-weight: 500;
+  background: var(--seafoam);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.warning-actions {
+  padding: 20px 24px;
+  background: white;
+  text-align: center;
+}
+
+.warning-btn {
+  background: var(--tropic-blue);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.warning-btn:hover {
+  background: var(--primary-blue);
+  transform: translateY(-2px);
 }
