@@ -1460,3 +1460,264 @@ input[name="symptoms"] {
   background: var(--primary-blue);
   transform: translateY(-2px);
 }
+
+/* Timer Section Styles */
+.timer-section {
+  margin-top: 20px;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 2px solid var(--coral);
+  border-radius: 16px;
+  padding: 20px;
+  animation: timerPulse 2s ease-in-out infinite;
+}
+
+.timer-content {
+  text-align: center;
+}
+
+.timer-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  animation: clockTick 1s ease-in-out infinite;
+}
+
+.timer-text {
+  margin-bottom: 16px;
+}
+
+.timer-text p {
+  margin: 4px 0;
+  color: var(--obsidian);
+}
+
+.timer-text p:first-child {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--coral);
+}
+
+.countdown-display {
+  background: white;
+  border: 2px solid var(--coral);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.countdown-time {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--coral);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.countdown-label {
+  font-size: 0.8rem;
+  color: var(--tropic-blue);
+  font-weight: 500;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.safe-time {
+  background: var(--seafoam);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.95rem;
+  color: var(--obsidian);
+}
+
+.safe-time-value {
+  font-weight: 600;
+  color: var(--tropic-blue);
+  font-size: 1.1rem;
+}
+
+/* Timer Animations */
+@keyframes timerPulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.3);
+  }
+}
+
+@keyframes clockTick {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}
+
+/* Health Vitals Section */
+.health-vitals-section {
+  background-color: var(--crane);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.vitals-btn {
+  background: linear-gradient(135deg, var(--tropic-blue), var(--primary-blue));
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 120px;
+}
+
+.vitals-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, var(--primary-blue), var(--tropic-blue));
+}
+
+.vitals-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bp-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.bp-btn:hover {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+}
+
+.bs-btn {
+  background: linear-gradient(135deg, var(--sage-green), #7a8450);
+}
+
+.bs-btn:hover {
+  background: linear-gradient(135deg, #7a8450, var(--sage-green));
+}
+
+/* Vitals Modal Styles */
+.vitals-modal {
+  background: white;
+  border-radius: 15px;
+  padding: 0;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+.vitals-header {
+  background: linear-gradient(135deg, var(--tropic-blue), var(--primary-blue));
+  color: white;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.vitals-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.vitals-icon {
+  font-size: 1.5rem;
+}
+
+.vitals-content {
+  padding: 25px;
+}
+
+.vitals-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--obsidian);
+}
+
+.vitals-input,
+.vitals-select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--seafoam);
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.vitals-input:focus,
+.vitals-select:focus {
+  outline: none;
+  border-color: var(--tropic-blue);
+  box-shadow: 0 0 0 3px rgba(8, 126, 139, 0.1);
+}
+
+.vitals-actions {
+  padding: 20px 25px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  background-color: #f8f9fa;
+}
+
+.vitals-btn.primary {
+  background: linear-gradient(135deg, var(--tropic-blue), var(--primary-blue));
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.vitals-btn.primary:hover {
+  background: linear-gradient(135deg, var(--primary-blue), var(--tropic-blue));
+  transform: translateY(-1px);
+}
+
+.vitals-btn.secondary {
+  background: var(--crane);
+  color: var(--obsidian);
+  border: 2px solid var(--seafoam);
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.vitals-btn.secondary:hover {
+  background: var(--seafoam);
+  transform: translateY(-1px);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

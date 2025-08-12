@@ -10,6 +10,12 @@ let bpLineChartInstance = null;
 let dailyCombinationChartInstance = null;
 let bpReminderShown = false;
 let welcomeShown = false;
+let bpReadings = JSON.parse(localStorage.getItem('bpReadings')) || [];
+let bsReadings = JSON.parse(localStorage.getItem('bsReadings')) || [];
+
+// Food category timing tracking
+let lastSFoodTime = JSON.parse(localStorage.getItem('lastSFoodTime')) || null;
+let lastPFoodTime = JSON.parse(localStorage.getItem('lastPFoodTime')) || null;
 
 // =======================
 // FOOD CATEGORIZATION SYSTEM
@@ -63,6 +69,116 @@ function checkFoodCombination(categories) {
   
   // W + S = OK, W + P = OK, W only = OK
   return { safe: true, warning: null };
+}
+
+// Function to check food category timing (3-hour rule)
+function checkFoodTiming(categories) {
+  const now = new Date();
+  const threeHours = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+  
+  const hasS = categories.includes('S');
+  const hasP = categories.includes('P');
+  
+  // Check if trying to eat S food too soon after P food
+  if (hasS && lastPFoodTime) {
+    const lastPTime = new Date(lastPFoodTime);
+    const timeSinceP = now - lastPTime;
+    
+    if (timeSinceP < threeHours) {
+      const waitUntil = new Date(lastPTime.getTime() + threeHours);
+      const remainingTime = waitUntil - now;
+      return {
+        allowed: false,
+        conflictType: 'S after P',
+        lastFoodTime: lastPTime,
+        waitUntil: waitUntil,
+        remainingMs: remainingTime
+      };
+    }
+  }
+  
+  // Check if trying to eat P food too soon after S food
+  if (hasP && lastSFoodTime) {
+    const lastSTime = new Date(lastSFoodTime);
+    const timeSinceS = now - lastSTime;
+    
+    if (timeSinceS < threeHours) {
+      const waitUntil = new Date(lastSTime.getTime() + threeHours);
+      const remainingTime = waitUntil - now;
+      return {
+        allowed: false,
+        conflictType: 'P after S',
+        lastFoodTime: lastSTime,
+        waitUntil: waitUntil,
+        remainingMs: remainingTime
+      };
+    }
+  }
+  
+  return { allowed: true };
+}
+
+// Function to update food category timestamps
+function updateFoodTimestamps(categories) {
+  const now = new Date().toISOString();
+  
+  if (categories.includes('S')) {
+    lastSFoodTime = now;
+    localStorage.setItem('lastSFoodTime', JSON.stringify(now));
+  }
+  
+  if (categories.includes('P')) {
+    lastPFoodTime = now;
+    localStorage.setItem('lastPFoodTime', JSON.stringify(now));
+  }
+}
+
+// Line 136: Function to check if food combinations are safe and timed correctly
+function checkFoodCombinationAndTiming(categories) {
+  const combinationResult = checkFoodCombination(categories);
+  const timingResult = checkFoodTiming(categories);
+  
+  console.log('🔍 Line 140: Timing check results:', {
+    combinationResult,
+    timingResult,
+    categories,
+    lastSFoodTime,
+    lastPFoodTime
+  });
+  
+  if (!combinationResult.safe) {
+    console.log('❌ Line 148: Regular S+P combination detected');
+    return { safe: false, warning: combinationResult.warning, timingInfo: null };
+  }
+  
+  if (!timingResult.allowed) {
+    console.log('⏰ Line 154: TIMING CONFLICT detected - should show timer!');
+    return { 
+      safe: false, 
+      warning: `Wait ${Math.floor(timingResult.remainingMs / 1000 / 60)} minutes before eating ${timingResult.conflictType}`,
+      timingInfo: timingResult
+    };
+  }
+  
+  console.log('✅ Line 162: Food combination and timing both OK');
+  return { safe: true, warning: null, timingInfo: null };
+}
+
+// Function to check if food combinations are safe and timed correctly
+function analyzeFoodText(foodText) {
+  const components = dishToComponents(foodText);
+  const categories = componentsToCategories(components);
+  const combo = checkFoodCombinationAndTiming(categories);
+  
+ if (combo.safe) {
+  updateFoodTimestamps(categories);
+  console.log('✅ Timestamps updated - food allowed');
+ } else {
+  console.log('⏰ Timestamps NOT updated - showing warning/timer');
+ }
+
+ return { components, categories, combo};
+ 
 }
 
 // =======================
@@ -229,24 +345,6 @@ function componentsToCategories(components) {
   });
 }
 
-// Main analysis function
-function analyzeFoodText(foodText) {
-  const components = dishToComponents(foodText);
-  const categories = componentsToCategories(components);
-  const combo = checkFoodCombination(categories);
-  
-  console.log(`🔍 Analyzing "${foodText}":`, {
-    components,
-    categories,
-    hasS: categories.includes('S'),
-    hasP: categories.includes('P'),
-    safe: combo.safe,
-    warning: combo.warning
-  });
-  
-  return { components, categories, combo };
-}
-
 // =======================
 // DOM READY EVENT LISTENER
 // =======================
@@ -310,7 +408,10 @@ function setupEventListeners() {
     // Add log button (since form might not have submit event)
     const addLogBtn = document.getElementById('addLogButton');
     if (addLogBtn) {
+      console.log('✅ Line 247: Found Add Entry button, attaching handleAddLog listener');
       addLogBtn.addEventListener('click', handleAddLog);
+    } else {
+      console.error('❌ Line 250: Add Entry button NOT FOUND! ID: addLogButton');
     }
     
     // Filter buttons
@@ -326,6 +427,32 @@ function setupEventListeners() {
     const exportBtn = document.getElementById('exportEncryptedButton');
     if (exportBtn) {
       exportBtn.addEventListener('click', handleExportEncrypted);
+    }
+    
+    // Vitals buttons
+    const logBPBtn = document.getElementById('logBPButton');
+    const logBSBtn = document.getElementById('logBSButton');
+    
+    console.log('🔍 Vitals buttons found:', { logBPBtn: !!logBPBtn, logBSBtn: !!logBSBtn });
+    
+    if (logBPBtn) {
+      logBPBtn.addEventListener('click', () => {
+        console.log('📈 BP button clicked!');
+        showBPModal();
+      });
+      console.log('✅ BP button event listener added');
+    } else {
+      console.error('❌ BP button not found!');
+    }
+    
+    if (logBSBtn) {
+      logBSBtn.addEventListener('click', () => {
+        console.log('🔊 BS button clicked!');
+        showBSModal();
+      });
+      console.log('✅ BS button event listener added');
+    } else {
+      console.error('❌ BS button not found!');
     }
     
     // Clear button
@@ -464,7 +591,8 @@ function loadFromStorage() {
 // =======================
 function handleAddLog(event) {
   try {
-    console.log(' handleAddLog start');
+    console.log('🚀 Line 427: handleAddLog CALLED! Event:', event);
+    console.log('📝 Line 428: handleAddLog start');
     event.preventDefault();
     const food = document.getElementById("foodInput").value.trim();
     if (!food) return alert("Please enter a food item.");
@@ -522,9 +650,6 @@ function handleAddLog(event) {
       timestamp: new Date().toLocaleString(),
       sick: document.getElementById("sickInput").checked,
       mealType: document.getElementById("mealTypeInput").value || "Unspecified",
-      calories: document.getElementById("caloriesInput").value || "N/A",
-      bps: document.getElementById("bpsInput").value || null,
-      bs: document.getElementById("bsInput").value || null,
       healthDetails: {
         exercised: exercisedValue,
         exercise: selectedExercise,
@@ -539,8 +664,19 @@ function handleAddLog(event) {
     const analysis = analyzeFoodText(newEntry.food);
     newEntry.analysis = analysis;
     
+    console.log('🔍 Line 498: Analysis results for warning check:', {
+      food: newEntry.food,
+      analysis: analysis,
+      comboSafe: analysis.combo.safe,
+      comboWarning: analysis.combo.warning,
+      timingInfo: analysis.combo.timingInfo
+    });
+    
     if (!analysis.combo.safe) {
-      showWarningModal(analysis.combo.warning, analysis.components);
+      console.log('🚨 Line 502: TRIGGERING WARNING MODAL!');
+      showWarningModal(analysis.combo.warning, analysis.components, analysis.combo.timingInfo);
+    } else {
+      console.log('✅ Line 505: No warning needed - combo is safe');
     }
 
     foodEntries.push(newEntry);
@@ -608,7 +744,6 @@ function renderEntry(entry) {
         <strong>${entry.date}</strong> - ${entry.food} (${mealEmoji} ${entry.mealType})
         ${entry.timestamp ? `<br><small style="color:#666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
         ${detected}
-        <br>Calories: ${entry.calories} | BP: ${entry.bps} | BS: ${entry.bs}<br>
         ${entry.sick ? " Felt Sick" : " Felt Okay"}
       </div>
       <div class="entry-actions">
@@ -772,29 +907,25 @@ function updateBPLineChart(logs) {
       bpLineChartInstance.destroy();
     }
     
-    // Filter entries with BP data (using correct field name 'bps')
-    const bpEntries = logs.filter(entry => entry.bps && entry.bps !== 'null' && entry.bps !== null && entry.bps.trim() !== '');
+    // Use the new BP readings data instead of food entry BP data
+    console.log(` Found ${bpReadings.length} BP readings:`, bpReadings);
     
-    console.log(` Found ${bpEntries.length} entries with BP data:`, bpEntries.map(e => ({food: e.food, bps: e.bps})));
-    
-    if (bpEntries.length === 0) {
+    if (bpReadings.length === 0) {
       console.log("No BP data to display");
       return;
     }
     
-    const labels = bpEntries.map(entry => entry.date);
-    const bpData = bpEntries.map(entry => {
-      // Handle both "120/80" format and single number "120"
-      const bpValue = entry.bps.toString();
-      if (bpValue.includes('/')) {
-        const bp = bpValue.split('/');
-        return parseInt(bp[0]); // Systolic
-      } else {
-        return parseInt(bpValue); // Single number
-      }
-    });
+    // Sort BP readings by date
+    const sortedBPReadings = [...bpReadings].sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
     
-    console.log('BP Chart Data:', { labels, bpData });
+    const labels = sortedBPReadings.map(reading => reading.date);
+    const bpData = sortedBPReadings.map(reading => {
+      // Parse BP value (e.g., "120/80" -> 120 for systolic)
+      const bpParts = reading.value.split('/');
+      return bpParts.length >= 1 ? parseInt(bpParts[0]) : null;
+    }).filter(val => val !== null);
+    
+    console.log(" BP Chart Data:", { labels, bpData });
     
     bpLineChartInstance = new Chart(bpCtx, {
       type: 'line',
@@ -803,28 +934,72 @@ function updateBPLineChart(logs) {
         datasets: [{
           label: 'Systolic BP',
           data: bpData,
-          borderColor: 'var(--primary-color)',
-          backgroundColor: 'rgba(52, 152, 219, 0.1)',
-          tension: 0.4
+          borderColor: 'rgba(231, 76, 60, 1)',
+          backgroundColor: 'rgba(231, 76, 60, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Blood Pressure Trend',
+            font: { size: 16, weight: 'bold' },
+            color: '#2C2C2C'
+          },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
         scales: {
           y: {
             beginAtZero: false,
             min: 80,
-            max: 180
+            max: 200,
+            title: {
+              display: true,
+              text: 'Systolic Pressure (mmHg)',
+              font: { weight: 'bold' }
+            },
+            grid: {
+              color: 'rgba(0,0,0,0.1)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Date',
+              font: { weight: 'bold' }
+            },
+            grid: {
+              color: 'rgba(0,0,0,0.1)'
+            }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index'
+        },
+        elements: {
+          point: {
+            hoverRadius: 8
           }
         }
       }
     });
     
-    console.log(" BP Line Chart created successfully!");
-    
+    console.log(" BP Line Chart updated successfully!");
   } catch (error) {
-    console.error(" Error updating BP chart:", error);
+    console.error(" Error updating BP line chart:", error);
   }
 }
 
@@ -1235,19 +1410,171 @@ function createHTMLReport(data) {
                 <div style="background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 8px; border-left: 4px solid ${entry.sick ? '#dc3545' : '#28a745'};">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1;">
-                            <strong style="color: #087E8B;">${entry.date}</strong> - ${entry.food} (${entry.mealType})
+                            <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
                             ${entry.timestamp ? `<br><small style="color: #666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
                             ${entry.analysis && entry.analysis.components ? `<br><small style="color: #666;"> Detected: ${entry.analysis.components.join(', ')}</small>` : ''}
-                            <br>Calories: ${entry.calories} | BP: ${entry.bps || 'N/A'} | BS: ${entry.bs || 'N/A'}
-                        </div>
-                        <div style="text-align: right;">
-                            ${entry.sick ? ' Felt Sick' : ' Felt Okay'}
+                            <br>${entry.sick ? " Felt Sick" : " Felt Okay"}
                         </div>
                     </div>
                 </div>
             `).join('')}
         </section>
 
+        ${bpReadings.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 📈 Blood Pressure Readings</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${bpReadings.map(bp => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #e74c3c;">
+                        <strong style="color: #e74c3c;">${bp.date}</strong> - ${bp.value}
+                        ${bp.timestamp ? `<br><small style="color: #666;"> ${bp.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        ${bsReadings.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 🔊 Bowel Sounds Readings</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${bsReadings.map(bs => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #8B9467;">
+                        <strong style="color: #8B9467;">${bs.date}</strong> - Level ${bs.value}/7
+                        ${bs.timestamp ? `<br><small style="color: #666;"> ${bs.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        ${(data.healthDetails.exercise.length + data.healthDetails.stressRelief.length + data.healthDetails.symptoms.length) > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Health Details</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <h3 style="margin: 0; color: #28a745;"> Exercise</h3>
+                ${data.healthDetails.exercise.map(ex => `
+                    <div style="margin: 5px 0;">
+                        <strong>${ex.date}</strong> - ${ex.activity}
+                        ${ex.timestamp ? `<br><small style="color: #666;"> ${ex.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+                
+                <h3 style="margin-top: 15px; color: #17a2b8;"> Stress Relief</h3>
+                ${data.healthDetails.stressRelief.map(sr => `
+                    <div style="margin: 5px 0;">
+                        <strong>${sr.date}</strong> - ${sr.activity}
+                        ${sr.timestamp ? `<br><small style="color: #666;"> ${sr.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+                
+                <h3 style="margin-top: 15px; color: #dc3545;"> Symptoms</h3>
+                ${data.healthDetails.symptoms.map(sym => `
+                    <div style="margin: 5px 0;">
+                        <strong>${sym.date}</strong> - ${sym.symptom}
+                        ${sym.timestamp ? `<br><small style="color: #666;"> ${sym.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        ${data.favorites.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Favorite Foods</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${data.favorites.map(fav => {
+                    const foodName = typeof fav === 'string' ? fav : fav.food;
+                    const favoriteDate = typeof fav === 'string' ? 'Added previously' : fav.date;
+                    return `<div style="margin: 5px 0;"> ${foodName} <small style="color: #666;">(Added: ${favoriteDate})</small></div>`;
+                }).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        <footer style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666;">
+            <p>This report was generated by your Personal Food Tracker app.</p>
+            <p><strong>Keep this information confidential and share only with trusted healthcare providers.</strong></p>
+        </footer>
+    </div>
+  `;
+}
+
+function createHTMLReport(data) {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <header style="text-align: center; border-bottom: 2px solid #087E8B; padding-bottom: 20px; margin-bottom: 30px;">
+            <h1 style="color: #087E8B; margin: 0;"> Personal Health Report</h1>
+            <p style="color: #666; margin: 5px 0;">Generated: ${data.generatedDate}</p>
+            <p style="color: #666; margin: 5px 0;">Total Entries: ${data.totalEntries}</p>
+        </header>
+
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Health Summary</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #28a745;"> Felt Good</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.totalEntries - data.sickEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #dc3545;"> Felt Sick</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.sickEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #fd7e14;"> S+P Conflicts</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.conflictEntries}</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0; color: #6f42c1;"> BP Readings</h3>
+                    <p style="font-size: 24px; margin: 5px 0; font-weight: bold;">${data.bpEntries}</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Food Entries</h2>
+            ${data.entries.map(entry => `
+                <div style="background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 8px; border-left: 4px solid ${entry.sick ? '#dc3545' : '#28a745'};">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
+                            ${entry.timestamp ? `<br><small style="color: #666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
+                            ${entry.analysis && entry.analysis.components ? `<br><small style="color: #666;"> Detected: ${entry.analysis.components.join(', ')}</small>` : ''}
+                            <br>${entry.sick ? " Felt Sick" : " Felt Okay"}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </section>
+
+        ${bpReadings.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 📈 Blood Pressure Readings</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${bpReadings.map(bp => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #e74c3c;">
+                        <strong style="color: #e74c3c;">${bp.date}</strong> - ${bp.value}
+                        ${bp.timestamp ? `<br><small style="color: #666;"> ${bp.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
+        ${bsReadings.length > 0 ? `
+        <section style="margin-bottom: 30px;">
+            <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 🔊 Bowel Sounds Readings</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                ${bsReadings.map(bs => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #8B9467;">
+                        <strong style="color: #8B9467;">${bs.date}</strong> - Level ${bs.value}/7
+                        ${bs.timestamp ? `<br><small style="color: #666;"> ${bs.timestamp}</small>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+        ` : ''}
+        
         ${(data.healthDetails.exercise.length + data.healthDetails.stressRelief.length + data.healthDetails.symptoms.length) > 0 ? `
         <section style="margin-bottom: 30px;">
             <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> Health Details</h2>
@@ -1769,34 +2096,75 @@ function closeExportModal() {
 function checkWelcomePopup() {
   try {
     const welcomeShown = localStorage.getItem("welcomeShown");
+    
     if (!welcomeShown) {
       showWelcomePopup();
     }
   } catch (error) {
-    console.error(" Error checking welcome popup:", error);
+    console.error("Error checking welcome popup:", error);
   }
 }
 
 function showWelcomePopup() {
   try {
     const popup = document.getElementById('bpReminderPopup');
+    
     if (popup) {
       popup.style.display = 'block';
+      
+      // Force setup event listeners here to ensure they work
+      setupWelcomePopupListeners();
+    } else {
+      console.error("Welcome popup element not found!");
     }
   } catch (error) {
-    console.error(" Error showing welcome popup:", error);
+    console.error("Error showing welcome popup:", error);
+  }
+}
+
+function setupWelcomePopupListeners() {
+  console.log(" Setting up welcome popup event listeners...");
+  
+  // Get Started button
+  const getStartedBtn = document.getElementById('addBpNow');
+  if (getStartedBtn) {
+    console.log(" Found Get Started button");
+    getStartedBtn.onclick = closeBPReminderPopup;
+  } else {
+    console.error(" Get Started button not found!");
+  }
+  
+  // Skip Today button
+  const skipTodayBtn = document.getElementById('skipToday');
+  if (skipTodayBtn) {
+    console.log(" Found Skip Today button");
+    skipTodayBtn.onclick = closeBPReminderPopup;
+  } else {
+    console.error(" Skip Today button not found!");
+  }
+  
+  // Close button (X)
+  const closeBpPopupBtn = document.getElementById('closeBpPopup');
+  if (closeBpPopupBtn) {
+    console.log(" Found Close button");
+    closeBpPopupBtn.onclick = closeBPReminderPopup;
+  } else {
+    console.error(" Close button not found!");
   }
 }
 
 function closeBPReminderPopup() {
   try {
     const popup = document.getElementById('bpReminderPopup');
+    
     if (popup) {
       popup.style.display = 'none';
       localStorage.setItem("welcomeShown", "true");
+    } else {
+      console.error(" Could not find popup to close!");
     }
   } catch (error) {
-    console.error(" Error closing popup:", error);
+    console.error("Error closing popup:", error);
   }
 }
 
@@ -2014,76 +2382,295 @@ function updateLastEntryHealthDetails() {
 }
 
 // Show beautiful warning modal instead of ugly alert
-function showWarningModal(warningMessage, detectedItems) {
+function showWarningModal(warningMessage, detectedItems, timingInfo = null) {
   try {
-    console.log('🚨 Showing warning modal:', warningMessage, detectedItems);
-    let modal = document.getElementById('warningModal');
-    if (!modal) {
-      console.log('Creating modal dynamically...');
-      modal = document.createElement('div');
-      modal.id = 'warningModal';
-      modal.className = 'modal-overlay';
-      modal.style.display = 'none';
-      modal.innerHTML = `
-        <div class="warning-modal">
-          <div class="warning-header">
-            <div class="warning-icon">⚠️</div>
-            <h3>Food Combination Alert</h3>
+    console.log('🚨 Showing warning modal:', warningMessage, detectedItems, timingInfo);
+    
+    // Force remove any existing modal first
+    const existingModal = document.getElementById('warningModal');
+    if (existingModal) {
+      existingModal.remove();
+    }
+    
+    // Create fresh modal
+    const modal = document.createElement('div');
+    modal.id = 'warningModal';
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="warning-modal">
+        <div class="warning-header">
+          <div class="warning-icon">⚠️</div>
+          <h3 id="warningTitle">Food Combination Alert</h3>
+        </div>
+        
+        <div class="warning-content">
+          <p class="warning-message" id="warningMessage">
+            <strong>S + P Combination Detected!</strong><br>
+            This combination may cause digestive discomfort.
+          </p>
+          <div class="detected-items">
+            <span class="detected-label">Items detected:</span>
+            <span id="detectedItems" class="detected-list"></span>
           </div>
-          <div class="warning-content">
-            <p class="warning-message">
-              <strong>S + P Combination Detected!</strong><br>
-              This combination may cause digestive discomfort.
-            </p>
-            <div class="detected-items">
-              <span class="detected-label">Items detected:</span>
-              <span id="detectedItems" class="detected-list"></span>
+          <div id="timerSection" class="timer-section" style="display: none;">
+            <div class="timer-content">
+              <div class="timer-icon">🕐</div>
+              <div class="timer-text">
+                <p><strong>Wait before eating this combination!</strong></p>
+                <p id="timerMessage">You can safely eat this in:</p>
+              </div>
+              <div class="countdown-display">
+                <div class="countdown-time" id="countdownTime">2:30:45</div>
+                <div class="countdown-label">Hours : Minutes : Seconds</div>
+              </div>
+              <div class="safe-time">
+                <span>Safe to eat at: </span>
+                <span id="safeTime" class="safe-time-value">3:00 PM</span>
+              </div>
             </div>
           </div>
-          <div class="warning-actions">
-            <button id="warningOkBtn" class="warning-btn primary">Got it! 👍</button>
-          </div>
         </div>
-      `;
-      document.body.appendChild(modal);
-    }
+        <div class="warning-actions">
+          <button id="warningOkBtn" class="warning-btn primary">Got it! 👍</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
     
     const detectedItemsSpan = modal.querySelector('#detectedItems');
-    console.log('Modal element:', modal);
-    console.log('DetectedItems span:', detectedItemsSpan);
+    const warningMessageEl = modal.querySelector('#warningMessage');
+    const warningTitleEl = modal.querySelector('#warningTitle');
+    const timerSection = modal.querySelector('#timerSection');
     
-    if (modal && detectedItemsSpan) {
-      // Set the detected items
-      detectedItemsSpan.textContent = detectedItems.join(', ');
+    console.log('✅ Modal created and elements found:', {
+      modal: !!modal,
+      detectedItemsSpan: !!detectedItemsSpan,
+      warningMessageEl: !!warningMessageEl,
+      warningTitleEl: !!warningTitleEl,
+      timerSection: !!timerSection
+    });
+    
+    // Set the detected items
+    detectedItemsSpan.textContent = detectedItems.join(', ');
+    
+    // Handle timing conflicts vs regular S+P warnings
+    if (timingInfo && !timingInfo.allowed) {
+      console.log('🕐 Showing timer for timing conflict');
+      // This is a timing conflict - show timer
+      warningTitleEl.textContent = '⏰ Food Timing Alert';
+      warningMessageEl.innerHTML = `
+        <strong>Too Soon for This Combination!</strong><br>
+        Wait ${Math.ceil(timingInfo.remainingMs / 1000 / 60)} minutes before eating this.
+      `;
       
-      // Show the modal
-      modal.style.display = 'flex';
-      console.log('✅ Modal should now be visible');
+      // Show and set up timer section
+      timerSection.style.display = 'block';
+      const safeTimeEl = modal.querySelector('#safeTime');
+      safeTimeEl.textContent = timingInfo.waitUntil.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       
-      // Set up close button
-      const okBtn = modal.querySelector('#warningOkBtn');
-      if (okBtn) {
-        okBtn.onclick = () => {
-          modal.style.display = 'none';
-        };
-      }
-      
-      // Close on overlay click
-      modal.onclick = (e) => {
-        if (e.target === modal) {
-          modal.style.display = 'none';
+      // Start countdown
+      startCountdown(modal, timingInfo.waitUntil);
+    } else {
+      console.log('⚠️ Showing regular S+P warning');
+      // Regular S+P warning - hide timer
+      warningTitleEl.textContent = 'Food Combination Alert';
+      warningMessageEl.innerHTML = `
+        <strong>S + P Combination Detected!</strong><br>
+        This combination may cause digestive discomfort.
+      `;
+      timerSection.style.display = 'none';
+    }
+    
+    // Set up close button
+    const okBtn = modal.querySelector('#warningOkBtn');
+    if (okBtn) {
+      okBtn.onclick = () => {
+        modal.style.display = 'none';
+        modal.remove();
+        // Clear any running countdown
+        if (modal.countdownInterval) {
+          clearInterval(modal.countdownInterval);
         }
       };
-    } else {
-      console.error('❌ Modal elements not found!');
-      // Fallback to alert
-      alert(`Warning: ${warningMessage}\nItems detected: ${detectedItems.join(', ')}`);
     }
+    
+    // Close on overlay click
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        modal.remove();
+        // Clear any running countdown
+        if (modal.countdownInterval) {
+          clearInterval(modal.countdownInterval);
+        }
+      }
+    };
+    
+    console.log('🎉 Beautiful modal should now be visible!');
+    
   } catch (error) {
-    console.error("Error showing warning modal:", error);
+    console.error("❌ Error showing warning modal:", error);
     // Fallback to alert if modal fails
     alert(`Warning: ${warningMessage}\nItems detected: ${detectedItems.join(', ')}`);
   }
 }
 
+// Function to start and manage the countdown timer
+function startCountdown(modal, targetTime) {
+  const countdownEl = modal.querySelector('#countdownTime');
+  
+  // Clear any existing countdown
+  if (modal.countdownInterval) {
+    clearInterval(modal.countdownInterval);
+  }
+  
+  modal.countdownInterval = setInterval(() => {
+    const now = new Date();
+    const remaining = targetTime - now;
+    
+    if (remaining <= 0) {
+      // Timer finished!
+      countdownEl.textContent = '00:00:00';
+      countdownEl.style.color = '#4CAF50'; // Green
+      modal.querySelector('#timerMessage').textContent = '✅ You can now safely eat this combination!';
+      clearInterval(modal.countdownInterval);
+      
+      // Auto-close modal after 3 seconds
+      setTimeout(() => {
+        modal.style.display = 'none';
+        modal.remove();
+      }, 3000);
+    } else {
+      // Update countdown display
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      
+      countdownEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+  }, 1000);
+}
+
+// Show BP Modal
+function showBPModal() {
+  const modal = document.getElementById('bpModal');
+  const dateTimeInput = document.getElementById('bpDateTime');
+  
+  // Set current date/time as default
+  const now = new Date();
+  const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  dateTimeInput.value = localDateTime;
+  
+  modal.style.display = 'flex';
+  
+  // Set up event listeners
+  document.getElementById('saveBPBtn').onclick = saveBPReading;
+  document.getElementById('cancelBPBtn').onclick = () => modal.style.display = 'none';
+  
+  // Close on overlay click
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+}
+
+// Show BS Modal
+function showBSModal() {
+  const modal = document.getElementById('bsModal');
+  const dateTimeInput = document.getElementById('bsDateTime');
+  
+  // Set current date/time as default
+  const now = new Date();
+  const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  dateTimeInput.value = localDateTime;
+  
+  modal.style.display = 'flex';
+  
+  // Set up event listeners
+  document.getElementById('saveBSBtn').onclick = saveBSReading;
+  document.getElementById('cancelBSBtn').onclick = () => modal.style.display = 'none';
+  
+  // Close on overlay click
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+}
+
+// Save BP Reading
+function saveBPReading() {
+  const bpValue = document.getElementById('bpInput').value.trim();
+  const dateTime = document.getElementById('bpDateTime').value;
+  
+  if (!bpValue) {
+    alert('Please enter a blood pressure reading (e.g., 120/80)');
+    return;
+  }
+  
+  if (!dateTime) {
+    alert('Please select a date and time');
+    return;
+  }
+  
+  // Validate BP format (basic check for numbers/numbers)
+  if (!/^\d+\/\d+$/.test(bpValue)) {
+    alert('Please enter blood pressure in format: 120/80');
+    return;
+  }
+  
+  const bpReading = {
+    value: bpValue,
+    date: new Date(dateTime).toLocaleDateString(),
+    timestamp: new Date(dateTime).toLocaleString(),
+    dateTime: dateTime
+  };
+  
+  bpReadings.push(bpReading);
+  localStorage.setItem('bpReadings', JSON.stringify(bpReadings));
+  
+  // Clear form and close modal
+  document.getElementById('bpInput').value = '';
+  document.getElementById('bpModal').style.display = 'none';
+  
+  // Update BP chart immediately to show new reading
+  updateBPLineChart();
+  
+  console.log('✅ BP reading saved and chart updated:', bpReading);
+}
+
+// Save BS Reading
+function saveBSReading() {
+  const bsValue = document.getElementById('bsInput').value;
+  const dateTime = document.getElementById('bsDateTime').value;
+  
+  if (!bsValue) {
+    alert('Please select a bowel sounds level (1-7)');
+    return;
+  }
+  
+  if (!dateTime) {
+    alert('Please select a date and time');
+    return;
+  }
+  
+  const bsReading = {
+    value: bsValue,
+    date: new Date(dateTime).toLocaleDateString(),
+    timestamp: new Date(dateTime).toLocaleString(),
+    dateTime: dateTime
+  };
+  
+  bsReadings.push(bsReading);
+  localStorage.setItem('bsReadings', JSON.stringify(bsReadings));
+  
+  // Clear form and close modal
+  document.getElementById('bsInput').value = '';
+  document.getElementById('bsModal').style.display = 'none';
+  
+  console.log('BS reading saved:', bsReading);
+}
+
 console.log(" Food Tracker script loaded successfully!");
+
+// =======================
+// VITALS MODAL FUNCTIONS
+// =======================
