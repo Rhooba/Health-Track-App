@@ -1346,7 +1346,7 @@ function showExportModal() {
         </div>
         
         <div class="export-modal-actions">
-          <button id="createReportBtn" class="create-report-btn">&#128275; Create Medical Report</button>
+          <button id="createReportBtn" class="create-report-btn">&#128275; Create Health Report</button>
           <button id="cancelExportBtn" class="cancel-export-btn">Cancel</button>
         </div>
         
