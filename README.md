@@ -66,11 +66,3 @@ Feel free to fork this repository and submit pull requests! We welcome contribut
 ## License
 MIT License
 
-
-Notes for next week:
-1. Change the tab coloring for BS selection should stay green ------> CHANGED + FIXED
-2. Fix the line graph should be dashed or something easier to read
-3. Also the tab for makes me feel sick actually should change to a different color when selected so that the user knows it has been tagged ----->CHANGED + FIXED.
-4. Oh scrolling issues switching to bottom or top of page
-5. More drastic jitter
-6. Dates need to be sorted. -------> CHANGED + FIXED
