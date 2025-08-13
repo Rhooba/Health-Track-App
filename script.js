@@ -388,7 +388,7 @@ const STRICT_ROOTS = [
   // Additional inappropriate terms your friend used
   'pussy','ass','asses','butt','butthole','dick','cock','penis',
   'vagina','boob','boobs','tit','tits','fuck','shit','bitch', 'koon',
-  'papeh'
+  'papeh', 'sodomize'
 ];
 
 // Soft flag: might need context review (legitimate foods that could be misused)
