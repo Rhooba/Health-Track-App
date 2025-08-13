@@ -346,47 +346,91 @@ function componentsToCategories(components) {
 }
 
 // =======================
-// INPUT VALIDATION SYSTEM
+// ENHANCED INPUT VALIDATION SYSTEM (ChatGPT-5 Hardened)
 // =======================
 
-// Blocked words list - comprehensive bodily function terms
-const BLOCKED_WORDS = [
-  // Bodily waste slang (common + crude + creative)
-  'poop', 'poops', 'poopy', 'poopin', 'poo', 'poos', 'poopyhead',
-  'dookie', 'doodoo', 'doo-doo', 'dump', 'dumps', 'dumping',
-  'turd', 'turds', 'butt nugget', 'stool', 'stools',
-  'crap', 'crappy', 'fudge dragon', 'fudge log',
-  'deuce', 'deuces', 'bm', 'caca', 'kaka', 'number 2', 'no. 2',
+// ---- Normalizer: crushes case, accents, separators, and leetspeak ----
+function normalizeForFilter(input) {
+  return input
+    .normalize('NFKD')                // split accents from letters
+    .replace(/\p{M}/gu, '')           // drop diacritics
+    .toLowerCase()
+    // common leetspeak swaps
+    .replace(/[@]/g, 'a')
+    .replace(/[0]/g, 'o')
+    .replace(/[1!|]/g, 'i')
+    .replace(/[3]/g, 'e')
+    .replace(/[4]/g, 'a')
+    .replace(/[5$]/g, 's')
+    .replace(/[7]/g, 't')
+    .replace(/[\u{1F4A9}]/gu, 'poop') // 💩 -> "poop"
+    // collapse any separators (spaces, punctuation, underscores, emojis, etc.)
+    .replace(/[^a-z0-9]/g, '');       // FIXED: only keep letters and numbers
+}
+
+// ---- Word roots (comprehensive list) ----
+// Hard block: direct scat/bodily waste + inappropriate content
+const STRICT_ROOTS = [
+  // Bodily waste slang (original list)
+  'poop','poo','poopy','poopie','poophead','poopyhead','poopin',
+  'dookie','doodoo','doo','dump','dumps','dumping','turd','turds',
+  'crap','crappy','stool','stools','deuce','deuces','caca','kaka',
+  'bm','number2','no2','fudgedragon','fudgelog', 
   
   // Urine-related
-  'pee', 'pees', 'peeing', 'wee', 'weewee',
-  'piss', 'pissing', 'tinkle', 'tinkling',
-  'yellow river', 'yellow stream',
+  'pee','pees','peeing','wee','weewee','piss','pissing','tinkle','tinkling',
+  'yellowriver','yellowstream',
   
   // Other bodily functions
-  'fart', 'farts', 'farting', 'toot', 'toots',
-  'blowout', 'blow-out', 'shart', 'sharts', 'sharting',
-  'skidmark', 'skidmarks'
+  'fart','farts','farting','toot','toots','shart','sharts','sharting',
+  'skidmark','skidmarks','blowout','blowout',
+  
+  // Additional inappropriate terms your friend used
+  'pussy','ass','asses','butt','butthole','dick','cock','penis',
+  'vagina','boob','boobs','tit','tits','fuck','shit','bitch', 'koon',
+  'papeh'
 ];
 
-// Validate food entry input
+// Soft flag: might need context review (legitimate foods that could be misused)
+const SOFT_ROOTS = [
+  'gas','gassy','brownie','brownies','log','logs','nugget','nuggets',
+  'cream','creamy','sausage','wiener','nuts','melons'
+];
+
+// Build fast regexes (after normalization we match contiguous roots)
+const strictRe = new RegExp(`(?:${STRICT_ROOTS.join('|')})`, 'i');
+const softRe   = new RegExp(`(?:${SOFT_ROOTS.join('|')})`, 'i');
+
+// ---- Main validation check ----
 function isValidFoodEntry(foodText) {
   if (!foodText || typeof foodText !== 'string') return false;
   
-  // Normalize: remove special chars, collapse repeated chars, lowercase
-  const cleaned = foodText.toLowerCase()
-    .replace(/[^a-z\s]/g, '') // Remove non-letters and numbers
-    .replace(/(.)\1{2,}/g, '$1') // pooooop → pop  
-    .replace(/\s+/g, ' ') // collapse multiple spaces
-    .trim();
+  console.log('🔍 isValidFoodEntry() called with:', foodText);
+  const normalized = normalizeForFilter(foodText);
+  console.log('🔄 Normalized text:', normalized);
+  console.log('🎯 Testing against strictRe:', strictRe);
   
-  // Check against blocked words (with partial matching to catch creative attempts)
-  const isBlocked = BLOCKED_WORDS.some(blockedWord => {
-    // Check if cleaned text contains the blocked word
-    return cleaned.includes(blockedWord.replace(/[^a-z]/g, ''));
-  });
+  // Check strict blocking
+  const strictMatch = strictRe.test(normalized);
+  console.log('🚨 Strict regex test result:', strictMatch);
+  if (strictMatch) {
+    const matchedWord = normalized.match(strictRe)[0];
+    console.log(`🚫 Blocked entry: "${foodText}" → normalized: "${normalized}" → hit: "${matchedWord}"`);
+    return false;
+  }
   
-  return !isBlocked;
+  // For now, allow soft matches (could add context checking later)
+  const softMatch = softRe.test(normalized);
+  console.log('⚠️ Soft regex test result:', softMatch);
+  if (softMatch) {
+    const matchedWord = normalized.match(softRe)[0];
+    console.log(`⚠️ Soft flag: "${foodText}" → normalized: "${normalized}" → hit: "${matchedWord}"`);
+    // For now, allow these but log them
+    return true;
+  }
+  
+  console.log('✅ No matches found - entry is valid');
+  return true;
 }
 
 // Show custom message for blocked entries
@@ -411,7 +455,7 @@ function showBlockedEntryMessage() {
       </div>
       <div class="warning-content">
         <p class="warning-message">
-          <strong>khafe SHO!!! Basteh you CHOSSING maymoon</strong>
+          <strong>khafe SHO!!! DADDY! Basteh you CHOSSING maymoon</strong>
         </p>
       </div>
       <div class="warning-actions">
@@ -690,11 +734,13 @@ function handleAddLog(event) {
     const food = document.getElementById("foodInput").value.trim();
     if (!food) return alert("Please enter a food item.");
     
-    // Validate food entry
+    console.log('🔍 VALIDATION CHECK: About to validate food:', food);
     if (!isValidFoodEntry(food)) {
+      console.log('❌ VALIDATION FAILED: Calling showBlockedEntryMessage()');
       showBlockedEntryMessage();
       return;
     }
+    console.log('✅ VALIDATION PASSED: Food entry is valid');
     
     // Capture health details from chips and radio buttons
     const selectedExercise = [];
@@ -1510,7 +1556,7 @@ function createHTMLReport(data) {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1;">
                             <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
-                            ${entry.timestamp ? `<br><small style="color: #666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
+                            ${entry.timestamp ? `<br><small style="color:#666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
                             ${entry.analysis && entry.analysis.components ? `<br><small style="color: #666;"> Detected: ${entry.analysis.components.join(', ')}</small>` : ''}
                             <br>${entry.sick ? " Felt Sick" : " Felt Okay"}
                         </div>
@@ -1637,7 +1683,7 @@ function createHTMLReport(data) {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1;">
                             <strong>${entry.date}</strong> - ${entry.food} (${entry.mealType})
-                            ${entry.timestamp ? `<br><small style="color: #666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
+                            ${entry.timestamp ? `<br><small style="color:#666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
                             ${entry.analysis && entry.analysis.components ? `<br><small style="color: #666;"> Detected: ${entry.analysis.components.join(', ')}</small>` : ''}
                             <br>${entry.sick ? " Felt Sick" : " Felt Okay"}
                         </div>
@@ -1914,13 +1960,6 @@ function processExport() {
             text-align: center;
             padding: 30px 30px 20px;
             border-bottom: 1px solid #eee;
-        }
-        
-        .decrypt-header h2 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #333;
-            font-weight: 600;
         }
         
         .decrypt-body {
