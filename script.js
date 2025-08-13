@@ -388,7 +388,14 @@ const STRICT_ROOTS = [
   // Additional inappropriate terms your friend used
   'pussy','ass','asses','butt','butthole','dick','cock','penis',
   'vagina','boob','boobs','tit','tits','fuck','shit','bitch', 'koon',
-  'papeh', 'sodomize'
+  'papeh', 'sodomize',
+  
+  // NEW: Explicit sexual terms (your friend's latest attempts)
+  'sodomize','sodomizing','sodomy','ejaculate','ejaculating','ejaculation',
+  'blowjob','blow','oral','fellatio','cunnilingus','masturbate','masturbating',
+  'orgasm','climax','cum','cumming','jizz','sperm','semen','horny',
+  'sex','sexual','sexy','erotic','porn','pornography','nude','naked',
+  'intercourse','penetrate','penetrating','penetration','thrust','thrusting'
 ];
 
 // Soft flag: might need context review (legitimate foods that could be misused)
