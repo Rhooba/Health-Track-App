@@ -411,7 +411,7 @@ function showBlockedEntryMessage() {
       </div>
       <div class="warning-content">
         <p class="warning-message">
-          <strong>khafe SHO!!! DADDY! Basteh you CHOSSING maymoon</strong>
+          <strong>khafe SHO!!! Basteh you CHOSSING maymoon</strong>
         </p>
       </div>
       <div class="warning-actions">
