@@ -459,7 +459,7 @@ function showBlockedEntryMessage() {
         </p>
       </div>
       <div class="warning-actions">
-        <button id="validationOkBtn" class="warning-btn primary">Got it! 👍</button>
+        <button id="validationOkBtn" class="warning-btn primary">Got it! 🙄</button>
       </div>
     </div>
   `;
