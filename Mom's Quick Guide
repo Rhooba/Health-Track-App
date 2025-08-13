@@ -9,33 +9,49 @@ Hi Mom! Here's how to use the app I made for you:
 ## 📝 Adding Your Food (Daily Routine)
 1. **Type what you ate** in the first box (like "chicken salad")
 2. **Pick today's date** (it usually fills in automatically)
-3. **Add your blood pressure** if you took it (like "120")
-4. **Choose the meal type** (Breakfast, Lunch, Dinner, or Snack)
-5. **Add calories** if you know them (optional)
-6. **Click "Add Entry"**
+3. **Choose the meal type** (Breakfast, Lunch, Dinner, or Snack)
+4. **Click "Add Entry"**
+💡 Tip: If you eat something more than once a week, adding it regularly will help the app learn your patterns.
 
 ## 🤢 If Food Made You Feel Sick
 - Check the "Made me feel sick" box before clicking "Add Entry"
 - This helps the app learn what foods to avoid
 
-## 🩺 Blood Pressure Reminders
-- A popup will remind you to record your blood pressure
-- Click "Add BP Now" to go straight to the form
-- Or click "Remind Later" if you're busy
+## 🩺 Logging Health Info
+- Blood Pressure (BP)
+    Click 📈 Log BP at any time to enter it.
+    You’ll also get reminders if you haven’t logged it today.
+- Bowel Sounds (BS)
+    Click 🔊 Log BS to record a level from 1 (very low) to 7 (very high).
+  Exercise / Stress Relief / Symptoms
+- Tap “± Health Details” and choose Yes or No.
+    If “Yes,” pick what you did or felt (e.g., Walk, Meditated, Cramps).
+
+## ⭐ Favorites
+- If a food makes you feel good, click the ⭐ next to it in the food log to save it in your Favorite Foods list.
+- Open your favorites by clicking ± Favorite Foods 🌟.
 
 ## 📊 See Your Patterns
-- Click the "± Blood Pressure Trend" button to see your BP over time
-- Click "± AI Suggestions" to see what foods work best for you
-- The app learns what makes you feel good vs. sick!
+- Daily Food Combinations – Shows your W/S/P combinations; red bars mean a possibly unsafe “S+P” combo.
+- AI Health Insights – Gives suggestions based on what you’ve logged.
+- Blood Pressure Trend – Shows your BP changes over time.
 
-## ⭐ Save Your Favorite Foods
-- Foods that make you feel good get a star button
-- Click it to save them to your favorites list
+## 🚨 Alerts
+- If you log a food combination that may cause discomfort, you’ll see a Food Combination Alert.
+- It will list the items and let you acknowledge it with “Got it! 👍”.
 
-## 💡 Tips for Mom
-- Use it every day for best results
-- Don't worry about calories if you don't know them
-- The app remembers everything, so you can see patterns over time
-- Call me if you need help! ❤️
+## 🗂 Filters
+1. Show All 👩🏻‍🍳 – See everything.
+2. Only Sick 🤮 – Show only foods marked “Made me feel sick.”
+3. Only Okay 🤩 – Show only foods that didn’t make you sick.
+
+## 📤 Sharing with Your Health Expert
+- Click 📊 Export for Health Provider to create an encrypted file with your log.
+- You can send that file safely to anyone.
+
+## 💡 Tips for Best Results
+- Use the app every day so we get the clearest picture.
+- The app remembers everything — so you don’t have to.
+- Call me anytime if you get stuck (I MEAN IT!!!!). ❤️
 
 Love you!
