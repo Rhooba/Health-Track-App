@@ -1459,6 +1459,7 @@ input[name="symptoms"] {
 .warning-btn:hover {
   background: var(--primary-blue);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* Timer Section Styles */
@@ -1550,7 +1551,7 @@ input[name="symptoms"] {
 }
 
 @keyframes clockTick {
-  0%, 100% { transform: rotate(0deg); }
+  0% { transform: rotate(0deg); }
   25% { transform: rotate(5deg); }
   75% { transform: rotate(-5deg); }
 }
@@ -1720,4 +1721,51 @@ input[name="symptoms"] {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* Validation Modal Styling */
+.validation-modal {
+  border: 3px solid #FF6B9D;
+  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.3);
+}
+
+.validation-modal .warning-header {
+  background: linear-gradient(135deg, #FF6B9D, #FF8E9B);
+  color: white;
+}
+
+.validation-modal .warning-icon {
+  font-size: 2rem;
+  animation: bounce 1s ease-in-out infinite alternate;
+}
+
+.validation-modal .warning-content {
+  background: linear-gradient(135deg, #FFF5F8, #FFE8ED);
+  padding: 25px;
+}
+
+.validation-modal .warning-message {
+  color: #2C3E50;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0;
+}
+
+.validation-modal .warning-btn {
+  background: linear-gradient(135deg, #FF6B9D, #FF8E9B);
+  border: none;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.validation-modal .warning-btn:hover {
+  background: linear-gradient(135deg, #E55A8A, #E67B89);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
 }

@@ -346,6 +346,99 @@ function componentsToCategories(components) {
 }
 
 // =======================
+// INPUT VALIDATION SYSTEM
+// =======================
+
+// Blocked words list - comprehensive bodily function terms
+const BLOCKED_WORDS = [
+  // Bodily waste slang (common + crude + creative)
+  'poop', 'poops', 'poopy', 'poopin', 'poo', 'poos', 'poopyhead',
+  'dookie', 'doodoo', 'doo-doo', 'dump', 'dumps', 'dumping',
+  'turd', 'turds', 'butt nugget', 'stool', 'stools',
+  'crap', 'crappy', 'fudge dragon', 'fudge log',
+  'deuce', 'deuces', 'bm', 'caca', 'kaka', 'number 2', 'no. 2',
+  
+  // Urine-related
+  'pee', 'pees', 'peeing', 'wee', 'weewee',
+  'piss', 'pissing', 'tinkle', 'tinkling',
+  'yellow river', 'yellow stream',
+  
+  // Other bodily functions
+  'fart', 'farts', 'farting', 'toot', 'toots',
+  'blowout', 'blow-out', 'shart', 'sharts', 'sharting',
+  'skidmark', 'skidmarks'
+];
+
+// Validate food entry input
+function isValidFoodEntry(foodText) {
+  if (!foodText || typeof foodText !== 'string') return false;
+  
+  // Normalize: remove special chars, collapse repeated chars, lowercase
+  const cleaned = foodText.toLowerCase()
+    .replace(/[^a-z\s]/g, '') // Remove non-letters and numbers
+    .replace(/(.)\1{2,}/g, '$1') // pooooop → pop  
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .trim();
+  
+  // Check against blocked words (with partial matching to catch creative attempts)
+  const isBlocked = BLOCKED_WORDS.some(blockedWord => {
+    // Check if cleaned text contains the blocked word
+    return cleaned.includes(blockedWord.replace(/[^a-z]/g, ''));
+  });
+  
+  return !isBlocked;
+}
+
+// Show custom message for blocked entries
+function showBlockedEntryMessage() {
+  // Remove any existing validation modal
+  const existingModal = document.getElementById('validationModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  // Create beautiful validation modal
+  const modal = document.createElement('div');
+  modal.id = 'validationModal';
+  modal.className = 'modal-overlay';
+  modal.style.display = 'flex';
+  
+  modal.innerHTML = `
+    <div class="warning-modal validation-modal">
+      <div class="warning-header">
+        <div class="warning-icon">🙄</div>
+        <h3 id="validationTitle">Input Validation</h3>
+      </div>
+      <div class="warning-content">
+        <p class="warning-message">
+          <strong>khafe SHO!!! DADDY! Basteh you CHOSSING maymoon</strong>
+        </p>
+      </div>
+      <div class="warning-actions">
+        <button id="validationOkBtn" class="warning-btn primary">Got it! 👍</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Set up close button handler
+  const okBtn = modal.querySelector('#validationOkBtn');
+  if (okBtn) {
+    okBtn.addEventListener('click', () => {
+      modal.remove();
+    });
+  }
+  
+  // Close on overlay click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+}
+
+// =======================
 // DOM READY EVENT LISTENER
 // =======================
 document.addEventListener('DOMContentLoaded', function() {
@@ -596,6 +689,12 @@ function handleAddLog(event) {
     event.preventDefault();
     const food = document.getElementById("foodInput").value.trim();
     if (!food) return alert("Please enter a food item.");
+    
+    // Validate food entry
+    if (!isValidFoodEntry(food)) {
+      showBlockedEntryMessage();
+      return;
+    }
     
     // Capture health details from chips and radio buttons
     const selectedExercise = [];
@@ -2436,6 +2535,7 @@ function showWarningModal(warningMessage, detectedItems, timingInfo = null) {
         </div>
       </div>
     `;
+    
     document.body.appendChild(modal);
     
     const detectedItemsSpan = modal.querySelector('#detectedItems');
