@@ -64,5 +64,5 @@ Feel free to fork this repository and submit pull requests! We welcome contribut
 - Add more data visualization options
 
 ## License
-MIT License
+BD-3 Clause License
 
