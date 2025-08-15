@@ -457,16 +457,16 @@ function showBlockedEntryMessage() {
   modal.innerHTML = `
     <div class="warning-modal validation-modal">
       <div class="warning-header">
-        <div class="warning-icon">🙄</div>
-        <h3 id="validationTitle">Input Validation</h3>
+        <div class="warning-icon">⚠️</div>
+        <h3 id="validationTitle">Invalid Entry</h3>
       </div>
       <div class="warning-content">
         <p class="warning-message">
-          <strong>khafe SHO!!! DADDY! Basteh you CHOSSING maymoon</strong>
+          <strong>Please enter a valid food item. Inappropriate or non-food entries are not allowed.</strong>
         </p>
       </div>
       <div class="warning-actions">
-        <button id="validationOkBtn" class="warning-btn primary">Got it! 🙄</button>
+        <button id="validationOkBtn" class="warning-btn primary">Understood</button>
       </div>
     </div>
   `;
