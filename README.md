@@ -187,7 +187,7 @@ Feel free to fork this repository and submit pull requests! We welcome contribut
 - Add more data visualization options
 
 ## Acknowledgement 
-Shout out to ChatGPT and Clause Sonnet 4. The best coding buddies you could ask for. ❤️
+Shout out to ChatGPT and Claude Sonnet 4. The best coding buddies you could ask for. ❤️
 
 ## License
 BD-3 Clause License
