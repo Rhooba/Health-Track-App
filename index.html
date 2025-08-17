@@ -1,282 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Tracker App</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-  <script src="script.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth Table Checkers</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <h1>Food Tracker</h1>
+    <div class="game-container">
+        <header>
+            <h1>Truth Table Checkers</h1>
+            <div class="score-board">
+                <div class="player-score">
+                    <span>Player: </span>
+                    <span id="player-score">0</span>
+                </div>
+                <div class="ai-score">
+                    <span>AI: </span>
+                    <span id="ai-score">0</span>
+                </div>
+            </div>
+        </header>
 
-  <!-- Entry Form -->
-  <div id="entryForm">
-    <input type="text" id="foodInput" placeholder="What did you eat?" />
-    <input type="date" id="dateInput" placeholder="Select date" value="2024-03-16" />
-    
-    <select id="mealTypeInput">
-      <option value="" disabled selected>Choose a Meal Type</option>
-      <option value="Breakfast">Breakfast</option>
-      <option value="Lunch">Lunch</option>
-      <option value="Dinner">Dinner</option>
-      <option value="Snacks">Snack</option>
-      <option value="Dessert">Dessert</option>
-    </select>
+        <main class="game-area">
+            <div class="board-container">
+                <div id="checkers-board" class="board"></div>
+            </div>
+            
+            <div class="challenge-panel">
+                <div id="challenge-container" class="challenge-box hidden">
+                    <h3>Truth Table Challenge</h3>
+                    <div id="challenge-question"></div>
+                    <div id="challenge-options"></div>
+                    <div class="challenge-controls">
+                        <button id="submit-answer" class="btn primary">Submit</button>
+                        <button id="skip-challenge" class="btn secondary">Skip (-1 point)</button>
+                    </div>
+                    <div id="timer" class="timer">30</div>
+                </div>
+                
+                <div id="result-panel" class="result-panel hidden">
+                    <div id="result-message"></div>
+                    <button id="continue-game" class="btn primary">Continue</button>
+                </div>
+            </div>
+        </main>
 
-    <button id="addLogButton">Add Entry</button>
-
-    <label class="sick-label">
-      <input type="checkbox" id="sickInput" class="sick-checkbox"/>
-      <span class="sick-label-text">Made me feel sick</span>
-    </label>
-
-    <button id="clearAllButton">Clear All Entries</button>
-    <button id="exportEncryptedButton">📊 Export for Health Provider</button>
-  </div>
-
-  <!-- Health Vitals Section -->
-  <div class="health-vitals-section">
-    <button id="logBPButton" class="vitals-btn bp-btn">📈 Log BP</button>
-    <button id="logBSButton" class="vitals-btn bs-btn">🔊 Log BS</button>
-  </div>
-
-  <!-- Health Details Section -->
-  <div class="health-details-section">
-    <button class="collapsible health-collapsible">± Health Details</button>
-    <div class="content health-content">
-      
-      <!-- Exercise Section -->
-      <div class="health-category">
-        <label class="health-label">Exercise Today:</label>
-        <div class="radio-group">
-          <label class="radio-label">
-            <input type="radio" name="exercised" value="no" class="health-radio" checked>
-            <span class="radio-text">No</span>
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="exercised" value="yes" class="health-radio">
-            <span class="radio-text">Yes</span>
-          </label>
-        </div>
-        <div class="chips-container" id="exerciseChips" style="display: none;">
-          <span class="chip" data-value="walk">Walk</span>
-          <span class="chip" data-value="yoga">Yoga</span>
-          <span class="chip" data-value="stretch">Stretch</span>
-          <span class="chip" data-value="other">Other</span>
-        </div>
-      </div>
-
-      <!-- Stress Relief Section -->
-      <div class="health-category">
-        <label class="health-label">Stress Relief:</label>
-        <div class="radio-group">
-          <label class="radio-label">
-            <input type="radio" name="stressRelief" value="no" checked> No
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="stressRelief" value="yes"> Yes
-          </label>
-        </div>
-        <div class="chips-container" id="stressChips" style="display: none;">
-          <span class="chip" data-value="walked">Walked</span>
-          <span class="chip" data-value="read">Read</span>
-          <span class="chip" data-value="meditated">Meditated</span>
-        </div>
-      </div>
-
-      <!-- Symptoms Section -->
-      <div class="health-category">
-        <label class="health-label">Symptoms:</label>
-        <div class="radio-group">
-          <label class="radio-label">
-            <input type="radio" name="symptoms" value="no" checked> No
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="symptoms" value="yes"> Yes
-          </label>
-        </div>
-        <div class="chips-container" id="symptomsChips" style="display: none;">
-          <span class="chip" data-value="cramps">Cramps</span>
-          <span class="chip" data-value="bloating">Bloating</span>
-          <span class="chip" data-value="nausea">Nausea</span>
-        </div>
-      </div>
-
+        <footer>
+            <div class="game-controls">
+                <button id="new-game" class="btn">New Game</button>
+                <button id="hint" class="btn">Hint</button>
+                <button id="rules" class="btn">Rules</button>
+            </div>
+        </footer>
     </div>
-  </div>
 
-  <!-- Food Log -->
-  <ul id="foodLogList"></ul>
-
-  <!-- Filters -->
-  <div id="filters">
-    <button id="allBtn">Show All 👩🏻‍🍳</button>
-    <button id="sickBtn">Only Sick 🤮</button>
-    <button id="okayBtn">Only Okay 🤩</button>
-  </div>
-
-  <!-- Favorite Foods Section -->
-  <h2>Save All of Your Favorite Foods</h2>
-  <button class="collapsible active">± Favorite Foods 🌟</button>
-  <div class="content" style="display: block;">
-    <ul id="favoritesList"></ul>
-  </div>
-
-  <!-- Graphs Section -->
-  <h2>Summary Graphs for Food and BP</h2>
-  
-  <!-- Daily Food Combination Chart -->
-  <div class="chart-section">
-    <button class="collapsible">📊 Daily Food Combinations</button>
-    <div class="content">
-      <p>Track your W/S/P food combinations throughout the day. Red bars indicate unsafe S+P combinations.</p>
-      <canvas id="dailyCombinationChart" width="400" height="200"></canvas>
-    </div>
-  </div>
-
-  <!-- AI Health Insights -->
-  <div class="chart-section">
-    <button class="collapsible">🤖 AI Health Insights</button>
-    <div class="content">
-      <div id="aiSuggestions"></div>
-    </div>
-  </div>
-
-  <!-- BP Line Chart Section -->
-  <div class="chart-section">
-    <button class="collapsible">± Blood Pressure Trend</button>
-    <div class="content graph-content">
-      <canvas id="bpLineChart" width="400" height="200"></canvas>
-    </div>
-  </div>
-
-  <!-- Welcome Greeting Popup -->
-  <div id="bpReminderPopup" class="popup-overlay">
-    <div class="popup-content">
-      <div class="popup-header">
-        <h3>👋 Welcome to Food Tracker!</h3>
-        <button id="closeBpPopup" class="close-btn">&times;</button>
-      </div>
-      <div class="popup-body">
-        <p>🍎 <strong>Track your food and health patterns easily!</strong></p>
-        <p>• Add foods you eat and how they make you feel</p>
-        <p>• Record your blood pressure for health trends</p>
-        <p>• Get AI insights about your eating patterns</p>
-        <br>
-        <p>💻 <strong>Built with ❤️ for Mom</strong></p>
-        <p><a href="https://github.com/Rhooba/food-tracker-app" target="_blank" style="color: var(--tropic-blue); text-decoration: underline;">Further instructions and other projects see my GitHub →</a></p>
-      </div>
-      <div class="popup-actions">
-        <button id="addBpNow" class="popup-btn primary">Get Started!</button>
-        <button id="skipToday" class="popup-btn secondary">Skip Today</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BP Reminder Popup -->
-  <div id="bpReminderOnlyPopup" class="popup-overlay">
-    <div class="popup-content">
-      <div class="popup-header">
-        <h3>🩺 Blood Pressure Reminder</h3>
-        <button id="closeBpReminderOnly" class="close-btn">&times;</button>
-      </div>
-      <div class="popup-body">
-        <p>📊 <strong>You have not entered your Blood Pressure for today.</strong></p>
-        <p>You've made several entries, but haven't recorded it.</p>
-        <p>💡 <strong>Please enter your BP on your next entry</strong> to track your health trends!</p>
-      </div>
-      <div class="popup-actions">
-        <button id="addBpNowReminder" class="popup-btn primary">Got it!</button>
-        <button id="skipBpToday" class="popup-btn secondary">Skip Today</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Warning Modal -->
-  <div id="warningModal" class="modal-overlay" style="display: none;">
-    <div class="warning-modal">
-      <div class="warning-header">
-        <div class="warning-icon">⚠️</div>
-        <h3>Food Combination Alert</h3>
-      </div>
-      <div class="warning-content">
-        <p class="warning-message">
-          <strong>S + P Combination Detected!</strong><br>
-          This combination may cause digestive discomfort.
-        </p>
-        <div class="detected-items">
-          <span class="detected-label">Items detected:</span>
-          <span id="detectedItems" class="detected-list"></span>
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Play Truth Table Checkers</h2>
+            <ul>
+                <li><strong>Goal:</strong> Capture all AI pieces or block all AI moves</li>
+                <li><strong>Movement:</strong> Solve a truth table problem to move your piece</li>
+                <li><strong>Captures:</strong> Move diagonally over AI pieces after solving correctly</li>
+                <li><strong>Getting Started:</strong> Select a blue piece in the first row to begin. Available moves will highlight in hot pink - click a hot pink square to move there</li>
+            </ul>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="start-game" class="btn primary">Start Playing!</button>
+            </div>
         </div>
-      </div>
-      <div class="warning-actions">
-        <button id="warningOkBtn" class="warning-btn primary">Got it! 👍</button>
-      </div>
     </div>
-  </div>
 
-  <!-- BP Modal -->
-  <div id="bpModal" class="modal-overlay" style="display: none;">
-    <div class="vitals-modal">
-      <div class="vitals-header">
-        <div class="vitals-icon">📈</div>
-        <h3>Log Blood Pressure</h3>
-      </div>
-      <div class="vitals-content">
-        <div class="bp-input-container">
-          <label for="bpInput" class="vitals-label">Blood Pressure (120/80):</label>
-          <input type="text" id="bpInput" class="vitals-input" placeholder="e.g. 120/80" pattern="[0-9]+/[0-9]+" />
+    <!-- Rules Modal -->
+    <div id="rules-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Play Truth Table Checkers</h2>
+            <ul>
+                <li><strong>Goal:</strong> Capture all AI pieces or block all AI moves</li>
+                <li><strong>Movement:</strong> Solve a truth table problem to move your piece</li>
+                <li><strong>Captures:</strong> Move diagonally over AI pieces after solving correctly</li>
+                <li><strong>Piece Types:</strong>
+                    <ul>
+                        <li>🔵 AND pieces - solve AND (∧) truth tables</li>
+                        <li>🟢 OR pieces - solve OR (∨) truth tables</li>
+                        <li>🔴 NOT pieces - solve NOT (¬) truth tables</li>
+                        <li>🔶 IMPLIES pieces - solve implication (→) truth tables</li>
+                        <li>🔷 BICONDITIONAL pieces - solve if-and-only-if (↔) truth tables</li>
+                        <li>⚡ COMPLEX pieces - solve complex expressions with multiple operators</li>
+                        <li>L LOGICAL pieces - solve tautology/contradiction expressions</li>
+                        <li>👑 King pieces - solve advanced logical expressions</li>
+                    </ul>
+                </li>
+                <li><strong>Scoring:</strong> +2 for correct answers, +5 for captures, -1 for skips</li>
+            </ul>
         </div>
-        <div class="datetime-container">
-          <label for="bpDateTime" class="vitals-label">Date & Time:</label>
-          <input type="datetime-local" id="bpDateTime" class="vitals-input" />
-        </div>
-      </div>
-      <div class="vitals-actions">
-        <button id="saveBPBtn" class="vitals-btn primary">Save</button>
-        <button id="cancelBPBtn" class="vitals-btn secondary">Cancel</button>
-      </div>
     </div>
-  </div>
 
-  <!-- BS Modal -->
-  <div id="bsModal" class="modal-overlay" style="display: none;">
-    <div class="vitals-modal">
-      <div class="vitals-header">
-        <div class="vitals-icon">🔊</div>
-        <h3>Log Bowel Sounds</h3>
-      </div>
-      <div class="vitals-content">
-        <div class="bs-input-container">
-          <label for="bsInput" class="vitals-label">Bowel Sounds (1-7):</label>
-          <select id="bsInput" class="vitals-select">
-            <option value="">Select level...</option>
-            <option value="1">1 (Very Low)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4 (Neutral)</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7 (Very High)</option>
-          </select>
-        </div>
-        <div class="datetime-container">
-          <label for="bsDateTime" class="vitals-label">Date & Time:</label>
-          <input type="datetime-local" id="bsDateTime" class="vitals-input" />
-        </div>
-      </div>
-      <div class="vitals-actions">
-        <button id="saveBSBtn" class="vitals-btn primary">Save</button>
-        <button id="cancelBSBtn" class="vitals-btn secondary">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>
