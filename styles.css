@@ -1014,121 +1014,42 @@ input[name="symptoms"] {
   color: var(--obsidian);
 }
 
-/* Chip Styling */
-.chips-container {
+/* New text input for styling per request of user */
+.text-input-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-.chip {
-  display: inline-block;
-  padding: 6px 12px;
-  background-color: var(--seafoam);
-  color: var(--obsidian);
+.health-text-field {
+  width: 100%;
+  padding: 10px 14px;
   border: 2px solid var(--tropic-blue);
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.chip:hover {
-  background-color: var(--tropic-blue);
-  color: white;
-  transform: translateY(-1px);
-}
-
-.chip.selected {
-  background-color: var(--primary-blue) !important;
-  color: white !important;
-  box-shadow: 0 3px 6px rgba(8, 126, 139, 0.4) !important;
-  border-color: var(--primary-blue) !important;
-  transform: translateY(-1px) !important;
-  font-weight: 600 !important;
-}
-
-.chip.selected:hover {
-  background-color: var(--primary-blue) !important;
-}
-
-.chips-container .chip.selected {
-  background-color: var(--primary-blue) !important;
-  color: white !important;
-  box-shadow: 0 3px 6px rgba(8, 126, 139, 0.4) !important;
-  border-color: var(--primary-blue) !important;
-  transform: translateY(-1px) !important;
-  font-weight: 600 !important;
-}
-
-/* Mobile Responsiveness for Health Details */
-@media screen and (max-width: 768px) {
-  .chips-container {
-    gap: 6px;
-  }
-  
-  .chip {
-    padding: 8px 14px;
-    font-size: 0.9rem;
-  }
-  
-  .radio-group {
-    gap: 20px;
-  }
-  
-  .health-label {
-    font-size: 1rem;
-  }
-}
-
-/* Food Entry Styling */
-.food-entry {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background-color: var(--crane);
-  padding: 15px;
-  margin-bottom: 10px;
   border-radius: 8px;
-  border-left: 4px solid var(--tropic-blue);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.entry-content {
-  flex: 1;
-  margin-right: 15px;
-}
-
-.entry-actions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.favorite-btn, .delete-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 5px 8px;
-  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--obsidian);
+  background-color: white;
+  box-sizing: border-box;
   transition: all 0.2s ease;
 }
 
-.favorite-btn {
-  color: #f39c12;
+.health-text-field:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(8, 126, 139, 0.2);
 }
 
-.favorite-btn:hover {
-  background-color: rgba(243, 156, 18, 0.1);
-  transform: scale(1.1);
+.health-text-field::placeholder {
+  color: #999;
+  font-style: italic;
 }
 
-.delete-btn {
-  color: #e74c3c;
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--sage-green);
+  font-style: italic;
+  margin-top: 2px;
 }
 
 .delete-btn:hover {
@@ -1313,11 +1234,21 @@ input[name="symptoms"] {
 
 /* Mobile responsiveness for export modal */
 @media screen and (max-width: 768px) {
-  .export-modal-content {
+  /* Mobile text input fields */
+.health-text-field {
+  font-size: 1rem;
+  padding: 12px 15px;
+}
+
+.field-hint {
+  font-size: 0.85rem;
+}
+
+.export-modal-content {
     width: 95%;
     margin: 20px;
   }
-  
+
   .export-modal-header,
   .export-modal-body,
   .export-modal-actions,
@@ -1338,6 +1269,309 @@ input[name="symptoms"] {
   .export-password-input {
     font-size: 1rem;
     padding: 12px 45px 12px 12px;
+  }
+}
+
+/* Edit Modal Styling */
+.edit-modal {
+  max-width: 500px;
+}
+
+.edit-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.edit-field {
+  margin-bottom: 20px;
+}
+
+.edit-field:last-child {
+  margin-bottom: 0;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.edit-btn {
+  background-color: var(--sage-green);
+  color: white;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background-color: #6f7d52;
+  transform: scale(1.05);
+}
+
+/* Daily Notes Section */
+.daily-notes-section {
+  background-color: var(--crane);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notes-collapsible {
+  background-color: var(--tropic-blue);
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.notes-collapsible:hover {
+  background-color: var(--primary-blue);
+}
+
+.notes-collapsible.active {
+  background-color: var(--primary-blue);
+}
+
+.notes-content {
+  padding: 20px 0 0 0;
+  display: none;
+  overflow: hidden;
+}
+
+.notes-description {
+  color: var(--obsidian);
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.notes-date-selector {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notes-label {
+  font-weight: 600;
+  color: var(--obsidian);
+  font-size: 1rem;
+}
+
+.notes-date-input {
+  padding: 8px 12px;
+  border: 2px solid var(--tropic-blue);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--obsidian);
+  background-color: white;
+}
+
+.daily-notes-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 2px solid var(--tropic-blue);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--obsidian);
+  background-color: white;
+  box-sizing: border-box;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.daily-notes-textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(8, 126, 139, 0.2);
+}
+
+.notes-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.notes-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-notes {
+  background-color: var(--tropic-blue);
+  color: white;
+}
+
+.save-notes:hover {
+  background-color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+.clear-notes {
+  background-color: var(--sage-green);
+  color: white;
+}
+
+.clear-notes:hover {
+  background-color: #6f7d52;
+  transform: translateY(-2px);
+}
+
+.notes-saved-indicator {
+  color: var(--tropic-blue);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px;
+  background-color: rgba(8, 126, 139, 0.1);
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Mobile responsiveness for Daily Notes */
+@media screen and (max-width: 768px) {
+  .notes-actions {
+    flex-direction: column;
+  }
+  
+  .notes-btn {
+    width: 100%;
+  }
+}
+
+/* Saved Notes List */
+.saved-notes-title {
+  color: var(--obsidian);
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--tropic-blue);
+}
+
+.saved-note-item {
+  background-color: white;
+  border: 2px solid var(--tropic-blue);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.saved-note-item:hover {
+  box-shadow: 0 2px 8px rgba(8, 126, 139, 0.2);
+}
+
+.saved-note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  background-color: rgba(8, 126, 139, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.saved-note-header:hover {
+  background-color: rgba(8, 126, 139, 0.1);
+}
+
+.saved-note-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.saved-note-info strong {
+  color: var(--tropic-blue);
+  font-size: 1rem;
+}
+
+.saved-note-time {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.saved-note-toggle {
+  color: var(--tropic-blue);
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.saved-note-content {
+  padding: 15px;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+}
+
+.saved-note-text {
+  color: var(--obsidian);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-bottom: 15px;
+}
+
+.saved-note-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.note-action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background-color: var(--tropic-blue);
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Mobile responsiveness for saved notes */
+@media screen and (max-width: 768px) {
+  .saved-note-actions {
+    flex-direction: column;
+  }
+  
+  .note-action-btn {
+    width: 100%;
   }
 }
 

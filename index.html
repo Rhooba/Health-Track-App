@@ -18,15 +18,16 @@
   <!-- Entry Form -->
   <div id="entryForm">
     <input type="text" id="foodInput" placeholder="What did you eat?" />
-    <input type="date" id="dateInput" placeholder="Select date" value="2024-03-16" />
+    <input type="date" id="dateInput" placeholder="Select date" />
     
     <select id="mealTypeInput">
-      <option value="" disabled selected>Choose a Meal Type</option>
+      <option value="" disabled selected>Meal or Drink?</option>
       <option value="Breakfast">Breakfast</option>
       <option value="Lunch">Lunch</option>
       <option value="Dinner">Dinner</option>
       <option value="Snacks">Snack</option>
       <option value="Dessert">Dessert</option>
+      <option value="Drinks">Drinks</option>
     </select>
 
     <button id="addLogButton">Add Entry</button>
@@ -64,11 +65,9 @@
             <span class="radio-text">Yes</span>
           </label>
         </div>
-        <div class="chips-container" id="exerciseChips" style="display: none;">
-          <span class="chip" data-value="walk">Walk</span>
-          <span class="chip" data-value="yoga">Yoga</span>
-          <span class="chip" data-value="stretch">Stretch</span>
-          <span class="chip" data-value="other">Other</span>
+        <div class="text-input-container" id="exerciseInput" style="display: none;">
+         <input type="text" class="health-text-field" placeholder="e.g., 30 min walk, yoga, stretching..."/>
+         <small class="field-hint">Separate multiple activitties with commas</small>
         </div>
       </div>
 
@@ -83,10 +82,9 @@
             <input type="radio" name="stressRelief" value="yes"> Yes
           </label>
         </div>
-        <div class="chips-container" id="stressChips" style="display: none;">
-          <span class="chip" data-value="walked">Walked</span>
-          <span class="chip" data-value="read">Read</span>
-          <span class="chip" data-value="meditated">Meditated</span>
+        <div class="text-input-container" id="stressInput" style="display: none;">
+          <input type="text" class="health-text-field" placeholder="e.g., walked outside, read a book, meditated..."/>
+          <small class="field-hint">Describe what you did</small>
         </div>
       </div>
 
@@ -101,16 +99,46 @@
             <input type="radio" name="symptoms" value="yes"> Yes
           </label>
         </div>
-        <div class="chips-container" id="symptomsChips" style="display: none;">
-          <span class="chip" data-value="cramps">Cramps</span>
-          <span class="chip" data-value="bloating">Bloating</span>
-          <span class="chip" data-value="nausea">Nausea</span>
+        <div class="text-input-container" id="symptomsInput" style="display: none;">
+          <input type="text" class="health-text-field" placeholder="e.g., cramps, bloating, headache..."/>
+          <small class="field-hint">Describe any symptoms you're experiencing</small>
         </div>
       </div>
 
     </div>
   </div>
 
+    <!-- Daily Notes Section -->
+  <div class="daily-notes-section">
+    <button class="notes-collapsible">📝 Daily Notes</button>
+    <div class="content notes-content">
+      <p class="notes-description">Add notes about your day</p>
+      
+      <div class="notes-date-selector">
+        <label for="notesDate" class="notes-label">Date:</label>
+        <input type="date" id="notesDate" class="notes-date-input" />
+      </div>
+      
+      <textarea id="dailyNotesText" class="daily-notes-textarea" 
+                placeholder="Type your notes here... (e.g., felt energetic today, went for a walk, slept well, etc.)"></textarea>
+      
+      <div class="notes-actions">
+        <button id="saveNotesBtn" class="notes-btn save-notes">💾 Save Notes</button>
+        <button id="clearNotesBtn" class="notes-btn clear-notes">🗑️ Clear</button>
+      </div>
+      
+      <div id="notesSavedIndicator" class="notes-saved-indicator" style="display: none;">
+        ✅ Notes saved successfully!
+      </div>
+      
+      <!-- Saved Notes List -->
+      <div id="savedNotesList" class="saved-notes-list" style="margin-top: 20px;">
+        <h3 class="saved-notes-title" style="display: none;">📋 Saved Notes</h3>
+        <div id="savedNotesContainer"></div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Food Log -->
   <ul id="foodLogList"></ul>
 
@@ -278,5 +306,39 @@
     </div>
   </div>
 
-<script src="script.js"></script>
+  <!-- Edit Entry Modal -->
+  <div id="editModal" class="modal-overlay" style="display: none;">
+    <div class="vitals-modal edit-modal">
+      <div class="vitals-header">
+        <div class="vitals-icon">✏️</div>
+        <h3>Edit Entry</h3>
+      </div>
+      <div class="vitals-content edit-content">
+        <div class="edit-field">
+          <label for="editTimestamp" class="vitals-label">Timestamp:</label>
+          <input type="datetime-local" id="editTimestamp" class="vitals-input" />
+        </div>
+        
+        <div class="edit-field">
+          <label class="vitals-label">Exercise:</label>
+          <input type="text" id="editExercise" class="vitals-input" placeholder="e.g., 30 min walk, yoga" />
+        </div>
+        
+        <div class="edit-field">
+          <label class="vitals-label">Stress Relief:</label>
+          <input type="text" id="editStressRelief" class="vitals-input" placeholder="e.g., walked outside, read" />
+        </div>
+        
+        <div class="edit-field">
+          <label class="vitals-label">Symptoms:</label>
+          <input type="text" id="editSymptoms" class="vitals-input" placeholder="e.g., cramps, bloating, headache" />
+        </div>
+      </div>
+      <div class="vitals-actions">
+        <button id="saveEditBtn" class="vitals-btn primary">Save Changes</button>
+        <button id="cancelEditBtn" class="vitals-btn secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 </html>
