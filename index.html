@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Tracker App</title>
+  <title>Health Tracker App</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <h1>Food Tracker</h1>
+  <h1>Health Tracker</h1>
 
   <!-- Entry Form -->
   <div id="entryForm">
@@ -41,6 +41,20 @@
     <button id="exportEncryptedButton">📊 Export for Health Provider</button>
   </div>
 
+  <!-- Food Log -->
+  <div id="foodLogPlaceholder" class="food-log-placeholder">
+    <span class="placeholder-icon">🍎💾</span>
+    <span class="placeholder-text">Your Saved Food Entries</span>
+  </div>
+  <ul id="foodLogList"></ul>
+
+  <!-- Filters -->
+  <div id="filters">
+    <button id="allBtn">Show All 👩🏻‍🍳</button>
+    <button id="sickBtn">Only Sick 🤮</button>
+    <button id="okayBtn">Only Okay 🤩</button>
+  </div>
+
   <!-- Health Vitals Section -->
   <div class="health-vitals-section">
     <button id="logBPButton" class="vitals-btn bp-btn">📈 Log BP</button>
@@ -49,7 +63,7 @@
 
   <!-- Health Details Section -->
   <div class="health-details-section">
-    <button class="collapsible health-collapsible">± Health Details</button>
+    <button class="collapsible health-collapsible">💪 Health Details</button>
     <div class="content health-content">
       
       <!-- Exercise Section -->
@@ -105,6 +119,11 @@
         </div>
       </div>
 
+      <!-- Save Health Details Button -->
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="saveHealthDetailsBtn" class="notes-btn save-notes">💾 Save Health Details</button>
+      </div>
+
     </div>
   </div>
 
@@ -138,22 +157,14 @@
       </div>
     </div>
   </div>
-  
-  <!-- Food Log -->
-  <ul id="foodLogList"></ul>
-
-  <!-- Filters -->
-  <div id="filters">
-    <button id="allBtn">Show All 👩🏻‍🍳</button>
-    <button id="sickBtn">Only Sick 🤮</button>
-    <button id="okayBtn">Only Okay 🤩</button>
-  </div>
 
   <!-- Favorite Foods Section -->
   <h2>Save All of Your Favorite Foods</h2>
-  <button class="collapsible active">± Favorite Foods 🌟</button>
-  <div class="content" style="display: block;">
-    <ul id="favoritesList"></ul>
+  <div class="favorites-section">
+    <button class="collapsible active">💖 Favorite Foods 🌟</button>
+    <div class="content" style="display: block;">
+      <ul id="favoritesList"></ul>
+    </div>
   </div>
 
   <!-- Graphs Section -->
@@ -188,7 +199,7 @@
   <div id="bpReminderPopup" class="popup-overlay">
     <div class="popup-content">
       <div class="popup-header">
-        <h3>👋 Welcome to Food Tracker!</h3>
+        <h3>👋 Welcome to Health Tracker!</h3>
         <button id="closeBpPopup" class="close-btn" onclick="closePopup()">&times;</button>
       </div>
       <div class="popup-body">
@@ -231,10 +242,10 @@
     <div class="warning-modal">
       <div class="warning-header">
         <div class="warning-icon">⚠️</div>
-        <h3>Food Combination Alert</h3>
+        <h3 id="warningTitle">Food Combination Alert</h3>
       </div>
       <div class="warning-content">
-        <p class="warning-message">
+        <p id="warningMessage" class="warning-message">
           <strong>S + P Combination Detected!</strong><br>
           This combination may cause digestive discomfort.
         </p>
@@ -242,9 +253,16 @@
           <span class="detected-label">Items detected:</span>
           <span id="detectedItems" class="detected-list"></span>
         </div>
+        <!-- Timer Section (shown for timing conflicts) -->
+        <div id="timerSection" style="display: none; margin-top: 15px; text-align: center;">
+          <p id="timerMessage" style="color: #e74c3c; font-weight: 600;">Wait until safe time:</p>
+          <p id="safeTime" style="font-size: 1.2rem; font-weight: bold; color: #087E8B;"></p>
+          <p id="countdownTime" style="font-size: 1.5rem; font-weight: bold; color: #e74c3c;">00:00:00</p>
+        </div>
       </div>
       <div class="warning-actions">
-        <button id="warningOkBtn" class="warning-btn primary" onclick="closeWarningModal()">Got it! 👍</button>
+        <button id="warningOverrideBtn" class="warning-btn override">⚠️ Add Anyway</button>
+        <button id="warningOkBtn" class="warning-btn secondary" onclick="closeWarningModal()">Cancel</button>
       </div>
     </div>
   </div>

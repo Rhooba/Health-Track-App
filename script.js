@@ -30,12 +30,12 @@ const W_FOODS = [
 
 // S Foods (Starches, sugars, fruits)
 const S_FOODS = [
-  'acorn squash', 'agave', 'all bread', 'bagel', 'bread', 'almond flour', 'avocado', 'beans', 'beets', 'butternut squash', 'cake', 'candy', 'coconut', 'coconut milk', 'crackers', 'dried fruit', 'ice cream', 'carrots', 'chickpeas', 'chocolate', 'corn', 'cornbread', 'lentils', 'lime', 'fruits', 'fruit juice', 'grains', 'honey', 'honey mustard', 'ketchup', 'legumes', 'lemon', 'lima beans', 'nutella', 'orange peppers', 'parsnips', 'pasta', 'peas', 'pickle relish', 'potatoes', 'potato chips', 'pretzels', 'rice', 'rice milk', 'rutabaga', 'sauerkraut', 'sugar', 'tortillas', 'tortilla chips', 'turnips', 'vegetable broth', 'water chestnuts', 'wheat', 'wine', 'winter squash', 'yams'
+  'acorn squash', 'agave', 'all bread', 'bagel', 'bread', 'almond flour', 'avocado', 'beans', 'beets', 'butternut squash', 'cake', 'candy', 'cheese', 'cheese spread', 'nacho cheese', 'vegan cheese', 'coconut', 'coconut milk', 'crackers', 'dried fruit', 'ice cream', 'carrots', 'chickpeas', 'chocolate', 'corn', 'cornbread', 'lentils', 'lime', 'fruits', 'fruit juice', 'grains', 'honey', 'honey mustard', 'ketchup', 'legumes', 'lemon', 'lima beans', 'nutella', 'orange peppers', 'parsnips', 'pasta', 'peas', 'pickle relish', 'potatoes', 'potato chips', 'pretzels', 'rice', 'rice milk', 'rutabaga', 'sauerkraut', 'sugar', 'tortillas', 'tortilla chips', 'turnips', 'vegetable broth', 'water chestnuts', 'wheat', 'wine', 'winter squash', 'yams'
 ];
 
 // P Foods (Proteins)
 const P_FOODS = [
-  'cheese', 'eggs', 'fish', 'pork', 'beef', 'lamb', 'seafood', 'meat broth', 'seeds', 'vegan cheese', 'cheese spread', 'nacho cheese', 'nuts', 'venison', 'processed slices', 'poultry', 'chicken', 'turkey', 'salmon', 'tuna', 'shrimp', 'crab', 'milk', 'yogurt', 'tofu', 'tempeh', 'protein powder'
+  'eggs', 'fish', 'pork', 'beef', 'lamb', 'seafood', 'meat broth', 'seeds', 'nuts', 'venison', 'processed slices', 'poultry', 'chicken', 'turkey', 'salmon', 'tuna', 'shrimp', 'crab', 'milk', 'yogurt', 'tofu', 'tempeh', 'protein powder'
 ];
 
 // Function to categorize a food item
@@ -805,10 +805,25 @@ const symptomsValue = selectedSymptoms.length > 0 ? 'yes' : (symptomsRadio?.valu
     });
     
     
+    // Get date from input or use today
+    const dateInput = document.getElementById("dateInput").value;
+    console.log('📅 Date input value:', dateInput);
+    
+    let entryDate;
+    if (dateInput) {
+      // Parse YYYY-MM-DD format and create date at local midnight to avoid timezone issues
+      const [year, month, day] = dateInput.split('-').map(Number);
+      entryDate = new Date(year, month - 1, day);
+      console.log('📅 Parsed date from input:', entryDate.toLocaleDateString());
+    } else {
+      entryDate = new Date();
+      console.log('📅 Using current date:', entryDate.toLocaleDateString());
+    }
+    
     const newEntry = {
       food,
-      date: new Date().toLocaleDateString(),
-      timestamp: new Date().toLocaleString(),
+      date: entryDate.toLocaleDateString(),
+      timestamp: entryDate.toLocaleString(),
       sick: document.getElementById("sickInput").checked,
       mealType: document.getElementById("mealTypeInput").value || "Unspecified",
       healthDetails: {
@@ -833,33 +848,45 @@ const symptomsValue = selectedSymptoms.length > 0 ? 'yes' : (symptomsRadio?.valu
       timingInfo: analysis.combo.timingInfo
     });
     
+    // Function to actually add the entry (used by both safe flow and override)
+    const addEntry = (overridden = false) => {
+      if (overridden) {
+        newEntry.overridden = true;
+        newEntry.overrideTimestamp = new Date().toISOString();
+        console.log('⚠️ Entry added with OVERRIDE flag');
+      }
+      
+      foodEntries.push(newEntry);
+      localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
+      
+      // Clear form and health text fields
+      document.getElementById("foodInput").value = "";
+      document.getElementById("sickInput").checked = false;
+
+      // Clear health text fields
+      const exerciseField = document.querySelector('#exerciseInput .health-text-field');
+      const stressField = document.querySelector('#stressInput .health-text-field');
+      const symptomsField = document.querySelector('#symptomsInput .health-text-field');
+
+      if (exerciseField) exerciseField.value = '';
+      if (stressField) stressField.value = '';
+      if (symptomsField) symptomsField.value = '';
+      
+      renderAllEntries();
+      updateCharts();
+      console.log('✅ Entry successfully added');
+    };
+    
     if (!analysis.combo.safe) {
       console.log('🚨 Line 502: TRIGGERING WARNING MODAL!');
-      showWarningModal(analysis.combo.warning, analysis.components, analysis.combo.timingInfo);
+      // Show warning and pass override callback
+      showWarningModal(analysis.combo.warning, analysis.components, analysis.combo.timingInfo, () => addEntry(true));
+      return; // Don't add entry yet - wait for user decision
     } else {
       console.log('✅ Line 505: No warning needed - combo is safe');
+      addEntry(false); // Safe entry, add immediately
+      return;
     }
-
-    foodEntries.push(newEntry);
-    localStorage.setItem("foodEntries", JSON.stringify(foodEntries));
-    
-    // Clear form and health text fields
-document.getElementById("foodInput").value = "";
-document.getElementById("sickInput").checked = false;
-
-// Clear health text fields
-const exerciseField = document.querySelector('#exerciseInput .health-text-field');
-const stressField = document.querySelector('#stressInput .health-text-field');
-const symptomsField = document.querySelector('#symptomsInput .health-text-field');
-
-if (exerciseField) exerciseField.value = '';
-if (stressField) stressField.value = '';
-if (symptomsField) symptomsField.value = '';
-    
-    renderAllEntries();
-    updateCharts(foodEntries);
-    
-    console.log(" Entry added successfully with health details!");
     
   } catch (error) {
     console.error(" Error adding entry:", error);
@@ -869,6 +896,7 @@ if (symptomsField) symptomsField.value = '';
 function renderAllEntries() {
   try {
     const list = document.getElementById("foodLogList");
+    const placeholder = document.getElementById("foodLogPlaceholder");
     if (!list) return;
     
     list.innerHTML = "";
@@ -878,6 +906,11 @@ function renderAllEntries() {
     const sortedEntries = entriesWithIndex.sort((a, b) => new Date(b.entry.date) - new Date(a.entry.date));
     
     sortedEntries.forEach(({ entry, originalIndex }) => renderEntry(entry, originalIndex));
+    
+    // Toggle placeholder visibility
+    if (placeholder) {
+      placeholder.style.display = sortedEntries.length === 0 ? 'flex' : 'none';
+    }
     
     console.log(` Rendered ${sortedEntries.length} entries`);
     
@@ -906,10 +939,14 @@ function renderEntry(entry, index) {
     const detected = entry.analysis && entry.analysis.components && entry.analysis.components.length
       ? `<br><small style="color:#666;font-size:.8rem;"> Detected: ${entry.analysis.components.join(', ')}</small>`
       : '';
+    
+    const overrideBadge = entry.overridden
+      ? `<span class="override-badge" title="Added despite timing warning">⚠️ Override</span>`
+      : '';
 
     li.innerHTML = `
       <div class="entry-content">
-        <strong>${entry.date}</strong> - ${entry.food} (${mealEmoji} ${entry.mealType})
+        <strong>${entry.date}</strong> - ${entry.food} (${mealEmoji} ${entry.mealType}) ${overrideBadge}
         ${entry.timestamp ? `<br><small style="color:#666;font-size:.8rem;"> ${entry.timestamp}</small>` : ''}
         ${detected}
         ${entry.sick ? " Felt Sick" : " Felt Okay"}
@@ -1408,6 +1445,7 @@ function clearAllEntries() {
 function filterEntries(filter) {
   try {
     const list = document.getElementById("foodLogList");
+    const placeholder = document.getElementById("foodLogPlaceholder");
     list.innerHTML = "";
 
     let filteredEntries = foodEntries;
@@ -1425,6 +1463,11 @@ function filterEntries(filter) {
     
     entriesWithIndex.sort((a, b) => new Date(b.entry.date) - new Date(a.entry.date));
     entriesWithIndex.forEach(({ entry, originalIndex }) => renderEntry(entry, originalIndex));
+    
+    // Toggle placeholder visibility
+    if (placeholder) {
+      placeholder.style.display = entriesWithIndex.length === 0 ? 'flex' : 'none';
+    }
   } catch (error) {
     console.error(" Error filtering entries:", error);
   }
@@ -1845,11 +1888,25 @@ function generateAISuggestions(entries) {
   }
 }
 
-function generateHealthReport() {
+function generateHealthReport(startDate = null, endDate = null) {
   const today = new Date().toLocaleDateString();
   
-  // Analyze food patterns
-  const totalEntries = foodEntries.length;
+  // Helper function to check if date is in range
+  const isInDateRange = (dateStr) => {
+    if (!startDate && !endDate) return true; // No filter, include all
+    const entryDate = new Date(dateStr);
+    if (startDate && entryDate < startDate) return false;
+    if (endDate && entryDate > endDate) return false;
+    return true;
+  };
+  
+  // Filter food entries by date range
+  const filteredEntries = startDate || endDate 
+    ? foodEntries.filter(entry => isInDateRange(entry.date))
+    : foodEntries;
+  
+  // Analyze food patterns (using filtered entries)
+  const totalEntries = filteredEntries.length;
   const sickEntries = foodEntries.filter(entry => entry.sick).length;
   const conflictEntries = foodEntries.filter(entry => {
     const analysis = analyzeFoodText(entry.food);
@@ -1931,29 +1988,99 @@ function generateHealthReport() {
       if (addedAny) healthDetails.totalHealthEntries++;
     }
   });
+  // Load standalone health history
+  const healthHistory = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+  console.log('Standalone health history loaded:', healthHistory.length, 'entries');
+  
+  // Merge standalone health history into healthDetails
+  healthHistory.forEach(entry => {
+    let addedAny = false;
+    
+    // Add exercise activities
+    if (Array.isArray(entry.exercise) && entry.exercise.length > 0) {
+      entry.exercise.forEach(activity => {
+        healthDetails.exercise.push({ date: entry.date, activity, timestamp: entry.timestamp });
+      });
+      addedAny = true;
+    } else if (entry.exercised === 'yes') {
+      healthDetails.exercise.push({ date: entry.date, activity: 'Yes (unspecified)', timestamp: entry.timestamp });
+      addedAny = true;
+    }
+    
+    // Add stress relief activities
+    if (Array.isArray(entry.stressReliefActivities) && entry.stressReliefActivities.length > 0) {
+      entry.stressReliefActivities.forEach(activity => {
+        healthDetails.stressRelief.push({ date: entry.date, activity, timestamp: entry.timestamp });
+      });
+      addedAny = true;
+    } else if (entry.stressRelief === 'yes') {
+      healthDetails.stressRelief.push({ date: entry.date, activity: 'Yes (unspecified)', timestamp: entry.timestamp });
+      addedAny = true;
+    }
+    
+    // Add symptoms
+    if (Array.isArray(entry.symptomsList) && entry.symptomsList.length > 0) {
+      entry.symptomsList.forEach(symptom => {
+        healthDetails.symptoms.push({ date: entry.date, symptom, timestamp: entry.timestamp });
+      });
+      addedAny = true;
+    } else if (entry.symptoms === 'yes') {
+      healthDetails.symptoms.push({ date: entry.date, symptom: 'Yes (unspecified)', timestamp: entry.timestamp });
+      addedAny = true;
+    }
+    
+    if (addedAny) healthDetails.totalHealthEntries++;
+  });
+  
   // Post-aggregation final lengths
-  console.log('HealthDetails final:', {
+  console.log('HealthDetails final (including standalone):', {
     exercise: healthDetails.exercise.length,
     stressRelief: healthDetails.stressRelief.length,
     symptoms: healthDetails.symptoms.length,
     totalHealthEntries: healthDetails.totalHealthEntries
   });
   
-  // Load daily notes
+  // Load daily notes and filter by date range
   const dailyNotes = loadDailyNotes();
-  const notesArray = Object.values(dailyNotes).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const allNotesArray = Object.values(dailyNotes);
+  const filteredNotesArray = allNotesArray.filter(note => isInDateRange(note.date))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  // Filter BP and BS readings by date range
+  const filteredBPReadings = bpReadings.filter(bp => isInDateRange(bp.date));
+  const filteredBSReadings = bsReadings.filter(bs => isInDateRange(bs.date));
+  console.log(`Filtered readings: BP ${filteredBPReadings.length}/${bpReadings.length}, BS ${filteredBSReadings.length}/${bsReadings.length}`);
+  
+  // Create date range description for report
+  let dateRangeText = 'All Time';
+  if (startDate && endDate) {
+    const start = startDate.toLocaleDateString();
+    const end = endDate.toLocaleDateString();
+    if (start === end) {
+      dateRangeText = start;
+    } else {
+      dateRangeText = `${start} - ${end}`;
+    }
+  } else if (startDate) {
+    dateRangeText = `From ${startDate.toLocaleDateString()}`;
+  } else if (endDate) {
+    dateRangeText = `Until ${endDate.toLocaleDateString()}`;
+  }
   
   return {
     generatedDate: today,
+    dateRange: dateRangeText,
     totalEntries,
     sickEntries,
     conflictEntries,
     recentEntries: recentEntries.length,
     bpEntries: bpEntries.length,
-    entries: foodEntries,
+    entries: filteredEntries,
     favorites: favoriteFoods,
     healthDetails,
-    dailyNotes: notesArray
+    dailyNotes: filteredNotesArray,
+    bpReadings: filteredBPReadings,
+    bsReadings: filteredBSReadings
   };
 }
 
@@ -2004,11 +2131,11 @@ function createHTMLReport(data) {
             `).join('')}
         </section>
 
-        ${bpReadings.length > 0 ? `
+        ${data.bpReadings && data.bpReadings.length > 0 ? `
         <section style="margin-bottom: 30px;">
             <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 📈 Blood Pressure Readings</h2>
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                ${bpReadings.map(bp => `
+                ${data.bpReadings.map(bp => `
                     <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #e74c3c;">
                         <strong style="color: #e74c3c;">${bp.date}</strong> - ${bp.value}
                         ${bp.timestamp ? `<br><small style="color: #666;"> ${bp.timestamp}</small>` : ''}
@@ -2018,11 +2145,11 @@ function createHTMLReport(data) {
         </section>
         ` : ''}
         
-        ${bsReadings.length > 0 ? `
+        ${data.bsReadings && data.bsReadings.length > 0 ? `
         <section style="margin-bottom: 30px;">
             <h2 style="color: #087E8B; border-bottom: 1px solid #ddd; padding-bottom: 5px;"> 🔊 Bowel Sounds Readings</h2>
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                ${bsReadings.map(bs => `
+                ${data.bsReadings.map(bs => `
                     <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #8B9467;">
                         <strong style="color: #8B9467;">${bs.date}</strong> - Level ${bs.value}/7
                         ${bs.timestamp ? `<br><small style="color: #666;"> ${bs.timestamp}</small>` : ''}
@@ -2128,6 +2255,29 @@ function showExportModal() {
           <p class="export-description">Create a password to protect your medical data:</p>
           <p class="export-subdescription"><strong>Your doctor will need this password to view the report.</strong></p>
           
+          <div class="date-range-section" style="margin-bottom: 20px;">
+            <label class="password-label" style="display: block; margin-bottom: 8px;">Export Range:</label>
+            <select id="exportRangeSelect" class="export-range-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #087E8B; font-size: 1rem;">
+              <option value="all">All Time</option>
+              <option value="today">Today Only</option>
+              <option value="week">This Week</option>
+              <option value="custom">Custom Range</option>
+            </select>
+            
+            <div id="customDateRange" style="display: none; margin-top: 12px; padding: 12px; background: rgba(244, 244, 249, 0.5); border-radius: 8px;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <div style="flex: 1;">
+                  <label style="font-size: 0.9rem; color: #2d3748; display: block; margin-bottom: 4px;">From:</label>
+                  <input type="date" id="exportStartDate" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;" />
+                </div>
+                <div style="flex: 1;">
+                  <label style="font-size: 0.9rem; color: #2d3748; display: block; margin-bottom: 4px;">To:</label>
+                  <input type="date" id="exportEndDate" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;" />
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div class="password-section">
             <label for="exportPassword" class="password-label">Password:</label>
             <div class="password-input-container">
@@ -2175,6 +2325,20 @@ function showExportModal() {
     }
   });
   
+  // Date range selector listener
+  document.getElementById('exportRangeSelect').addEventListener('change', function(e) {
+    const customDiv = document.getElementById('customDateRange');
+    if (e.target.value === 'custom') {
+      customDiv.style.display = 'block';
+      // Set default dates
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('exportStartDate').value = today;
+      document.getElementById('exportEndDate').value = today;
+    } else {
+      customDiv.style.display = 'none';
+    }
+  });
+  
   // Focus on password input
   document.getElementById('exportPassword').focus();
 }
@@ -2208,13 +2372,62 @@ function processExport() {
     localStorage.removeItem('exportPassword');
   }
   
+  // Get date range selection
+  const rangeSelect = document.getElementById('exportRangeSelect');
+  if (!rangeSelect) {
+    console.error('Export range selector not found!');
+    alert('Error: Export form not properly loaded. Please refresh and try again.');
+    return;
+  }
+  
+  const rangeType = rangeSelect.value;
+  let startDate = null;
+  let endDate = null;
+  
+  console.log('Export range type:', rangeType);
+  
+  if (rangeType === 'today') {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    startDate = today;
+    endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+  } else if (rangeType === 'week') {
+    const today = new Date();
+    const weekAgo = new Date();
+    weekAgo.setDate(today.getDate() - 7);
+    weekAgo.setHours(0, 0, 0, 0);
+    startDate = weekAgo;
+    endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+  } else if (rangeType === 'custom') {
+    const startInput = document.getElementById('exportStartDate').value;
+    const endInput = document.getElementById('exportEndDate').value;
+    
+    if (!startInput || !endInput) {
+      alert('Please select both start and end dates for custom range.');
+      return;
+    }
+    
+    startDate = new Date(startInput);
+    startDate.setHours(0, 0, 0, 0);
+    endDate = new Date(endInput);
+    endDate.setHours(23, 59, 59, 999);
+    
+    if (startDate > endDate) {
+      alert('Start date must be before or equal to end date.');
+      return;
+    }
+  }
+  // else rangeType === 'all', keep startDate and endDate as null
+  
   // Close modal
   closeExportModal();
   
   // Continue with export process
   try {
-    // Generate comprehensive health report
-    const reportData = generateHealthReport();
+    // Generate comprehensive health report with date filter
+    const reportData = generateHealthReport(startDate, endDate);
     
     // One-time export diagnostic to verify health data included
     if (!window.__exportDiagnosticLogged) {
@@ -2800,7 +3013,7 @@ function updateLastEntryHealthDetails() {
   }
 }
 
-function showWarningModal(warning, detectedItems, timingInfo) {
+function showWarningModal(warning, detectedItems, timingInfo, onOverride) {
   try {
     const modal = document.getElementById('warningModal');
     const detectedItemsSpan = document.getElementById('detectedItems');
@@ -2847,16 +3060,30 @@ function showWarningModal(warning, detectedItems, timingInfo) {
       timerSection.style.display = 'none';
     }
     
-    // Set up close button
-    const okBtn = modal.querySelector('#warningOkBtn');
-    if (okBtn) {
-      okBtn.onclick = () => {
+    // Set up override button
+    const overrideBtn = document.getElementById('warningOverrideBtn');
+    if (overrideBtn && onOverride) {
+      overrideBtn.onclick = () => {
+        onOverride(); // Call the callback to add entry with override flag
         modal.style.display = 'none';
-        modal.remove();
         // Clear any running countdown
         if (modal.countdownInterval) {
           clearInterval(modal.countdownInterval);
         }
+        console.log('✅ User overrode the warning');
+      };
+    }
+    
+    // Set up close/cancel button
+    const okBtn = document.getElementById('warningOkBtn');
+    if (okBtn) {
+      okBtn.onclick = () => {
+        modal.style.display = 'none';
+        // Clear any running countdown
+        if (modal.countdownInterval) {
+          clearInterval(modal.countdownInterval);
+        }
+        console.log('🚫 User cancelled the entry');
       };
     }
     
@@ -2864,15 +3091,18 @@ function showWarningModal(warning, detectedItems, timingInfo) {
     modal.onclick = (e) => {
       if (e.target === modal) {
         modal.style.display = 'none';
-        modal.remove();
         // Clear any running countdown
         if (modal.countdownInterval) {
           clearInterval(modal.countdownInterval);
         }
+        console.log('🚫 User clicked outside modal - cancelled');
       }
     };
     
-    console.log('🎉 Beautiful modal should now be visible!');
+    // Show the modal
+    modal.style.display = 'flex';
+    
+    console.log('🎉 Warning modal displayed with override option!');
   } catch (error) {
     console.error(' Error showing warning modal:', error);
   }
@@ -3040,6 +3270,97 @@ function saveBSReading() {
   document.getElementById('bsModal').style.display = 'none';
   
   console.log('BS reading saved:', bsReading);
+}
+
+// Save Health Details Standalone
+function saveHealthDetailsStandalone() {
+  try {
+    // Capture health details
+    const exerciseInput = document.querySelector('#exerciseInput .health-text-field');
+    const stressInput = document.querySelector('#stressInput .health-text-field');
+    const symptomsInput = document.querySelector('#symptomsInput .health-text-field');
+    
+    const selectedExercise = [];
+    const selectedStressRelief = [];
+    const selectedSymptoms = [];
+    
+    // Parse text field values
+    if (exerciseInput && exerciseInput.value.trim()) {
+      const exercises = exerciseInput.value.split(',').map(item => item.trim()).filter(item => item);
+      selectedExercise.push(...exercises);
+    }
+    
+    if (stressInput && stressInput.value.trim()) {
+      const stressActivities = stressInput.value.split(',').map(item => item.trim()).filter(item => item);
+      selectedStressRelief.push(...stressActivities);
+    }
+    
+    if (symptomsInput && symptomsInput.value.trim()) {
+      const symptoms = symptomsInput.value.split(',').map(item => item.trim()).filter(item => item);
+      selectedSymptoms.push(...symptoms);
+    }
+    
+    // Check if any health details were entered
+    if (selectedExercise.length === 0 && selectedStressRelief.length === 0 && selectedSymptoms.length === 0) {
+      alert('Please enter at least one health detail to save.');
+      return;
+    }
+    
+    // Get radio button values
+    const exercisedRadio = document.querySelector('input[name="exercised"]:checked');
+    const stressReliefRadio = document.querySelector('input[name="stressRelief"]:checked');
+    const symptomsRadio = document.querySelector('input[name="symptoms"]:checked');
+    
+    const finalExercised = selectedExercise.length > 0 ? 'yes' : exercisedRadio.value;
+    const finalStressRelief = selectedStressRelief.length > 0 ? 'yes' : stressReliefRadio.value;
+    const finalSymptoms = selectedSymptoms.length > 0 ? 'yes' : symptomsRadio.value;
+    
+    // Create health details entry
+    const healthEntry = {
+      date: new Date().toLocaleDateString(),
+      timestamp: new Date().toLocaleString(),
+      exercised: finalExercised,
+      exercise: selectedExercise,
+      stressRelief: finalStressRelief,
+      stressReliefActivities: selectedStressRelief,
+      symptoms: finalSymptoms,
+      symptomsList: selectedSymptoms
+    };
+    
+    // Save to localStorage
+    let healthHistory = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+    healthHistory.push(healthEntry);
+    localStorage.setItem('healthHistory', JSON.stringify(healthHistory));
+    
+    // Clear form fields
+    if (exerciseInput) exerciseInput.value = '';
+    if (stressInput) stressInput.value = '';
+    if (symptomsInput) symptomsInput.value = '';
+    
+    // Reset radio buttons to "No"
+    document.querySelector('input[name="exercised"][value="no"]').checked = true;
+    document.querySelector('input[name="stressRelief"][value="no"]').checked = true;
+    document.querySelector('input[name="symptoms"][value="no"]').checked = true;
+    
+    // Hide text inputs
+    document.getElementById('exerciseInput').style.display = 'none';
+    document.getElementById('stressInput').style.display = 'none';
+    document.getElementById('symptomsInput').style.display = 'none';
+    
+    alert('💾 Health details saved successfully!');
+    console.log('✅ Health details saved:', healthEntry);
+    
+  } catch (error) {
+    console.error('❌ Error saving health details:', error);
+    alert('Error saving health details. Please try again.');
+  }
+}
+
+// Attach event listener to save health details button
+const saveHealthDetailsBtn = document.getElementById('saveHealthDetailsBtn');
+if (saveHealthDetailsBtn) {
+  saveHealthDetailsBtn.addEventListener('click', saveHealthDetailsStandalone);
+  console.log('✅ Save Health Details button listener attached');
 }
 
 console.log(" Food Tracker script loaded successfully!");
