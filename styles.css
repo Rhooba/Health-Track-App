@@ -1946,7 +1946,7 @@ input[name="symptoms"] {
   display: flex;
   gap: 15px;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1954,14 +1954,15 @@ input[name="symptoms"] {
   background: linear-gradient(135deg, var(--tropic-blue), var(--primary-blue));
   color: white;
   border: none;
-  padding: 12px 20px;
+  padding: 12px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1rem;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  min-width: 120px;
+  min-width: 100px;
+  flex-shrink: 0;
 }
 
 .vitals-btn:hover {
@@ -2104,5 +2105,268 @@ input[name="symptoms"] {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================
+   INTERACTIVE TUTORIAL OVERLAY STYLES
+   ======================================== */
+
+/* Tutorial Overlay Container */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.tutorial-overlay.active {
+  pointer-events: all;
+}
+
+/* Note: User scrolling during tutorial is prevented via JavaScript event listeners
+   to allow programmatic scrollIntoView to work for centering highlighted elements */
+
+/* Dark Backdrop */
+.tutorial-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 10001;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Tutorial Card */
+.tutorial-card {
+  position: fixed;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 90%;
+  z-index: 10003;
+  pointer-events: all;
+  transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tutorial Header */
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.tutorial-step-counter {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tropic-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tutorial-close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.tutorial-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+/* Tutorial Content */
+.tutorial-content {
+  padding: 24px;
+}
+
+.tutorial-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--obsidian);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.tutorial-description {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Tutorial Footer */
+.tutorial-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.tutorial-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.tutorial-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tutorial-btn.tutorial-next {
+  background-color: var(--tropic-blue);
+  color: white;
+}
+
+.tutorial-btn.tutorial-next:hover {
+  background-color: var(--primary-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(8, 126, 139, 0.3);
+}
+
+.tutorial-btn.tutorial-prev {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.tutorial-btn.tutorial-prev:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.tutorial-btn.tutorial-prev:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tutorial-btn.tutorial-skip {
+  background: none;
+  color: #999;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+}
+
+.tutorial-btn.tutorial-skip:hover {
+  color: #666;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Tutorial Trigger Button - Floating Help Button */
+.tutorial-trigger-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--tropic-blue) 0%, var(--primary-blue) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 8px 24px rgba(8, 126, 139, 0.4),
+              0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-trigger-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 32px rgba(8, 126, 139, 0.5),
+              0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tutorial-trigger-btn:active {
+  transform: scale(1.05);
+}
+
+.tutorial-trigger-icon {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .tutorial-card {
+    max-width: 95%;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .tutorial-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .tutorial-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .tutorial-btn {
+    flex: 1;
+  }
+  
+  .tutorial-btn.tutorial-skip {
+    width: 100%;
+  }
+  
+  .tutorial-trigger-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .tutorial-trigger-icon {
+    font-size: 24px;
   }
 }

@@ -874,6 +874,7 @@ const symptomsValue = selectedSymptoms.length > 0 ? 'yes' : (symptomsRadio?.valu
       
       renderAllEntries();
       updateCharts();
+      generateAISuggestions(foodEntries);
       console.log('✅ Entry successfully added');
     };
     
@@ -3364,6 +3365,277 @@ if (saveHealthDetailsBtn) {
 }
 
 console.log(" Food Tracker script loaded successfully!");
+
+// =======================
+// INTERACTIVE TUTORIAL SYSTEM
+// =======================
+
+const tutorialSteps = [
+  {
+    target: '#foodInput',
+    title: '🍎 Food Input',
+    description: 'Enter the food you ate here. The app will automatically detect ingredients in compound foods (like "cheeseburger" → bread + beef + cheese) and categorize them as W (vegetables), S (starches), or P (proteins).',
+    position: 'bottom'
+  },
+  {
+    target: '#dateInput',
+    title: '📅 Date Selection',
+    description: 'Select the date when you ate this food. This helps track patterns over time and correlate foods with how you felt on specific days.',
+    position: 'bottom'
+  },
+  {
+    target: '#mealTypeInput',
+    title: '🍽️ Meal Type',
+    description: 'Choose the meal type: Breakfast, Lunch, Dinner, Snack, Dessert, or Drinks. This helps organize your entries and analyze eating patterns throughout the day.',
+    position: 'bottom'
+  },
+  {
+    target: '#sickInput',
+    title: '🤢 Sick Checkbox',
+    description: 'Check this box if the food made you feel sick or uncomfortable. The app will track which foods consistently cause issues and provide AI insights.',
+    position: 'bottom'
+  },
+  {
+    target: '#addLogButton',
+    title: '➕ Add Entry Button',
+    description: 'Click here to save your food entry. The app will analyze food combinations and warn you about potentially problematic S+P combinations that may cause digestive issues.',
+    position: 'bottom'
+  },
+  {
+    target: '.health-vitals-section',
+    title: '📊 Health Vitals',
+    description: 'Log your Blood Pressure (BP) and Bowel Sounds (BS) here. Regular tracking helps identify health trends and correlations with your diet.',
+    position: 'bottom'
+  },
+  {
+    target: '.health-details-section',
+    title: '💪 Health Details',
+    description: 'Expand this section to log exercise, stress relief activities, and symptoms. This comprehensive tracking helps identify patterns between your activities and how you feel.',
+    position: 'bottom'
+  },
+  {
+    target: '.notes-collapsible',
+    title: '📝 Daily Notes',
+    description: 'Add personal notes about your day here. Track how you felt, sleep quality, energy levels, or anything else that might affect your health.',
+    position: 'bottom'
+  },
+  {
+    target: '.favorites-section .collapsible',
+    title: '💖 Favorite Foods',
+    description: 'Foods you mark as favorites appear here for quick reference. Click the ⭐ star on any food entry to add it to your favorites.',
+    position: 'bottom'
+  },
+  {
+    target: '#dailyCombinationChart',
+    title: '📊 Daily Food Combinations',
+    description: 'This chart shows your W/S/P food distribution throughout the day. Red bars indicate unsafe S+P combinations that may cause digestive problems.',
+    position: 'top'
+  },
+  {
+    target: '#aiSuggestions',
+    title: '🤖 AI Health Insights',
+    description: 'Get personalized recommendations based on your eating patterns. The AI identifies foods that consistently make you sick and suggests safe alternatives.',
+    position: 'top'
+  },
+  {
+    target: '#bpLineChart',
+    title: '📈 Blood Pressure Trend',
+    description: 'Track your blood pressure changes over time with this line chart. Regular monitoring helps identify cardiovascular health patterns and the impact of diet.',
+    position: 'top'
+  }
+];
+
+let currentTutorialStep = 0;
+let tutorialActive = false;
+
+function startTutorial() {
+  tutorialActive = true;
+  currentTutorialStep = 0;
+  
+  const overlay = document.getElementById('tutorialOverlay');
+  overlay.style.display = 'block';
+  overlay.classList.add('active');
+  
+  showTutorialStep(currentTutorialStep);
+}
+
+function showTutorialStep(stepIndex) {
+  if (stepIndex < 0 || stepIndex >= tutorialSteps.length) return;
+  
+  const step = tutorialSteps[stepIndex];
+  const targetElement = document.querySelector(step.target);
+  
+  if (!targetElement) {
+    console.warn(`Tutorial target not found: ${step.target}`);
+    return;
+  }
+  
+  // Update step counter
+  document.getElementById('tutorialStepCounter').textContent = `Step ${stepIndex + 1} of ${tutorialSteps.length}`;
+  
+  // Update content
+  document.getElementById('tutorialTitle').textContent = step.title;
+  document.getElementById('tutorialDescription').textContent = step.description;
+  
+  // Update navigation buttons
+  const prevBtn = document.getElementById('tutorialPrevBtn');
+  const nextBtn = document.getElementById('tutorialNextBtn');
+  
+  prevBtn.disabled = stepIndex === 0;
+  nextBtn.textContent = stepIndex === tutorialSteps.length - 1 ? 'Finish' : 'Next';
+  
+  // Hide card during transition
+  const card = document.getElementById('tutorialCard');
+  card.style.opacity = '0';
+  
+  // Scroll target into view
+  targetElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  
+  // Wait for scroll animation, then position and show tutorial card
+  setTimeout(() => {
+    positionTutorialCard(targetElement, step.position);
+    card.style.opacity = '1';
+  }, 500);
+}
+
+function positionTutorialCard(element, position) {
+  const card = document.getElementById('tutorialCard');
+  const rect = element.getBoundingClientRect();
+  
+  const cardWidth = 420;
+  const cardHeight = card.offsetHeight || 300;
+  const spacing = 20;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  
+  let top, left;
+  
+  if (position === 'bottom') {
+    top = rect.bottom + spacing;
+    left = rect.left + (rect.width / 2) - (cardWidth / 2);
+  } else if (position === 'top') {
+    top = rect.top - cardHeight - spacing;
+    left = rect.left + (rect.width / 2) - (cardWidth / 2);
+  } else if (position === 'left') {
+    top = rect.top + (rect.height / 2) - (cardHeight / 2);
+    left = rect.left - cardWidth - spacing;
+  } else if (position === 'right') {
+    top = rect.top + (rect.height / 2) - (cardHeight / 2);
+    left = rect.right + spacing;
+  }
+  
+  // Keep card within viewport bounds
+  if (left < 20) left = 20;
+  if (left + cardWidth > viewportWidth - 20) left = viewportWidth - cardWidth - 20;
+  if (top < 20) top = 20;
+  if (top + cardHeight > viewportHeight - 20) {
+    // If card would go below viewport, position it above the element instead
+    top = rect.top - cardHeight - spacing;
+    if (top < 20) {
+      // If still doesn't fit, center it vertically in viewport
+      top = (viewportHeight - cardHeight) / 2;
+    }
+  }
+  
+  card.style.top = `${top}px`;
+  card.style.left = `${left}px`;
+}
+
+function nextTutorialStep() {
+  if (currentTutorialStep < tutorialSteps.length - 1) {
+    currentTutorialStep++;
+    showTutorialStep(currentTutorialStep);
+  } else {
+    endTutorial();
+  }
+}
+
+function prevTutorialStep() {
+  if (currentTutorialStep > 0) {
+    currentTutorialStep--;
+    showTutorialStep(currentTutorialStep);
+  }
+}
+
+function endTutorial() {
+  tutorialActive = false;
+  
+  const overlay = document.getElementById('tutorialOverlay');
+  overlay.classList.remove('active');
+  overlay.style.display = 'none';
+  
+  // Save that user has seen the tutorial
+  localStorage.setItem('tutorialCompleted', 'true');
+}
+
+// Event Listeners for Tutorial
+document.addEventListener('DOMContentLoaded', function() {
+  const triggerBtn = document.getElementById('tutorialTriggerBtn');
+  const closeBtn = document.getElementById('tutorialCloseBtn');
+  const skipBtn = document.getElementById('tutorialSkipBtn');
+  const nextBtn = document.getElementById('tutorialNextBtn');
+  const prevBtn = document.getElementById('tutorialPrevBtn');
+  
+  if (triggerBtn) {
+    triggerBtn.addEventListener('click', startTutorial);
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', endTutorial);
+  }
+  
+  if (skipBtn) {
+    skipBtn.addEventListener('click', endTutorial);
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', nextTutorialStep);
+  }
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', prevTutorialStep);
+  }
+  
+  // Tutorial no longer auto-starts - user must click button in welcome popup
+  
+  // Update spotlight position on window resize
+  window.addEventListener('resize', () => {
+    if (tutorialActive && currentTutorialStep < tutorialSteps.length) {
+      const step = tutorialSteps[currentTutorialStep];
+      const targetElement = document.querySelector(step.target);
+      if (targetElement) {
+        positionSpotlight(targetElement);
+        positionTutorialCard(targetElement, step.position);
+      }
+    }
+  });
+  
+  // Update spotlight position on scroll
+  window.addEventListener('scroll', () => {
+    if (tutorialActive && currentTutorialStep < tutorialSteps.length) {
+      const step = tutorialSteps[currentTutorialStep];
+      const targetElement = document.querySelector(step.target);
+      if (targetElement) {
+        positionSpotlight(targetElement);
+        positionTutorialCard(targetElement, step.position);
+      }
+    }
+  });
+});
+
+// Function to close welcome popup and start tutorial
+function closePopupAndStartTutorial() {
+  // Close the welcome popup
+  const popup = document.getElementById('bpReminderPopup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+  
+  // Start the tutorial
+  startTutorial();
+}
+
+console.log("✅ Interactive Tutorial System loaded!");
 
 // =======================
 // VITALS MODAL FUNCTIONS

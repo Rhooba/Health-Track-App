@@ -208,10 +208,13 @@
         <p>• Record your blood pressure for health trends</p>
         <p>• Get AI insights about your eating patterns</p>
         <br>
-        <p>💻 <strong>Built with ❤️ for Mom</strong></p>
+        <p>� <strong>New here?</strong> Take a quick tutorial to learn how everything works!</p>
+        <br>
+        <p>� <strong>Built with ❤️ for Mom</strong></p>
         <p><a href="https://github.com/Rhooba/food-tracker-app" target="_blank" style="color: var(--tropic-blue); text-decoration: underline;">Further instructions and other projects see my GitHub →</a></p>
       </div>
       <div class="popup-actions">
+        <button id="startTutorialBtn" class="popup-btn primary" onclick="closePopupAndStartTutorial()">📚 Start Tutorial</button>
         <button id="addBpNow" class="popup-btn primary" onclick="closePopup()">Get Started!</button>
         <button id="skipToday" class="popup-btn secondary" onclick="closePopup()">Skip Today</button>
       </div>
@@ -358,5 +361,32 @@
       </div>
     </div>
   </div>
+
+  <!-- Interactive Tutorial Overlay -->
+  <div id="tutorialOverlay" class="tutorial-overlay" style="display: none;">
+    <div class="tutorial-backdrop"></div>
+    <div class="tutorial-card" id="tutorialCard">
+      <div class="tutorial-header">
+        <span class="tutorial-step-counter" id="tutorialStepCounter">Step 1 of 12</span>
+        <button class="tutorial-close-btn" id="tutorialCloseBtn">&times;</button>
+      </div>
+      <div class="tutorial-content">
+        <h3 class="tutorial-title" id="tutorialTitle">Welcome to Health Tracker!</h3>
+        <p class="tutorial-description" id="tutorialDescription">Let's take a quick tour of all the features.</p>
+      </div>
+      <div class="tutorial-footer">
+        <button class="tutorial-btn tutorial-skip" id="tutorialSkipBtn">Skip Tutorial</button>
+        <div class="tutorial-nav">
+          <button class="tutorial-btn tutorial-prev" id="tutorialPrevBtn" disabled>Previous</button>
+          <button class="tutorial-btn tutorial-next" id="tutorialNextBtn">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Trigger Button -->
+  <button id="tutorialTriggerBtn" class="tutorial-trigger-btn" title="Start Tutorial">
+    <span class="tutorial-trigger-icon">?</span>
+  </button>
 
 </html>
