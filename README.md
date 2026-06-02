@@ -1,6 +1,7 @@
 # Food Tracker App
 
 Track what you eat and how it makes you feel. Built with smart food categorization, combination rules, and AI-powered insights.
+[Live App] https://track-my-health-app.netlify.app/
 
 ---
 
